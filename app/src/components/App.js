@@ -1,0 +1,20 @@
+import { Routes, Route } from 'react-router-dom';
+
+// Pages importation
+import Login from '../pages/Login';
+
+// App Css code
+import './App.css';
+
+function App() {
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/Home" element={<Login />} />
+      </Routes>
+    </>
+  );
+}
+
+export default App;

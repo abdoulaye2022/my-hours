@@ -26,7 +26,7 @@ const Login = () => {
                 justifyContent: "center",
                 flexDirection: "column",
                 height: "100%",
-                padding: window.screen.height > 435 ? 300 : 50
+                padding: ((window.innerWidth <= 800) && (window.innerHeight <= 600)) > 435 ? 300 : 50
             }}>
                 <h2 style={{
                     height: 32,
@@ -93,6 +93,17 @@ const Login = () => {
                         </Button>
                     </Form.Item>
                 </Form>
+                <div style={{
+                    width: ((window.innerWidth <= 800) && (window.innerHeight <= 600)) > 435 ? 300 : null
+                }}>
+                    <p style={{
+                        float: "left",
+                        marginRight: 30
+                    }}>Create an account.</p>
+                    <p style={{
+                        float: "right"
+                    }}>I have forget my password.</p>
+                </div>
             </Col>
         </Row>
     );

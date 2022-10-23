@@ -31,7 +31,7 @@ const Login = () => {
                 <h2 style={{
                     height: 32,
                     backgroundColor: "gray",
-                    width: 186,
+                    width: 235,
                     textAlign: "center",
                     borderRadius: "15px 0px",
                     color: "white"
@@ -87,7 +87,7 @@ const Login = () => {
 
                     >
                         <Button type="primary" htmlType="submit" style={{
-                            width: 186
+                            width: "100%"
                         }}>
                             connection
                         </Button>

@@ -1,5 +1,6 @@
-import { Routes, Route } from 'react-router-dom';
-
+import React, { useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 // Pages importation
 import Login from '../pages/Login';
 import Home from '../pages/Home';
@@ -9,22 +10,35 @@ import Profile from '../pages/Profile';
 import './App.css';
 import { Layout } from '../Layouts/Layout';
 
-function App() {
+const App = () => {
+
+  let navigate = useNavigate();
+  const auth = useSelector(state => state.user.authenticathed);
+
+  useEffect(() => {
+    if (auth) {
+      return navigate("/home");
+    }
+  }, [auth]);
 
   function detectMob() {
     return ((window.innerWidth <= 800) && (window.innerHeight <= 600));
   }
 
-
   return (
     <>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/home" element={<Layout><Home /></Layout>} />
-        <Route path='/profile' element={<Layout><Profile /></Layout>} />
+        <Route path="/" element={auth ? <Navigate to="/home" replace /> : <Login />} />
+        <Route path="/home" element={<PrivateRoute><Layout><Home /></Layout></PrivateRoute>} />
+        <Route path='/profile' element={<PrivateRoute><Layout><Profile /></Layout></PrivateRoute>} />
       </Routes>
     </>
   );
+}
+
+function PrivateRoute({ children }) {
+  const auth = useSelector(state => state.user.authenticathed);
+  return auth ? children : <Navigate to="/" />;
 }
 
 export default App;

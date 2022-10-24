@@ -1,7 +1,40 @@
 import React, { useEffect } from "react";
 import "./Profile.css";
-import { Divider, Col, Form, Row, Input, Button } from "antd";
+import { Divider, Col, Form, Row, Input, Button, Table } from "antd";
 import { SaveOutlined, RedoOutlined } from "@ant-design/icons";
+
+const dataSource = [
+    {
+        key: "1",
+        name: "Mike",
+        age: 32,
+        address: "10 Downing Street",
+    },
+    {
+        key: "2",
+        name: "John",
+        age: 42,
+        address: "10 Downing Street",
+    },
+];
+
+const columns = [
+    {
+        title: "Name",
+        dataIndex: "name",
+        key: "name",
+    },
+    {
+        title: "Age",
+        dataIndex: "age",
+        key: "age",
+    },
+    {
+        title: "Address",
+        dataIndex: "address",
+        key: "address",
+    },
+];
 
 const Profile = () => {
     // To disable submit button at the beginning.
@@ -176,6 +209,26 @@ const Profile = () => {
                     </Col>
                 </Row>
             </Form>
+
+            <Row
+                style={{
+                    width: "100%"
+                }}
+                gutter={[0, 15]}
+            >
+                <Col xs={24} sm={12} md={12}>
+                    <Divider orientation="left">
+                        <h4 style={{ textAlign: "center", padding: 0 }}>Employers</h4>
+                    </Divider>
+                    <Table dataSource={dataSource} columns={columns} size="small" />
+                </Col>
+                <Col xs={24} sm={12} md={12}>
+                    <Divider orientation="left">
+                        <h4 style={{ textAlign: "center", padding: 0 }}>Jobs</h4>
+                    </Divider>
+                    <Table dataSource={dataSource} columns={columns} size="small" />
+                </Col>
+            </Row>
         </>
     );
 };

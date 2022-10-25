@@ -47,16 +47,16 @@ export const user = (state = initialState, action) => {
         //         loading: false,
         //         error: action.payload
         //     };
-        // case userConstants.LOGOUT_USER:
-        //     return {
-        //         ...state,
-        //         loading: false,
-        //         authenticathed: false,
-        //         user: {},
-        //         items: [],
-        //         token: '',
-        //         error: ''
-        //     };
+        case userConstants.LOGOUT_USER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                authenticathed: false,
+                user: {},
+                items: [],
+                token: '',
+                error: ''
+            };
         default:
             return state;
     }

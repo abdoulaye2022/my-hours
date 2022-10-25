@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('email', 50)->nullable(false)->unique();
             $table->integer('new_user')->default(0);
             $table->string('lang_app', 2)->default('fr');
-            $table->integer('is_admin');
-            $table->text('password')->nullable(false)->change();
+            $table->integer('is_admin')->default(0);
+            $table->text('password')->nullable(false);
             $table->timestamps();
         });
     }

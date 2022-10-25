@@ -1,7 +1,10 @@
 import React from "react";
 import "./HeaderApp.css";
-import { Col, Row, Button, Breadcrumb, PageHeader, Table, Card, Space, Avatar, Dropdown, Menu } from 'antd';
-import { LogoutOutlined, UserOutlined, HomeOutlined, SettingOutlined } from "@ant-design/icons";
+import { Col, Row, Button, PageHeader, Space, Avatar, Dropdown, Menu } from 'antd';
+import { LogoutOutlined, UserOutlined, SettingOutlined } from "@ant-design/icons";
+import { userActions } from "../redux/actions/users.actions";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const menu = (
     <Menu
@@ -22,6 +25,14 @@ const menu = (
 );
 
 export const HeaderApp = () => {
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const redirectToLogin = () => {
+        return navigate('/');
+    }
+
     return (
         <>
             <Row>
@@ -42,7 +53,7 @@ export const HeaderApp = () => {
                                     </Space>
                                 </a>
                             </Dropdown>,
-                            <Button key="1" type="primary" danger>
+                            <Button key="1" type="primary" danger onClick={() => dispatch(userActions.logout(redirectToLogin))}>
                                 <LogoutOutlined /> Logout
                             </Button>,
                         ]}

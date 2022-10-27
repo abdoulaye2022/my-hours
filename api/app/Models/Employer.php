@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
  
 class Employer extends Model
 {
+    public $timestamps = false;
     protected $fillable = [
-        "name_emp", "color_emp"
+        "name_emp", "statut"
     ];
 }

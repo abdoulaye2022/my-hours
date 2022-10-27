@@ -1,7 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./Profile.css";
 import { Divider, Col, Form, Row, Input, Button, Table } from "antd";
-import { SaveOutlined, RedoOutlined } from "@ant-design/icons";
+import { SaveOutlined, RedoOutlined, PlusOutlined, CheckCircleOutlined, CloseCircleOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { employerActions } from "../redux/actions/employers.actions";
+import { useSelector, useDispatch } from "react-redux";
+import { ModalEmployer } from "../components/ModalEmployers";
 
 const dataSource = [
     {
@@ -36,17 +39,79 @@ const columns = [
     },
 ];
 
+
 const Profile = () => {
-    // To disable submit button at the beginning.
-    useEffect(() => {
-        //forceUpdate({});
-    }, []);
+    const [employerMouseEnterOrLeave, setEmployerMouseEnterOrLeave] = useState(0);
+    const [employerUpdate, setEmployerUpdate] = useState({});
+    const childRef = useRef();
 
-    //const form = Form.useForm();
+    const employersData = useSelector(state => state.employer.items);
 
-    const onFinish = (values) => {
-        console.log("Finish:", values);
-    };
+    const dispatch = useDispatch();
+
+    // Column employers
+    const employersColumn = [
+        {
+            title: "#",
+            dataIndex: "index",
+            key: "index",
+            width: "5%",
+            render: (_, record, index) => index + 1
+        },
+        {
+            title: "Name",
+            dataIndex: "name_emp",
+            width: "30%",
+            key: "name_emp",
+        },
+        {
+            title: "Statut",
+            dataIndex: "statut",
+            key: "statut",
+            width: "20%",
+            render: (_, record) => {
+                if (record.statut === 1)
+                    return <CheckCircleOutlined style={{ color: "green" }} />
+                else
+                    return <CloseCircleOutlined style={{ color: "red" }} />
+            }
+        },
+        {
+            title: (
+                <Button type="primary" size="small" style={{ float: "right" }} onClick={() => dispatch(employerActions.modalEmployer())}>
+                    <PlusOutlined /> Add
+                </Button>
+            ),
+            width: "25%",
+            dataIndex: "options",
+            key: "options",
+            render: (_, record) => {
+                if (record.id === employerMouseEnterOrLeave)
+                    return (
+                        <>
+                            <Button 
+                                size="small" 
+                                style={{ float: "left", color: "green" }} 
+                                onClick={() => { 
+                                    setEmployerUpdate(record);
+                                    childRef.current.updateData(record)
+                                    dispatch(employerActions.modalEmployer());
+                                    }}>
+                                <EditOutlined /> Edit
+                            </Button>
+                            <Button size="small" style={{ float: "right", color: "red" }}>
+                                {record.statut === 1 ? (
+                                    <CheckCircleOutlined style={{ color: "green" }} onClick={() => alert(JSON.stringify(employerUpdate, null, 2))}/>
+                                ) : (
+                                    <CloseCircleOutlined style={{ color: "red" }} />
+                                )}
+                            </Button>
+                        </>
+                    );
+            }
+        },
+    ];
+
 
     return (
         <>
@@ -220,13 +285,29 @@ const Profile = () => {
                     <Divider orientation="left">
                         <h4 style={{ textAlign: "center", padding: 0 }}>Employers</h4>
                     </Divider>
-                    <Table dataSource={dataSource} columns={columns} size="small" />
+                    <ModalEmployer ref={childRef} employerUpdate={employerUpdate} setEmployerUpdate={setEmployerUpdate} />
+                    <Table
+                        dataSource={employersData}
+                        columns={employersColumn}
+                        size="small"
+                        bordered
+                        style={{ width: "98%" }}
+                        onRow={(record, rowIndex) => {
+                            return {
+                                onMouseEnter: event => {
+                                    setEmployerMouseEnterOrLeave(record.id)
+                                },
+                                onMouseLeave: event => {
+                                    setEmployerMouseEnterOrLeave(0)
+                                }
+                            };
+                        }} />
                 </Col>
                 <Col xs={24} sm={12} md={12}>
                     <Divider orientation="left">
                         <h4 style={{ textAlign: "center", padding: 0 }}>Jobs</h4>
                     </Divider>
-                    <Table dataSource={dataSource} columns={columns} size="small" />
+                    <Table dataSource={dataSource} columns={columns} size="small" bordered style={{ width: "98%" }} />
                 </Col>
             </Row>
         </>

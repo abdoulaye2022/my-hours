@@ -1,5 +1,6 @@
 import { userConstants } from "../constants/users.constants";
 import { userServices } from "../services/users.services";
+import { employerActions } from "./employers.actions";
 
 export const userActions = {
     login,
@@ -13,8 +14,9 @@ function login(email, password, cb, er) {
             .login(email, password)
             .then((res) => {
                 if (res.data.access_token !== "") {
-                    dispatch(success(res.data));
                     window.localStorage.setItem("token", res.data.access_token);
+                    dispatch(success(res.data));
+                    dispatch(employerActions.getAll());
                     cb();
                 }
             })
@@ -43,28 +45,9 @@ function login(email, password, cb, er) {
 }
 
 function logout(cb) {
+    window.localStorage.clear();
     cb();
     return {
-        type: userConstants.LOGOUT_USER_SUCCESS,
+        type: userConstants.LOGOUT_USER,
     };
-    // return function (dispatch) {
-
-    // };
-    // function request () {
-    //     return {
-    //         type: userConstants.LOGOUT_USER_REQUEST
-    //     }
-    // };
-    // function success (user) {
-    //     return {
-    //         type: userConstants.LOGOUT_USER_SUCCESS,
-    //         payload: user
-    //     }
-    // };
-    // function failure (error) {
-    //     return {
-    //         type: userConstants.LOGOUT_USER_FAILURE,
-    //         payload: error
-    //     }
-    // }
 }

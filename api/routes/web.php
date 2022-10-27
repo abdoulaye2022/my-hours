@@ -23,4 +23,9 @@ Route::group([
     Route::post('refresh', 'AuthController@refresh');
     Route::post('user-profile', 'AuthController@me');
 
+    // Employers
+    Route::get('/employers', 'EmployerController@index');
+    Route::post('/employers', 'EmployerController@create');
+    Route::put('/employers/{id}', 'EmployerController@update');
+
 });

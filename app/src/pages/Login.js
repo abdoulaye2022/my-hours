@@ -94,6 +94,9 @@ const Login = () => {
                                 message: "Please input your E-mail!",
                             },
                         ]}
+                        style={{
+                            width: 235
+                        }}
                     >
                         <Input />
                     </Form.Item>
@@ -112,6 +115,9 @@ const Login = () => {
                                     "Password must be minimum 5 characters.",
                             },
                         ]}
+                        style={{
+                            width: 235
+                        }}
                     >
                         <Input.Password />
                     </Form.Item>

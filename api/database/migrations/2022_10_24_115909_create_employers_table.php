@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('employers', function (Blueprint $table) {
             $table->id();
             $table->string('name_emp', 100)->nullable(false);
-            $table->string('color_emp', 20);
+            $table->integer("statut")->default(1);
             $table->timestamps();
         });
     }

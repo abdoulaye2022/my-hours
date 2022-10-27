@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     Button,
     Table,
@@ -9,41 +9,72 @@ import {
     SearchOutlined,
     FilterOutlined,
 } from "@ant-design/icons";
+import { useDispatch } from "react-redux";
+import { employerActions } from "../redux/actions/employers.actions";
 
 const dataSource = [
     {
         key: "1",
-        name: "Mike",
-        age: 32,
-        address: "10 Downing Street",
+        index: "Mike",
+        jobs: "Security",
+        hours: "10 Downing Street",
+        employers: "Protrans",
+        locations: "43 indutrual rue"
     },
     {
         key: "2",
-        name: "John",
-        age: 42,
-        address: "10 Downing Street",
+        index: "Mike",
+        jobs: "Security",
+        hours: "10 Downing Street",
+        employers: "Protrans",
+        locations: "43 indutrual rue"
+    },
+    {
+        key: "3",
+        index: "Mike",
+        jobs: "Security",
+        hours: "10 Downing Street",
+        employers: "Protrans",
+        locations: "43 indutrual rue"
     },
 ];
 
 const columns = [
     {
-        title: "Name",
-        dataIndex: "name",
-        key: "name",
+        title: "#",
+        dataIndex: "index",
+        key: "index",
     },
     {
-        title: "Age",
-        dataIndex: "age",
-        key: "age",
+        title: "Jobs",
+        dataIndex: "jobs",
+        key: "jobs",
     },
     {
-        title: "Address",
-        dataIndex: "address",
-        key: "address",
+        title: "Hours",
+        dataIndex: "hours",
+        key: "hours",
+    },
+    {
+        title: "Employers",
+        dataIndex: "emploers",
+        key: "employers",
+    },
+    {
+        title: "Location",
+        dataIndex: "locations",
+        key: "locations",
     },
 ];
 
 const Home = () => {
+
+    // const dispatch = useDispatch();
+
+    // useEffect(() => {
+    //     dispatch(employerActions.getAll());
+    // }, []);
+
     return (
         <>
             <Divider orientation="left">

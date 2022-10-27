@@ -2,7 +2,7 @@ import { userConstants } from "../constants/users.constants";
 
 const initialState = {
     loading: false,
-    authenticathed: true,
+    authenticathed: false,
     user: {},
     items: [],
     token: '',
@@ -47,7 +47,7 @@ export const user = (state = initialState, action) => {
         //         loading: false,
         //         error: action.payload
         //     };
-        case userConstants.LOGOUT_USER_SUCCESS:
+        case userConstants.LOGOUT_USER:
             return {
                 ...state,
                 loading: false,

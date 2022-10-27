@@ -5,12 +5,13 @@ import { LogoutOutlined, UserOutlined, SettingOutlined } from "@ant-design/icons
 import { userActions } from "../redux/actions/users.actions";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const menu = (
     <Menu
         items={[
             {
-                label: (<><UserOutlined /> Profile</>),
+                label: (<><Link to="/profile"><UserOutlined /> Profile</Link></>),
                 key: '0',
             },
             {

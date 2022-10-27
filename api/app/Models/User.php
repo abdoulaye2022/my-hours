@@ -14,7 +14,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class User extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject 
 {
     use Authenticatable, Authorizable;
-
+    public $timestamps = false;
     protected $fillable = [
         " firstname", "lastname", "email", " new_user", "  lang_app", "is_admin"
     ];

@@ -43,9 +43,9 @@ class EmployerController extends Controller
             'name_emp' => 'required'
         ]);
 
-        $employers = Employer::where('id', $id)->update(['name_emp' => $request->name_emp]);
-
-        dd($employers);
+        $employers = Employer::find($id);
+        $employers->name_emp = $request->name_emp;
+        $employers->save();
 
         return response()->json($employers);
     }

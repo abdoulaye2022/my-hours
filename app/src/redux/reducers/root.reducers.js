@@ -2,10 +2,11 @@ import { combineReducers } from 'redux';
 import storage from 'redux-persist/lib/storage';
 import { user } from './users.reducers';
 import { employer } from './employers.reducers';
+import { job } from './jobs.reducers';
 
 const appReducers = combineReducers({
     user,
-    employer
+    employer, job
 })
 
 const rootReducers = (state, action) => {

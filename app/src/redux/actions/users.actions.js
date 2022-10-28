@@ -1,6 +1,7 @@
 import { userConstants } from "../constants/users.constants";
 import { userServices } from "../services/users.services";
 import { employerActions } from "./employers.actions";
+import { jobActions } from "./jobs.actions";
 
 export const userActions = {
     login,
@@ -14,9 +15,10 @@ function login(email, password, cb, er) {
             .login(email, password)
             .then((res) => {
                 if (res.data.access_token !== "") {
-                    window.localStorage.setItem("token", res.data.access_token);
                     dispatch(success(res.data));
                     dispatch(employerActions.getAll());
+                    dispatch(jobActions.getAll());
+                    window.localStorage.setItem("token", res.data.access_token);
                     cb();
                 }
             })

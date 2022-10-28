@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('lang_app', 2)->default('fr');
             $table->integer('is_admin')->default(0);
             $table->text('password')->nullable(false);
-            $table->timestamps();
         });
     }
 

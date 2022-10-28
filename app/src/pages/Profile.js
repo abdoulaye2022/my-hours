@@ -1,53 +1,38 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import "./Profile.css";
 import { Divider, Col, Form, Row, Input, Button, Table } from "antd";
 import { SaveOutlined, RedoOutlined, PlusOutlined, CheckCircleOutlined, CloseCircleOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { employerActions } from "../redux/actions/employers.actions";
 import { useSelector, useDispatch } from "react-redux";
-import { ModalEmployer } from "../components/ModalEmployers";
+import { ModalEmployer } from "../components/ModalEmployer";
+import { ModalJob } from "../components/ModalJob";
+import { jobActions } from "../redux/actions/jobs.actions";
 
 const dataSource = [
     {
         key: "1",
-        name: "Mike",
-        age: 32,
-        address: "10 Downing Street",
-    },
-    {
-        key: "2",
-        name: "John",
-        age: 42,
-        address: "10 Downing Street",
-    },
-];
-
-const columns = [
-    {
-        title: "Name",
-        dataIndex: "name",
-        key: "name",
-    },
-    {
-        title: "Age",
-        dataIndex: "age",
-        key: "age",
-    },
-    {
-        title: "Address",
-        dataIndex: "address",
-        key: "address",
-    },
+        name_job: "Mike",
+        color: "#56s8s"
+    }
 ];
 
 
 const Profile = () => {
     const [employerMouseEnterOrLeave, setEmployerMouseEnterOrLeave] = useState(0);
     const [employerUpdate, setEmployerUpdate] = useState({});
-    const childRef = useRef();
+    const [jobUpdate, setJobUpdate] = useState({});
 
     const employersData = useSelector(state => state.employer.items);
+    const jobsData = useSelector(state => state.job.items);
+
+    const [formEmployer] = Form.useForm();
+    const [formJob] = Form.useForm();
 
     const dispatch = useDispatch();
+
+    // useEffect(() => {
+    //     dispatch(employerActions.getAll());
+    // }, [])
 
     // Column employers
     const employersColumn = [
@@ -94,7 +79,9 @@ const Profile = () => {
                                 style={{ float: "left", color: "green" }} 
                                 onClick={() => { 
                                     setEmployerUpdate(record);
-                                    childRef.current.updateData(record)
+                                    formEmployer.setFieldsValue({
+                                        name_emp: record.name_emp
+                                    })
                                     dispatch(employerActions.modalEmployer());
                                     }}>
                                 <EditOutlined /> Edit
@@ -109,6 +96,39 @@ const Profile = () => {
                         </>
                     );
             }
+        },
+    ];
+
+    // Jobs comlumns
+    const JobsColumns = [
+        {
+            title: "#",
+            dataIndex: "id",
+            key: "index",
+            width: "5%",
+            render: (_, record, index) => index + 1
+        },
+        {
+            title: "Name",
+            dataIndex: "name_job",
+            width: "30%",
+            key: "name_job",
+        },
+        {
+            title: "Color",
+            dataIndex: "color_job",
+            width: "20%",
+            key: "color_job",
+        },
+        {
+            title: (
+                <Button type="primary" size="small" style={{ float: "right" }} onClick={() => dispatch(jobActions.modalJob())}>
+                    <PlusOutlined /> Add
+                </Button>
+            ),
+            width: "20%",
+            dataIndex: "option",
+            key: "option",
         },
     ];
 
@@ -285,7 +305,8 @@ const Profile = () => {
                     <Divider orientation="left">
                         <h4 style={{ textAlign: "center", padding: 0 }}>Employers</h4>
                     </Divider>
-                    <ModalEmployer ref={childRef} employerUpdate={employerUpdate} setEmployerUpdate={setEmployerUpdate} />
+                    <ModalEmployer employerUpdate={employerUpdate} setEmployerUpdate={setEmployerUpdate}
+                    formEmployer={formEmployer} />
                     <Table
                         dataSource={employersData}
                         columns={employersColumn}
@@ -307,7 +328,8 @@ const Profile = () => {
                     <Divider orientation="left">
                         <h4 style={{ textAlign: "center", padding: 0 }}>Jobs</h4>
                     </Divider>
-                    <Table dataSource={dataSource} columns={columns} size="small" bordered style={{ width: "98%" }} />
+                    <ModalJob jobUpdate={jobUpdate} setJobUpdate={setJobUpdate} formJob={formJob} />
+                    <Table dataSource={jobsData} columns={JobsColumns} size="small" bordered style={{ width: "98%" }} />
                 </Col>
             </Row>
         </>

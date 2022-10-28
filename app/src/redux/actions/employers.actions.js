@@ -1,4 +1,4 @@
-import { ModalEmployer } from "../../components/ModalEmployers";
+import { ModalEmployer } from "../../components/ModalEmployer";
 import { employerConstants } from "../constants/employers.constants";
 import { employerServices } from "../services/employers.services";
 
@@ -82,6 +82,7 @@ function update(id, name) {
         employerServices.update(id, name)
             .then(res => {
                 dispatch(success(res.data));
+                dispatch(modalEmployer());
             })
             .catch(err => {
                 dispatch(failure(err.message));

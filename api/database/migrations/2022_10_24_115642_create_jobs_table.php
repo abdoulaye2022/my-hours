@@ -15,9 +15,10 @@ return new class extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
-            $table->string('name_job', 50)->nullable(false);;
+            $table->string('name_job', 50)->nullable(false);
             $table->string('color_job', 20);
-            $table->timestamps();
+            $table->unsignedBigInteger('employer_id');
+            $table->foreign('employer_id')->references('id')->on('employers');
         });
     }
 

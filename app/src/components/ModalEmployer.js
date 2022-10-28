@@ -1,18 +1,11 @@
 import React, { useEffect, forwardRef, useImperativeHandle } from "react";
-import { Button, Form, Modal, Input } from 'antd';
+import { Form, Modal, Input } from 'antd';
 import { useSelector, useDispatch } from "react-redux";
 import { employerActions } from "../redux/actions/employers.actions";
 
-export const ModalEmployer = forwardRef(({ employerUpdate, setEmployerUpdate }, ref) => {
+export const ModalEmployer = ({ employerUpdate, setEmployerUpdate, formEmployer }) => {
     const isModalOpen = useSelector(state => state.employer.modal);
     const dispatch = useDispatch();
-    const [form] = Form.useForm();
-
-    useImperativeHandle(ref, () => ({
-        updateData (data) {
-            form.setFieldsValue({name_emp: data.name_emp});
-        }
-    }));
 
     return (
         <>
@@ -20,27 +13,24 @@ export const ModalEmployer = forwardRef(({ employerUpdate, setEmployerUpdate }, 
             <Modal
                 title="Employer"
                 open={isModalOpen}
-                onCancel={() => { setEmployerUpdate({}); form.resetFields(); dispatch(employerActions.modalEmployer()); }}
+                onCancel={() => { setEmployerUpdate({}); formEmployer.resetFields(); dispatch(employerActions.modalEmployer()); }}
+                mask={false}
                 okText={Object.keys(employerUpdate).length === 0 ? "Create" : "Update"}
                 cancelText="Cancel"
                 onOk={() => {
-                    form
+                    formEmployer
                         .validateFields()
-                        .then((values) => {
-                            Object.keys(employerUpdate).length === 0 ? dispatch(employerActions.add(values.name_emp)) : dispatch(employerActions.update(employerUpdate.id, employerUpdate.name_emp))
-                           
+                        .then(values => {
+                            Object.keys(employerUpdate).length === 0 ? dispatch(employerActions.add(values.name_emp)) : dispatch(employerActions.update(employerUpdate.id, values.name_emp));
+        
                         })
-                        .catch((info) => {
-                            // console.log('Validate Failed:', info);
+                        .catch(info => {
+                            console.log('Validate Failed:', info);
                         });
                 }}
             >
-                <button onClick={() => console.log(employerUpdate.name_emp)}>Test</button>
                 <Form
-                    form={form}
-                    // initialValues={{
-                    //     remember: true,
-                    // }}
+                    form={formEmployer}
                     autoComplete="off"
                     layout="vertical">
                     <Form.Item
@@ -60,4 +50,4 @@ export const ModalEmployer = forwardRef(({ employerUpdate, setEmployerUpdate }, 
             </Modal>
         </>
     );
-});
+};

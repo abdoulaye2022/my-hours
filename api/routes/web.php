@@ -28,4 +28,9 @@ Route::group([
     Route::post('/employers', 'EmployerController@create');
     Route::put('/employers/{id}', 'EmployerController@update');
 
+    // Jobs
+    Route::get('/jobs', 'JobController@index');
+    Route::post('/jobs', 'JobController@create');
+    Route::put('/jobs/{id}', 'JobController@update');
+
 });

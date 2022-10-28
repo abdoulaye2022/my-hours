@@ -22,7 +22,6 @@ return new class extends Migration
             $table->unsignedBigInteger('employer_id');
             $table->foreign('job_id')->references('id')->on('jobs');
             $table->foreign('employer_id')->references('id')->on('employers');
-            $table->timestamps();
         });
     }
 

@@ -33,7 +33,7 @@ class JobController extends Controller
             'employer_id' => 'required'
         ]);
 
-        $jobs = Job::create(['name_job' => $request->name_job, 'employer_id' => $request->employer_id, 'color_job' => $request->color_job]);
+        $jobs = Job::create(['name_job' => $request->name_job, 'color_job' => $request->color_job, 'employer_id' => $request->employer_id]);
 
         return response()->json($jobs);
     }

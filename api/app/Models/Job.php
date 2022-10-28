@@ -8,6 +8,6 @@ class Job extends Model
 {
     public $timestamps = false;
     protected $fillable = [
-        "name_job", "color_job"
+        "name_job", "employer_id","color_job"
     ];
 }

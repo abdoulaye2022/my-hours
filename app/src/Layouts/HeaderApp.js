@@ -43,7 +43,7 @@ export const HeaderApp = () => {
                             borderBottom: "1px solid gray",
                         }}
                         ghost={false}
-                        title="My-hours"
+                        title={<Link to="/home">My-hours</Link>}
                         // subTitle="Know your work hours"
                         extra={[
                             // <UserOutlined key="2" style={{ marginRight: 10 }} />,

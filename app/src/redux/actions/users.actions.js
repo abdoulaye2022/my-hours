@@ -15,10 +15,12 @@ function login(email, password, cb, er) {
             .login(email, password)
             .then((res) => {
                 if (res.data.access_token !== "") {
-                    dispatch(success(res.data));
-                    dispatch(employerActions.getAll());
-                    dispatch(jobActions.getAll());
                     window.localStorage.setItem("token", res.data.access_token);
+                    setTimeout(() => {
+                        dispatch(success(res.data));
+                        dispatch(employerActions.getAll());
+                        dispatch(jobActions.getAll());
+                    }, 1000);
                     cb();
                 }
             })

@@ -44,6 +44,7 @@ function add(name_job, employer_id, color_job) {
         jobServices.add(name_job, employer_id, color_job)
             .then(res => {
                 dispatch(success(res.data));
+                dispatch(jobActions.modalJob());
             })
             .catch(err => {
                 dispatch(failure(err.message))
@@ -74,6 +75,7 @@ function update(id, name_job, employer_id, color_job) {
         jobServices.update(id, name_job, employer_id, color_job)
             .then(res => {
                 dispatch(success(res.data));
+                dispatch(jobActions.modalJob());
             })
             .catch(err => {
                 dispatch(failure(err.message));

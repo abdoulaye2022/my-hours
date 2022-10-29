@@ -3,10 +3,13 @@ import storage from 'redux-persist/lib/storage';
 import { user } from './users.reducers';
 import { employer } from './employers.reducers';
 import { job } from './jobs.reducers';
+import { shift } from './shifts.reducers';
 
 const appReducers = combineReducers({
     user,
-    employer, job
+    employer, 
+    job,
+    shift
 })
 
 const rootReducers = (state, action) => {

@@ -62,7 +62,7 @@ const Profile = () => {
             title: "Statut",
             dataIndex: "statut",
             key: "statut",
-            width: "20%",
+            width: "10%",
             render: (_, record) => {
                 if (record.statut === 1)
                     return <CheckCircleOutlined style={{ color: "green" }} />;
@@ -80,7 +80,7 @@ const Profile = () => {
                     <PlusOutlined /> Add
                 </Button>
             ),
-            width: "25%",
+            width: "35%",
             dataIndex: "options",
             key: "options",
             render: (_, record) => {

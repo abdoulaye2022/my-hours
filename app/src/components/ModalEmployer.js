@@ -1,4 +1,4 @@
-import React, { useEffect, forwardRef, useImperativeHandle } from "react";
+import React, { useEffect, useImperativeHandle } from "react";
 import { Form, Modal, Input } from 'antd';
 import { useSelector, useDispatch } from "react-redux";
 import { employerActions } from "../redux/actions/employers.actions";

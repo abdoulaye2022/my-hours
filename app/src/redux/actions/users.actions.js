@@ -5,7 +5,7 @@ import { jobActions } from "./jobs.actions";
 
 export const userActions = {
     login,
-    logout,
+    logout
 };
 
 function login(email, password, cb, er) {
@@ -14,15 +14,11 @@ function login(email, password, cb, er) {
         userServices
             .login(email, password)
             .then((res) => {
-                if (res.data.access_token !== "") {
-                    window.localStorage.setItem("token", res.data.access_token);
-                    setTimeout(() => {
-                        dispatch(success(res.data));
-                        dispatch(employerActions.getAll());
-                        dispatch(jobActions.getAll());
-                    }, 1000);
-                    cb();
-                }
+                window.localStorage.setItem('token', res.data.access_token);
+                dispatch(success(res.data));
+                dispatch(employerActions.getAll());
+                dispatch(jobActions.getAll());
+                cb();
             })
             .catch((err) => {
                 er("Incorrect email or password.");

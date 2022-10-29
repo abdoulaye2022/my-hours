@@ -8,6 +8,8 @@ import {
 import { useDispatch } from "react-redux";
 import { ModalShift } from "../components/ModalShift";
 import { shiftAction } from "../redux/actions/shifts.actions";
+import { jobActions } from "../redux/actions/jobs.actions";
+import { employerActions } from "../redux/actions/employers.actions";
 
 const dataSource = [
     {
@@ -63,9 +65,10 @@ const Home = () => {
     const dispatch = useDispatch();
     const [formShift] = Form.useForm();
 
-    // useEffect(() => {
-    //     dispatch(employerActions.getAll());
-    // }, []);
+    useEffect(() => {
+        // dispatch(employerActions.getAll());
+        // dispatch(jobActions.getAll());
+    }, []);
 
     return (
         <>

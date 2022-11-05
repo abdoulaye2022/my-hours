@@ -22,6 +22,7 @@ Route::group([
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('user-profile', 'AuthController@me');
+    Route::put('users/{id}', 'AuthController@update');
 
     // Employers
     Route::get('/employers', 'EmployerController@index');

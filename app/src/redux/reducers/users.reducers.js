@@ -47,6 +47,23 @@ export const user = (state = initialState, action) => {
         //         loading: false,
         //         error: action.payload
         //     };
+        case userConstants.UPDATE_USER_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case userConstants.UPDATE_USER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                items: [...state.items.map((p, i) => {
+                    if(p.id === action.payload.id) {
+                        p = action.payload;
+                    }
+                    return p;
+                })],
+                item: action.payload
+            }
         case userConstants.LOGOUT_USER:
             return {
                 ...state,

@@ -17,6 +17,11 @@ return new class extends Migration
             $table->id();
             $table->string('firstname', 50)->nullable(false);
             $table->string('lastname', 50)->nullable(false);
+            $table->string('gender', 20)->nullable(true);
+            $table->string('country', 50)->nullable(true);
+            $table->string('province', 50)->nullable(true);
+            $table->string('city', 50)->nullable(true);
+            $table->string('bio', 255)->nullable(true);
             $table->string('email', 50)->nullable(false)->unique();
             $table->integer('new_user')->default(0);
             $table->string('lang_app', 2)->default('fr');

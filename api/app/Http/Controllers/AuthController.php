@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use  App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -35,6 +36,37 @@ class AuthController extends Controller
         }
 
         return $this->respondWithToken($token);
+    }
+
+    public function update ($id, Request $request) 
+    {
+        $id = intval($id);
+        $this->validate($request, [
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'gender' => 'max:20',
+            'country' => 'max:50',
+            'province' => 'max:50',
+            'city' => 'max:50',
+            'bio' => 'max:255'
+        ]);
+
+        $user = User::find($id);
+        $user->firstname = $request->firstname;
+        $user->lastname = $request->lastname;
+        $user->gender = $request->gender;
+        $user->country = $request->country;
+        $user->province = $request->province;
+        $user->city = $request->city;
+        $user->bio = $request->bio;
+
+        if(!empty($request->password)) {
+            $request->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return response()->json($user);
     }
 
      /**

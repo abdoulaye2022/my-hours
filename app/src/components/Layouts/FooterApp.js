@@ -1,10 +1,9 @@
 import React from "react";
-import { Col, Row, Button, Breadcrumb, PageHeader, Table, Card, Space, Avatar } from 'antd';
 
 export const FooterApp = () => {
     return (
         <>
-            <Row style={{
+            <div style={{
                 position: "fixed",
                 left: 0,
                 bottom: 0,
@@ -13,10 +12,9 @@ export const FooterApp = () => {
                 color: "white",
                 textAlign: "center",
             }}>
-                <Col>
-                    <center>Copyrigh @ 2022</center>
-                </Col>
-            </Row>
+                <center>Copyrigh &copy; 2022</center>
+
+            </div>
         </>
     );
 }

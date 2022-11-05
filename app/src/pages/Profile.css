@@ -1,3 +1,8 @@
-.ant-form-item-required {
-    width: 100px;
+.equal  {
+   display: flex;
+   flex-direction: column;
 }
+
+.equal span  {
+    flex-wrap: wrap;
+ }

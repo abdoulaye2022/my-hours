@@ -1,171 +1,96 @@
-import React from "react";
-import { Col, Row, Button, Form, Input, message } from "antd";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { ThemeProvider, Container, Row, Col } from 'react-bootstrap';
+import { Form, Input } from 'semantic-ui-react';
+import "./Login.css";
+import { Formik } from 'formik';
+import { useDispatch } from "react-redux";
 import { userActions } from "../redux/actions/users.actions";
+import { useNavigate } from "react-router-dom";
+
 
 const Login = () => {
-    // const form = Form.useForm();
-    const err = useSelector(state => state.user.error);
+
     const dispatch = useDispatch();
+    const navigator = useNavigate();
 
-    const navigate = useNavigate();
-
-    const redirectToHome = (res) => {
-        return navigate("/home");
-    };
-
-    const error = (msg) => {
-        message.error(msg);
-    };
-
-    const onFinish = (values) => {
-        const { email, password } = values;
-        dispatch(userActions.login(email, password, redirectToHome, error));
-    };
-    const onFinishFailed = (errorInfo) => {
-        console.log("Failed:", errorInfo);
-    };
+    const redirectToHome = () => {
+        return navigator('/');
+    }
 
     return (
-        <Row
-            style={{
-                height: "100vh",
-            }}
+        <ThemeProvider
+            breakpoints={['xxxl', 'xxl', 'xl', 'lg', 'md', 'sm', 'xs', 'xxs']}
+            minBreakpoint="xxs"
         >
-            <Col
-                xs={0}
-                md={12}
-                style={{
-                    backgroundColor: "gray",
-                    height: "100%",
-                }}
-            >
-                Logo
-            </Col>
-            <Col
-                xs={24}
-                md={12}
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexDirection: "column",
-                    height: "100%",
-                    padding:
-                        (window.innerWidth <= 800 &&
-                            window.innerHeight <= 600) > 435
-                            ? 300
-                            : 50,
-                }}
-            >
-                <h2
-                    style={{
-                        height: 32,
-                        backgroundColor: "gray",
-                        width: 235,
-                        textAlign: "center",
-                        borderRadius: "15px 0px",
-                        color: "white",
-                    }}
-                >
-                    Log In
-                </h2>
-                <Form
-                    name="basic"
-                    initialValues={{
-                        remember: true,
-                    }}
-                    onFinish={onFinish}
-                    // onFinishFailed={onFinishFailed}
-                    autoComplete="off"
-                    layout="vertical"
-                >
-                    <Form.Item
-                        label="E-mail"
-                        name="email"
-                        rules={[
-                            {
-                                type: "email",
-                                message: "The input is not valid E-mail!",
-                            },
-                            {
-                                required: true,
-                                message: "Please input your E-mail!",
-                            },
-                        ]}
-                        style={{
-                            width: 235
-                        }}
-                    >
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Password"
-                        name="password"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Please input your password!",
-                            },
-                            {
-                                min: 5,
-                                message:
-                                    "Password must be minimum 5 characters.",
-                            },
-                        ]}
-                        style={{
-                            width: 235
-                        }}
-                    >
-                        <Input.Password />
-                    </Form.Item>
-
-                    {/* <Form.Item name="remember" valuePropName="checked">
-                        <Checkbox>Remember me</Checkbox>
-                    </Form.Item> */}
-
-                    <Form.Item>
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            style={{
-                                width: "100%",
+            <Container fluid>
+                <Row>
+                    <Col xs={0} sm={0} md style={{ backgroundColor: "#647295" }}>Logo</Col>
+                    <Col xs={12} sm={12} md style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", flexDirection: "column" }}>
+                        <Formik
+                            initialValues={{ email: '', password: '' }}
+                            validate={values => {
+                                const errors = {};
+                                if (!values.email) {
+                                    errors.email = 'E-mail est obligatoire';
+                                } else if (
+                                    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+                                ) {
+                                    errors.email = 'E-mail est invalide';
+                                }
+                                
+                                if (!values.password) {
+                                    errors.password = "Mot de passe est obligatoir"
+                                }
+                                return errors;
                             }}
-                        >
-                            connection
-                        </Button>
-                    </Form.Item>
-                </Form>
-                <div
-                    style={{
-                        width:
-                            (window.innerWidth <= 800 &&
-                                window.innerHeight <= 600) > 435
-                                ? 300
-                                : null,
-                    }}
-                >
-                    <p
-                        style={{
-                            float: "left",
-                            marginRight: 30,
-                        }}
-                    >
-                        Create an account.
-                    </p>
-                    <p
-                        style={{
-                            float: "right",
-                        }}
-                    >
-                        I have forget my password.
-                    </p>
-                </div>
-            </Col>
-        </Row>
+                            onSubmit={(values, { setSubmitting }) => {
+                                dispatch(userActions.login(values.email, values.password, redirectToHome));
+                            }}
+                        >{({
+                            values,
+                            errors,
+                            touched,
+                            handleChange,
+                            handleBlur,
+                            handleSubmit,
+                            isSubmitting,
+                            /* and other goodies */
+                        }) => (
+                            <Form id="login" onSubmit={handleSubmit}>
+                                <Form.Field required>
+                                    <label style={{ fontWeight: "normal" }}>E-mail</label>
+                                    <Input
+                                        type="email"
+                                        name="email"
+                                        placeholder='Entrer votre adress courriel'
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        value={values.email}
+                                        style={{ width: 300 }} />
+                                    <span style={{ color: "#9F496E", display: "block" }}>{errors.email && touched.email && errors.email}</span>
+                                </Form.Field>
+                                <Form.Field required>
+                                    <label style={{ fontWeight: "normal" }}>Mot de passe</label>
+                                    <Input
+                                        type="password"
+                                        name="password"
+                                        placeholder='Entrer votre mot de passe'
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        value={values.password}
+                                        style={{ width: 300 }} />
+                                    <span style={{ color: "#9F496E", display: "block" }}>{errors.password && touched.password && errors.password}</span>
+                                </Form.Field>
+                                <Form.Button>
+                                    Se connecter
+                                </Form.Button>
+                            </Form>)}
+                        </Formik>
+                    </Col>
+                </Row>
+            </Container>
+        </ThemeProvider>
     );
-};
+}
 
 export default Login;

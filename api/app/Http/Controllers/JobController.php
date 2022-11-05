@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use  App\Models\Job;
+use  App\Models\Employer;
 
 class JobController extends Controller
 {
@@ -22,7 +23,23 @@ class JobController extends Controller
     {
         $jobs = Job::all();
 
-        return response()->json($jobs);
+        $tab = [];
+        $i = 0;
+
+        while ($i < count($jobs)) {
+            $employer = Employer::find($jobs[$i]->employer_id);
+
+            $tab [] = [
+                "id" => $jobs[$i]->id,
+                "name_job" => $jobs[$i]->name_job,
+                "employer_id" => $jobs[$i]->employer_id,
+                "name_emp" => $employer->name_emp
+            ];
+
+            $i++;
+        }
+
+        return response()->json($tab);
     }
 
     public function create (Request $request)

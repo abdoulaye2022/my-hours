@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('shifts', function (Blueprint $table) {
             $table->id();
             $table->float('hours_shift', 2, 2);
-            $table->date('date_shift');
+            $table->dateTime('date_shift');
             $table->string('location');
             $table->unsignedBigInteger('job_id');
             $table->unsignedBigInteger('employer_id');

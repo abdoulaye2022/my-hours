@@ -33,4 +33,8 @@ Route::group([
     Route::post('/jobs', 'JobController@create');
     Route::put('/jobs/{id}', 'JobController@update');
 
+    // Shift
+    Route::get("/shifts", "ShiftController@index");
+    Route::post("/shifts", "ShiftController@create");
+
 });

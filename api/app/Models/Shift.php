@@ -10,4 +10,8 @@ class Shift extends Model
     protected $fillable = [
         "hours_shift", "date_shift", "location", "job_id", "employer_id"
     ];
+
+    protected $casts = [
+        'date_shift' => 'datetime'
+    ];
 }

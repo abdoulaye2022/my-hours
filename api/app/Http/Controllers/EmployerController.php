@@ -28,10 +28,11 @@ class EmployerController extends Controller
     public function create (Request $request)
     {
         $this->validate($request, [
-            'name_emp' => 'required'
+            'name_emp' => 'required',
+            'statut' => 'required'
         ]);
 
-        $employers = Employer::create(['name_emp' => $request->name_emp, 'statut' => 1]);
+        $employers = Employer::create(['name_emp' => $request->name_emp, 'statut' => $request->statut]);
 
         return response()->json($employers);
     }

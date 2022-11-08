@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./Profile.css";
 import { Container, Row, Col } from 'react-bootstrap';
 import { Form, Input, TextArea, Button, Select } from 'semantic-ui-react';
-import { Formik } from 'formik';
+import { Formik, useFormik } from 'formik';
 import { useDispatch } from "react-redux";
 import { Country, State, City } from 'country-state-city';
 import { useSelector } from "react-redux";
-import { useFormik } from 'formik';
 import { userActions } from "../redux/actions/users.actions";
 
 const genderOptions = [
@@ -26,7 +25,6 @@ const Profile = () => {
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
-    const [user, setUser] = useState({});
     const auth = useSelector(state => state.user.user);
 
     const dispatch = useDispatch();
@@ -76,13 +74,20 @@ const Profile = () => {
             return { key: i, text: p.name, value: p.isoCode };
         })];
         setCountries(c);
-
-        if(formik.values.country) {
-            const st = [...State.getStatesOfCountry(formik.values.country).map((p, i) => {
+        
+        if(auth.country) {
+            setCountry(auth.country);
+            const st = [...State.getStatesOfCountry(auth.country).map((p, i) => {
                 return { key: i, text: p.name, value: p.isoCode };
             })];
-            console.log(st)
             setStates(st);
+        }
+
+        if(auth.province) {
+            const c = [...City.getCitiesOfState(auth.country, auth.province).map((p, i) => {
+                return { key: i, text: p.name, value: p.name };
+            })];
+            setCities(c);
         }
 
         formik.setFieldValue("firstname", auth.firstname);
@@ -102,9 +107,7 @@ const Profile = () => {
                 <Row>
                     <Col xs={0} md={2} lg={2}></Col>
                     <Col xs={12} md={8} lg={8}>
-                        <Formik
-
-                        >
+                        <Formik>
                             <Form onSubmit={formik.handleSubmit}>
                                 <Form.Group widths='equal'>
                                     <Form.Field>
@@ -155,7 +158,8 @@ const Profile = () => {
                                             id="country"
                                             name="country"
                                             onChange={(e, selected) => {
-                                                setCountry(selected.value)
+                                                setCountry(selected.value);
+                                                setCities([]);
                                                 const s = [...State.getStatesOfCountry(selected.value).map((p, i) => {
                                                     return { key: i, text: p.name, value: p.isoCode };
                                                 })];

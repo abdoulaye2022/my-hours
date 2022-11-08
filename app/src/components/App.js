@@ -6,6 +6,7 @@ import Login from '../pages/Login';
 import Accueil from '../pages/Accueil';
 import Profile from '../pages/Profile';
 import MesHoraires from "../pages/MesHoraires";
+import Configuration from '../pages/Configuration';
 
 // App Css code
 import './App.css';
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/" element={auth ? <Navigate to="/accueil" replace /> : <Login />} />
         <Route path="/accueil" element={<PrivateRoute><Layout><Accueil /></Layout></PrivateRoute>} />
         <Route path='/mes-horaires' element={<PrivateRoute><Layout><MesHoraires /></Layout></PrivateRoute>} />
+        <Route path='/configuration' element={<PrivateRoute><Layout><Configuration /></Layout></PrivateRoute>} />
         <Route path='/profil' element={<PrivateRoute><Layout><Profile /></Layout></PrivateRoute>} />
       </Routes>
     </>

@@ -57,13 +57,36 @@ export const user = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 items: [...state.items.map((p, i) => {
-                    if(p.id === action.payload.id) {
+                    if (p.id === action.payload.id) {
                         p = action.payload;
                     }
                     return p;
                 })],
                 item: action.payload
-            }
+            };
+        case userConstants.UPDATE_USER_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            };
+        case userConstants.UPDATE_AUTH_REQUEST:
+            return {
+                ...state,
+                loading: true
+            };
+        case userConstants.UPDATE_AUTH_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                user: action.payload
+            };
+        case userConstants.UPDATE_AUTH_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            };
         case userConstants.LOGOUT_USER:
             return {
                 ...state,

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { ThemeProvider, Container, Row, Col } from 'react-bootstrap';
-import { Form, Input } from 'semantic-ui-react';
+import { Form, Input, Dimmer, Loader } from 'semantic-ui-react';
 import "./Login.css";
 import { Formik } from 'formik';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../redux/actions/users.actions";
 import { useNavigate } from "react-router-dom";
 
@@ -12,6 +12,7 @@ const Login = () => {
 
     const dispatch = useDispatch();
     const navigator = useNavigate();
+    const loading = useSelector(state => state.user.loading);
 
     const redirectToHome = () => {
         return navigator('/');
@@ -37,7 +38,7 @@ const Login = () => {
                                 ) {
                                     errors.email = 'E-mail est invalide';
                                 }
-                                
+
                                 if (!values.password) {
                                     errors.password = "Mot de passe est obligatoir"
                                 }

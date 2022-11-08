@@ -46,6 +46,7 @@ export const HeaderApp = () => {
                         <Nav>
                             <Nav.Link><Link to="/accueil" class="react">Accueil</Link></Nav.Link>
                             <Nav.Link><Link to="/mes-horaires" class="react">Mes horraires</Link></Nav.Link>
+                            <Nav.Link><Link to="/configuration" class="react">Configuration</Link></Nav.Link>
                             <Nav.Link>
                                 <Link to="/profil" class="react">Profil</Link>
                             </Nav.Link>

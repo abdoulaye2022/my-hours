@@ -1,4 +1,3 @@
-import { ModalEmployer } from "../../components/ModalEmployer";
 import { employerConstants } from "../constants/employers.constants";
 import { employerServices } from "../services/employers.services";
 
@@ -45,10 +44,10 @@ function modalEmployer() {
     }
 }
 
-function add(name) {
+function add(name_emp, statut) {
     return function (dispatch) {
         dispatch(request());
-        employerServices.add(name)
+        employerServices.add(name_emp, statut)
             .then(res => {
                 dispatch(success(res.data));
                 dispatch(modalEmployer());

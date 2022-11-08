@@ -17,8 +17,8 @@ async function getAll() {
     });
 }
 
-async function add(name) {
-    return await axios.post(`/employers`, { name_emp: name }, {
+async function add(name_emp, statut) {
+    return await axios.post(`/employers`, { name_emp: name_emp, statut, statut }, {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",

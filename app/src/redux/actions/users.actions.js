@@ -22,18 +22,18 @@ function update(id, firstname, lastname, gender, country, province, city, bio, p
     }
     function request() {
         return {
-            type: userConstants.UPDATE_USER_REQUEST
+            type: userConstants.UPDATE_AUTH_REQUEST
         }
     };
     function success(user) {
         return {
-            type: userConstants.UPDATE_USER_SUCCESS,
+            type: userConstants.UPDATE_AUTH_SUCCESS,
             payload: user
         }
     };
     function failure(error) {
         return {
-            type: userConstants.UPDATE_USER_FAILURE,
+            type: userConstants.UPDATE_AUTH_FAILURE,
             payload: error
         }
     }

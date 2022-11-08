@@ -1,8 +1,8 @@
 import { shiftConstants } from "../constants/shifts.constants";
 import { shiftServices } from "../services/shifts.services";
 
-export const shiftAction = {
-    modalShift,
+export const shiftActions = {
+    shiftModal,
     add
 };
 
@@ -36,7 +36,7 @@ function add(job_id, hours, date, employer_id, location) {
     }
 }
 
-function modalShift() {
+function shiftModal() {
     return {
         type: shiftConstants.MODAL_SHIFT
     }

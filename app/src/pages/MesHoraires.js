@@ -1,15 +1,24 @@
 import React, { useState } from "react";
 import "./MesHoraires.css";
-import { Container, Row, Col } from 'react-bootstrap';
-import { Icon, Input, Menu, Table, Button, Dropdown, Popup } from 'semantic-ui-react';
+import { Container, Row, Col } from "react-bootstrap";
+import {
+    Icon,
+    Input,
+    Menu,
+    Table,
+    Button,
+    Dropdown,
+    Popup,
+} from "semantic-ui-react";
 import { ShiftModal } from "../components/Modals/ShiftModal";
 import { shiftActions } from "../redux/actions/shifts.actions";
 import { useDispatch, useSelector } from "react-redux";
 
 const MesHoraires = () => {
     const [shift, setShift] = useState({});
-    const shifts = useSelector(state => state.shift.items);
+    const shifts = useSelector((state) => state.shift.items);
     const [isOpenAcc, setIsOpenAcc] = useState(false);
+    const [isOpenPla, setIsOpenPla] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -17,20 +26,43 @@ const MesHoraires = () => {
         <>
             <Container fluid style={{ marginTop: 25 }}>
                 <Row>
-                    <Col style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
+                    <Col
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: 10,
+                        }}
+                    >
                         <div>
-                            <Button attached='left' primary onClick={() => dispatch(shiftActions.shiftModal())}><Icon name='add' />Ajouter</Button>
-                            <ShiftModal setShift={setShift} shift={shift} setIsOpenAcc={setIsOpenAcc} />
+                            <Button
+                                attached="left"
+                                primary
+                                onClick={() =>
+                                    dispatch(shiftActions.shiftModal())
+                                }
+                            >
+                                <Icon name="add" />
+                                Ajouter
+                            </Button>
+                            <ShiftModal
+                                setShift={setShift}
+                                shift={shift}
+                                setIsOpenAcc={setIsOpenAcc}
+                                setIsOpenPla={setIsOpenPla}
+                            />
                             <Dropdown
-                                text='Filtrer'
-                                icon='filter'
+                                text="Filtrer"
+                                icon="filter"
                                 floating
                                 labeled
                                 button
-                                className='icon'
+                                className="icon"
                             >
                                 <Dropdown.Menu>
-                                    <Dropdown.Header icon='tags' content='Filter by tag' />
+                                    <Dropdown.Header
+                                        icon="tags"
+                                        content="Filter by tag"
+                                    />
                                     <Dropdown.Item>Important</Dropdown.Item>
                                     <Dropdown.Item>Announcement</Dropdown.Item>
                                     <Dropdown.Item>Discussion</Dropdown.Item>
@@ -38,7 +70,11 @@ const MesHoraires = () => {
                             </Dropdown>
                             {/* <Button attached='right'>Filtrer</Button> */}
                         </div>
-                        <Input icon='search' placeholder='Rechercher...' style={{ width: 120 }} />
+                        <Input
+                            icon="search"
+                            placeholder="Rechercher..."
+                            style={{ width: 120 }}
+                        />
                     </Col>
                 </Row>
                 <Row>
@@ -47,25 +83,40 @@ const MesHoraires = () => {
                             <Table.Header>
                                 <Table.Row>
                                     <Table.HeaderCell>Travail</Table.HeaderCell>
-                                    <Table.HeaderCell>Date debut</Table.HeaderCell>
-                                    <Table.HeaderCell>Date fin</Table.HeaderCell>
+                                    <Table.HeaderCell>
+                                        Date debut
+                                    </Table.HeaderCell>
+                                    <Table.HeaderCell>
+                                        Date fin
+                                    </Table.HeaderCell>
                                     <Table.HeaderCell>Lieu</Table.HeaderCell>
                                     <Table.HeaderCell>Status</Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
 
                             <Table.Body>
-                                {shifts.map((p, i) => (
+                                {shifts.map((p, i) =>
                                     p.statut_shift === 1 ? (
                                         <Popup
                                             trigger={
-                                                <Table.Row positive className="rowedit">
-                                                    <Table.Cell>{p.name_job}</Table.Cell>
-                                                    <Table.Cell>{p.start_date}</Table.Cell>
-                                                    <Table.Cell>{p.end_date}</Table.Cell>
-                                                    <Table.Cell>{p.location}</Table.Cell>
+                                                <Table.Row
+                                                    positive
+                                                    className="rowedit"
+                                                >
                                                     <Table.Cell>
-                                                        <Icon name='checkmark' />
+                                                        {p.name_job}
+                                                    </Table.Cell>
+                                                    <Table.Cell>
+                                                        {p.start_date}
+                                                    </Table.Cell>
+                                                    <Table.Cell>
+                                                        {p.end_date}
+                                                    </Table.Cell>
+                                                    <Table.Cell>
+                                                        {p.location}
+                                                    </Table.Cell>
+                                                    <Table.Cell>
+                                                        <Icon name="checkmark" />
                                                     </Table.Cell>
                                                 </Table.Row>
                                             }
@@ -75,70 +126,123 @@ const MesHoraires = () => {
                                                         style={{ backgroundColor: "#9f3a38", color: "white" }}>
                                                         <Icon name="cancel" /> Inactif
                                                     </Button> */}
-                                                    <Button color='green' onClick={() => {
-                                                        setShift(p);
-                                                        dispatch(shiftActions.shiftModal());
-                                                    }}><Icon name="edit" /> Modifier</Button>
+                                                    <Button
+                                                        color="green"
+                                                        onClick={() => {
+                                                            setShift(p);
+                                                            dispatch(
+                                                                shiftActions.shiftModal()
+                                                            );
+                                                        }}
+                                                    >
+                                                        <Icon name="edit" />{" "}
+                                                        Modifier
+                                                    </Button>
                                                 </div>
                                             }
-                                            open={shift.id === p.id ? isOpenAcc : false}
+                                            open={
+                                                shift.id === p.id
+                                                    ? isOpenAcc
+                                                    : false
+                                            }
                                             onOpen={(e) => {
                                                 setShift(p);
-                                                setIsOpenAcc(true); 
+                                                setIsOpenAcc(true);
                                             }}
                                             onClose={() => {
                                                 setShift({});
                                                 setIsOpenAcc(false);
                                             }}
-                                            on='click'
-                                            position='top center'
+                                            on="click"
+                                            position="top center"
                                         />
                                     ) : (
                                         <Popup
                                             trigger={
-                                                <Table.Row warning className="rowedit">
-                                                    <Table.Cell>{p.name_job}</Table.Cell>
-                                                    <Table.Cell>{p.start_date}</Table.Cell>
-                                                    <Table.Cell>{p.end_date}</Table.Cell>
-                                                    <Table.Cell>{p.location}</Table.Cell>
+                                                <Table.Row
+                                                    warning
+                                                    className="rowedit"
+                                                >
                                                     <Table.Cell>
-                                                        <Icon name='warning' />
+                                                        {p.name_job}
+                                                    </Table.Cell>
+                                                    <Table.Cell>
+                                                        {p.start_date}
+                                                    </Table.Cell>
+                                                    <Table.Cell>
+                                                        {p.end_date}
+                                                    </Table.Cell>
+                                                    <Table.Cell>
+                                                        {p.location}
+                                                    </Table.Cell>
+                                                    <Table.Cell>
+                                                        <Icon name="warning" />
                                                     </Table.Cell>
                                                 </Table.Row>
                                             }
                                             content={
                                                 <div style={{ width: 255 }}>
                                                     <Button
-                                                        style={{ backgroundColor: "#c9ba9b", color: "white" }}>
-                                                        <Icon name="checkmark" /> Accomplir
+                                                        style={{
+                                                            backgroundColor:
+                                                                "#c9ba9b",
+                                                            color: "white",
+                                                        }}
+                                                        onClick={() => {
+                                                            dispatch(shiftActions.complete(p.id, 1));
+                                                            setIsOpenPla(false);
+                                                        }}
+                                                    >
+                                                        <Icon name="checkmark" />{" "}
+                                                        Accomplir
                                                     </Button>
-                                                    <Button color='green' onClick={() => {
-                                                        //setEmployer(p);
-                                                        //dispatch(employerActions.modalEmployer());
-                                                    }}><Icon name="edit" /> Modifier</Button>
+                                                    <Button
+                                                        color="green"
+                                                        onClick={() => {
+                                                            setShift(p);
+                                                            dispatch(
+                                                                shiftActions.shiftModal()
+                                                            );
+                                                        }}
+                                                    >
+                                                        <Icon name="edit" />{" "}
+                                                        Modifier
+                                                    </Button>
                                                 </div>
                                             }
-                                            on='click'
-                                            position='top center'
+                                            open={
+                                                shift.id === p.id
+                                                    ? isOpenPla
+                                                    : false
+                                            }
+                                            onOpen={(e) => {
+                                                setShift(p);
+                                                setIsOpenPla(true);
+                                            }}
+                                            onClose={() => {
+                                                setShift({});
+                                                setIsOpenPla(false);
+                                            }}
+                                            on="click"
+                                            position="top center"
                                         />
                                     )
-
-                                ))}
+                                )}
                             </Table.Body>
 
                             <Table.Footer>
                                 <Table.Row>
-                                    <Table.HeaderCell colSpan='3'>
-                                        <Menu floated='right' pagination>
-                                            <Menu.Item as='a' icon>
-                                                <Icon name='chevron left' />
+                                    <Table.HeaderCell colSpan="3">
+                                        <Menu floated="right" pagination>
+                                            <Menu.Item as="a" icon>
+                                                <Icon name="chevron left" />
                                             </Menu.Item>
-                                            <Menu.Item as='a'>1</Menu.Item>
-                                            <Menu.Item as='a'>2</Menu.Item>
-                                            <Menu.Item as='a'>3</Menu.Item>
-                                            <Menu.Item as='a'>4</Menu.Item>
-                                            <Menu.Item as='a' icon>
-                                                <Icon name='chevron right' />
+                                            <Menu.Item as="a">1</Menu.Item>
+                                            <Menu.Item as="a">2</Menu.Item>
+                                            <Menu.Item as="a">3</Menu.Item>
+                                            <Menu.Item as="a">4</Menu.Item>
+                                            <Menu.Item as="a" icon>
+                                                <Icon name="chevron right" />
                                             </Menu.Item>
                                         </Menu>
                                     </Table.HeaderCell>
@@ -150,6 +254,6 @@ const MesHoraires = () => {
             </Container>
         </>
     );
-}
+};
 
 export default MesHoraires;

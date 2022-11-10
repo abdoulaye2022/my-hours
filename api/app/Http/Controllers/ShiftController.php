@@ -87,6 +87,64 @@ class ShiftController extends Controller
 
     public function update ($id, Request $request)
     {
-        dd($request->all());
+        $id = intval($id);
+        $this->validate($request, [
+            'job_id' => 'required|numeric',
+            'user_id' => 'required|numeric',
+            'statut_shift' => 'required|numeric',
+            'location' => 'max:255',
+            'start_date' =>  'required|date_format:"Y-m-d H:i"',
+            'end_date' =>  'required|date_format:"Y-m-d H:i"'
+        ]);
+
+        $shift = Shift::find($id);
+        $shift->job_id = $request->job_id;
+        $shift->statut_shift = $request->statut_shift;
+        $shift->location = $request->location;
+        $shift->start_date = $request->start_date;
+        $shift->end_date = $request->end_date;
+        $shift->save();
+
+        $tab = [
+            "id" => $shift->id,
+            "start_date" => $shift->start_date,
+            "end_date" => $shift->end_date,
+            "location" => $shift->location,
+            "statut_shift" => $shift->statut_shift,
+            "user_id" => $this->getUser($shift->user_id)->id,
+            "first_name" => $this->getUser($shift->user_id)->firstname,
+            "last_name" => $this->getUser($shift->user_id)->lastname,
+            "job_id" => $this->getJob($shift->job_id)->id,
+            "name_job" => $this->getJob($shift->job_id)->name_job
+        ];
+
+        return response()->json($tab);
+    }
+
+    public function complete ($id, Request $request) 
+    {
+        $id = intval($id);
+        $this->validate($request, [
+            'statut_shift' => 'required|numeric'
+        ]);
+
+        $shift = Shift::find($id);
+        $shift->statut_shift = $request->statut_shift;
+        $shift->save();
+
+        $tab = [
+            "id" => $shift->id,
+            "start_date" => $shift->start_date,
+            "end_date" => $shift->end_date,
+            "location" => $shift->location,
+            "statut_shift" => $shift->statut_shift,
+            "user_id" => $this->getUser($shift->user_id)->id,
+            "first_name" => $this->getUser($shift->user_id)->firstname,
+            "last_name" => $this->getUser($shift->user_id)->lastname,
+            "job_id" => $this->getJob($shift->job_id)->id,
+            "name_job" => $this->getJob($shift->job_id)->name_job
+        ];
+
+        return response()->json($tab);
     }
 }

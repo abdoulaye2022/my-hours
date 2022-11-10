@@ -5,9 +5,3 @@
 .rowedit:hover {
     cursor: pointer;
 }
-
-.pop {
-    width: 250px;
-    display: flex;
-    flex-direction: row;
-}

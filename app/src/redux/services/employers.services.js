@@ -27,8 +27,8 @@ async function add(name_emp, statut) {
     })
 }
 
-async function update(id, name) {
-    return await axios.put(`/employers/${id}`, { name_emp: name }, {
+async function update(id, name_emp, statut) {
+    return await axios.put(`/employers/${id}`, { name_emp: name_emp, statut: statut }, {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",

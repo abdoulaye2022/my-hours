@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import "./MesHoraires.css";
 import { Container, Row, Col } from 'react-bootstrap';
-import { Icon, Input, Menu, Table, Button, Dropdown } from 'semantic-ui-react';
+import { Icon, Input, Menu, Table, Button, Dropdown, Popup } from 'semantic-ui-react';
 import { ShiftModal } from "../components/Modals/ShiftModal";
 import { shiftActions } from "../redux/actions/shifts.actions";
 import { useDispatch } from "react-redux";
 
 const MesHoraires = () => {
+    const [shift, setShift] = useState({});
 
     const dispatch = useDispatch();
 
@@ -17,7 +18,7 @@ const MesHoraires = () => {
                     <Col style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
                         <div>
                             <Button attached='left' primary onClick={() => dispatch(shiftActions.shiftModal())}><Icon name='add' />Ajouter</Button>
-                             <ShiftModal />
+                            <ShiftModal setShift={setShift} shift={shift} />
                             <Dropdown
                                 text='Filtrer'
                                 icon='filter'
@@ -52,66 +53,34 @@ const MesHoraires = () => {
                             </Table.Header>
 
                             <Table.Body>
-                                <Table.Row positive>
-                                    <Table.Cell>Securite</Table.Cell>
-                                    <Table.Cell>8 Heures</Table.Cell>
-                                    <Table.Cell>23/01/2023</Table.Cell>
-                                    <Table.Cell>45 rue gauvin</Table.Cell>
-                                    <Table.Cell>
-                                        <Icon name='checkmark' />
-                                        Approved
-                                    </Table.Cell>
-                                </Table.Row>
-                                <Table.Row negative>
-                                    <Table.Cell>Securite</Table.Cell>
-                                    <Table.Cell>8 Heures</Table.Cell>
-                                    <Table.Cell>23/01/2023</Table.Cell>
-                                    <Table.Cell>45 rue gauvin</Table.Cell>
-                                    <Table.Cell>
-                                        <Icon name='cancel' />
-                                        Approved
-                                    </Table.Cell>
-                                </Table.Row>
-                                <Table.Row warning>
-                                    <Table.Cell>Securite</Table.Cell>
-                                    <Table.Cell>8 Heures</Table.Cell>
-                                    <Table.Cell>23/01/2023</Table.Cell>
-                                    <Table.Cell>45 rue gauvin</Table.Cell>
-                                    <Table.Cell>
-                                        <Icon name='warning' />
-                                        Approved
-                                    </Table.Cell>
-                                </Table.Row>
-                                <Table.Row>
-                                    <Table.Cell>Securite</Table.Cell>
-                                    <Table.Cell>8 Heures</Table.Cell>
-                                    <Table.Cell>23/01/2023</Table.Cell>
-                                    <Table.Cell>45 rue gauvin</Table.Cell>
-                                    <Table.Cell>
-                                        <Icon name='checkmark' />
-                                        Approved
-                                    </Table.Cell>
-                                </Table.Row>
-                                <Table.Row>
-                                    <Table.Cell>Securite</Table.Cell>
-                                    <Table.Cell>8 Heures</Table.Cell>
-                                    <Table.Cell>23/01/2023</Table.Cell>
-                                    <Table.Cell>45 rue gauvin</Table.Cell>
-                                    <Table.Cell>
-                                        <Icon name='checkmark' />
-                                        Approved
-                                    </Table.Cell>
-                                </Table.Row>
-                                <Table.Row>
-                                    <Table.Cell>Securite</Table.Cell>
-                                    <Table.Cell>8 Heures</Table.Cell>
-                                    <Table.Cell>23/01/2023</Table.Cell>
-                                    <Table.Cell>45 rue gauvin</Table.Cell>
-                                    <Table.Cell>
-                                        <Icon name='checkmark' />
-                                        Approved
-                                    </Table.Cell>
-                                </Table.Row>
+                                <Popup
+                                    trigger={
+                                        <Table.Row positive className="rowedit">
+                                            <Table.Cell>Securite</Table.Cell>
+                                            <Table.Cell>8 Heures</Table.Cell>
+                                            <Table.Cell>23/01/2023</Table.Cell>
+                                            <Table.Cell>45 rue gauvin</Table.Cell>
+                                            <Table.Cell>
+                                                <Icon name='checkmark' />
+                                                Actif
+                                            </Table.Cell>
+                                        </Table.Row>
+                                    }
+                                    content={
+                                        <div style={{ width: 231 }}>
+                                            <Button
+                                                style={{ backgroundColor: "#9f3a38", color: "white" }}>
+                                                <Icon name="cancel" /> Inactif
+                                            </Button>
+                                            <Button color='green' onClick={() => {
+                                                //setEmployer(p);
+                                                //dispatch(employerActions.modalEmployer());
+                                            }}><Icon name="edit" /> Modifier</Button>
+                                        </div>
+                                    }
+                                    on='click'
+                                    position='top center'
+                                />
                             </Table.Body>
 
                             <Table.Footer>

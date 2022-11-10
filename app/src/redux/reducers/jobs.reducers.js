@@ -71,6 +71,17 @@ export const job = (state = initialState, action) => {
                 loading: false,
                 error: action.payload
             };
+        case jobConstants.UPDATE_EMPLOYER_STATE:
+            return {
+                ...state,
+                items: [...state.items.map((p, i) => {
+                    if(p.employer_id === action.payload.id) {
+                        p.name_emp = action.payload.name_emp;
+                        p.statut = action.payload.statut;
+                    }
+                    return p;
+                })]
+            }
         default:
 return state;
     }

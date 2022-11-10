@@ -1,28 +1,219 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Modal } from 'react-bootstrap';
+import { Formik, useFormik } from 'formik';
+import { Button, Input, Form, Select } from 'semantic-ui-react';
 import { shiftActions } from "../../redux/actions/shifts.actions";
-import { Modal, Button } from 'react-bootstrap';
+import DatePicker from "react-datepicker";
+import moment from "moment/moment";
+import "react-datepicker/dist/react-datepicker.css";
+import { registerLocale, setDefaultLocale } from "react-datepicker";
+import ca from 'date-fns/locale/fr-CA';
+registerLocale('ca', ca)
 
-export const ShiftModal = () => {
+const statutOptions = [
+    { key: '0', text: 'Accomplis', value: 1 },
+    { key: '1', text: 'Planifier', value: 0 }
+];
+
+export const ShiftModal = ({ shift, setShift }) => {
     const modal = useSelector(state => state.shift.modal);
-
+    const jobs = useSelector(state => state.job.items);
+    const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState();
+    const jobsOptions = [...jobs.map((p, i) => (
+        { key: i, text: p.name_job, value: p.id }
+    ))]
+    const auth = useSelector(state => state.user.user);
     const dispatch = useDispatch();
+
+    const filterPassedTime = (start) => {
+        const currentDate = new Date(startDate);
+        const selectedDate = new Date(start);
+
+        return currentDate.getTime() < selectedDate.getTime();
+    };
+
+    const formikshift = useFormik({
+        initialValues: { job_id: '', start_date: '', end_date: '', location: '', statut_shift: '' },
+        validate: values => {
+            const errors = {};
+            if (!values.job_id) {
+                errors.job_id = 'Trvail est obligatoire.';
+            }
+
+            if (values.start_date === "" && Object.keys(values.start_date).length === 0) {
+                errors.start_date = "Date de debut obligatoire."
+            }
+
+            if (!(values.start_date instanceof Date)) {
+                errors.start_date = "Date de debut est invalide."
+            }
+
+            if (values.end_date === "" && Object.keys(values.end_date).length === 0) {
+                errors.start_date = "Date de fin obligatoire."
+            }
+
+            if (!(values.end_date instanceof Date)) {
+                errors.end_date = "Date de fin est invalide."
+            }
+
+            if (values.statut_shift !== 0 && values.statut_shift !== 1) {
+                errors.statut_shift = 'Trvail est obligatoire.';
+            }
+
+            return errors;
+        },
+        onSubmit: (values, { resetForm }) => {
+            let start_date = moment(values.start_date).format('YYYY-MM-DD HH:mm');
+            let end_date = moment(values.end_date).format('YYYY-MM-DD HH:mm');
+
+            if (Object.keys(shift).length === 0) {
+                dispatch(shiftActions.add(values.job_id, start_date, end_date, values.statut_shift, values.location, auth.id));
+                dispatch(shiftActions.shiftModal())
+            }
+            // else {
+            //     dispatch(employerActions.update(employer.id, values.name_emp, values.statut));
+            //     resetForm();
+            // }
+        }
+    });
 
     return (
         <>
-            <Modal show={modal} onHide={() => dispatch(shiftActions.shiftModal())} centered>
+            <Modal
+                show={modal}
+                centered
+                onHide={() => {
+                    formikshift.resetForm();
+                    formikshift.setErrors({});
+                    setShift({});
+                    setStartDate();
+                    setEndDate();
+                    if(modal)
+                        dispatch(shiftActions.shiftModal())
+                }}
+                onExited={() => {
+                    formikshift.resetForm();
+                    formikshift.setErrors({});
+                    setShift({});
+                    setStartDate();
+                    setEndDate();
+                }}
+                onShow={() => {
+                    if (Object.keys(shift).length !== 0) {
+                        formikshift.setFieldValue('job_id', shift.job_id);
+                        formikshift.setFieldValue('hours_shift', shift.hours_shift);
+                        formikshift.setFieldValue('date_shift', shift.date_shift);
+                        formikshift.setFieldValue('statut_shift', shift.statut_shift);
+                        formikshift.setFieldValue('location', shift.location);
+                    }
+                }}
+            >
                 <Modal.Header closeButton>
                     <Modal.Title>Ajouter un shift</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => dispatch(shiftActions.shiftModal())}>
-                        Close
-                    </Button>
-                    <Button variant="primary">
-                        Save Changes
-                    </Button>
-                </Modal.Footer>
+                <Formik>
+                    <Form onSubmit={formikshift.handleSubmit}>
+                        <Modal.Body>
+                            <Form.Field>
+                                <label style={{ fontWeight: "normal" }}>Travail</label>
+                                <Select
+                                    id="job_id"
+                                    name="job_id"
+                                    onChange={(e, selected) => {
+                                        formikshift.setFieldValue("job_id", selected.value);
+                                    }}
+                                    options={jobsOptions}
+                                    placeholder="Selectionner le travail..."
+                                    value={formikshift.values.job_id}
+                                    search />
+                            </Form.Field>
+                            <Form.Field>
+                                <label style={{ fontWeight: "normal" }}>Date debut</label>
+                                <DatePicker
+                                    id="start_date"
+                                    name="start_date"
+                                    showTimeSelect
+                                    dateFormat="dd/MM/yyyy p"
+                                    locale="ca"
+                                    timeIntervals={15}
+                                    selected={startDate}
+                                    onChange={(date) => {
+                                        setStartDate(date);
+                                        formikshift.setFieldValue('start_date', date)
+                                    }}
+                                    selectsStart
+                                    startDate={startDate}
+                                    endDate={endDate}
+                                    onBlur={formikshift.handleBlur}
+                                />
+                                <span style={{ color: "#9F496E", display: "wrap" }}>{formikshift.errors.start_date && formikshift.touched.start_date && formikshift.errors.start_date}</span>
+                            </Form.Field>
+                            <Form.Field>
+                                <label style={{ fontWeight: "normal" }}>Date de fin</label>
+                                <DatePicker
+                                    id="end_date"
+                                    locale="ca"
+                                    selected={endDate}
+                                    selectsEnd
+                                    startDate={startDate}
+                                    endDate={endDate}
+                                    minDate={startDate}
+                                    name="end_date"
+                                    timeIntervals={15}
+                                    showTimeSelect
+                                    dateFormat="dd/MM/yyyy p"
+                                    filterTime={filterPassedTime}
+                                    onChange={(date) => {
+                                        setEndDate(date);
+                                        formikshift.setFieldValue('end_date', date)
+                                    }}
+                                    onBlur={formikshift.handleBlur}
+                                // placeholder="Entrer la date du travail..."
+                                // value={formikshift.values.end_date}
+                                />
+                                <span style={{ color: "#9F496E", display: "wrap" }}>{formikshift.errors.end_date && formikshift.touched.end_date && formikshift.errors.end_date}</span>
+                            </Form.Field>
+                            <Form.Field>
+                                <label style={{ fontWeight: "normal" }}>Statut</label>
+                                <Select
+                                    id="statut_shift"
+                                    name="statut_shift"
+                                    onChange={(e, selected) => {
+                                        formikshift.setFieldValue("statut_shift", selected.value);
+                                    }}
+                                    onBlur={formikshift.handleBlur}
+                                    options={statutOptions}
+                                    placeholder="Selectionner le statut du travail..."
+                                    value={formikshift.values.statut_shift}
+                                    //defaultValue={1}
+                                    search />
+                                <span style={{ color: "#9F496E", display: "wrap" }}>{formikshift.errors.statut_shift && formikshift.touched.statut_shift && formikshift.errors.statut_shift}</span>
+                            </Form.Field>
+                            <Form.Field>
+                                <label style={{ fontWeight: "normal" }}>Location</label>
+                                <Input
+                                    id="location"
+                                    type="text"
+                                    name="location"
+                                    onChange={formikshift.handleChange}
+                                    onBlur={formikshift.handleBlur}
+                                    placeholder="Entrer l'adress du lieu de travail..."
+                                    value={formikshift.values.location} />
+                                <span style={{ color: "#9F496E", display: "wrap" }}>{formikshift.errors.location && formikshift.touched.location && formikshift.errors.location}</span>
+                            </Form.Field>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button type="button" variant="secondary" onClick={() => dispatch(shiftActions.shiftModal())}>
+                                Annuler
+                            </Button>
+                            <Button primary type="submit">
+                                Enregistrer
+                            </Button>
+                        </Modal.Footer>
+                    </Form>
+                </Formik>
             </Modal>
         </>
     );

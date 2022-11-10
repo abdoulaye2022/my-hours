@@ -5,7 +5,8 @@ export const jobActions = {
     getAll,
     modalJob,
     add,
-    update
+    update,
+    updateEmployer
 };
 
 function getAll() {
@@ -38,10 +39,10 @@ function getAll() {
     }
 }
 
-function add(name_job, employer_id, color_job) {
+function add(name_job, color_job, employer_id) {
     return function (dispatch) {
         dispatch(request());
-        jobServices.add(name_job, employer_id, color_job)
+        jobServices.add(name_job, color_job, employer_id)
             .then(res => {
                 dispatch(success(res.data));
                 dispatch(jobActions.modalJob());
@@ -69,10 +70,10 @@ function add(name_job, employer_id, color_job) {
     };
 }
 
-function update(id, name_job, employer_id, color_job) {
+function update(id, name_job, color_job, employer_id) {
     return function (dispatch) {
         dispatch(request());
-        jobServices.update(id, name_job, employer_id, color_job)
+        jobServices.update(id, name_job, color_job, employer_id)
             .then(res => {
                 dispatch(success(res.data));
                 dispatch(jobActions.modalJob());
@@ -105,3 +106,10 @@ function modalJob() {
         type: jobConstants.MODAL_JOB
     }
 };
+
+function updateEmployer (employer) {
+    return {
+        type: jobConstants.UPDATE_EMPLOYER_STATE,
+        payload: employer
+    }
+}

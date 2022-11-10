@@ -41,11 +41,13 @@ class EmployerController extends Controller
     {
         $id = intval($id);
         $this->validate($request, [
-            'name_emp' => 'required'
+            'name_emp' => 'required',
+            'statut' => 'required|integer'
         ]);
 
         $employers = Employer::find($id);
         $employers->name_emp = $request->name_emp;
+        $employers->statut = $request->statut;
         $employers->save();
 
         return response()->json($employers);

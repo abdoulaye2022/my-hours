@@ -28,16 +28,13 @@ class ShiftController extends Controller
 
     public function create (Request $request)
     {
-        // $request->date_shift = date('Y-m-d H:i:s', strtotime(str_replace('-', '/', $request->date_shift)));
-
-        dd($request->date_diff);
-
         $this->validate($request, [
-            'job_id' => 'required|integer',
-            'hours_shift' => 'required|integer',
-            'employer_id' => 'required|integer',
+            'job_id' => 'required|numeric',
+            'user_id' => 'required|numeric',
+            'statut_shift' => 'required|numeric',
             'location' => 'max:255',
-            'date_shift' => 'required'
+            'start_date' =>  'required|date_format:"Y-m-d H:i"',
+            'end_date' =>  'required|date_format:"Y-m-d H:i"'
         ]);
 
         $shifts = Shift::create($request->all());

@@ -27,13 +27,13 @@ class JobController extends Controller
         $i = 0;
 
         while ($i < count($jobs)) {
-            $employer = Employer::find($jobs[$i]->employer_id);
-
             $tab [] = [
                 "id" => $jobs[$i]->id,
                 "name_job" => $jobs[$i]->name_job,
+                "color_job" => $jobs[$i]->color_job,
                 "employer_id" => $jobs[$i]->employer_id,
-                "name_emp" => $employer->name_emp
+                "name_emp" => $this->getEmployer($jobs[$i]->employer_id)->name_emp,
+                "statut" => $this->getEmployer($jobs[$i]->employer_id)->statut
             ];
 
             $i++;
@@ -42,35 +42,58 @@ class JobController extends Controller
         return response()->json($tab);
     }
 
+    public function getEmployer ($id) 
+    {
+        return Employer::find($id);
+    }
+
     public function create (Request $request)
     {
-        $request->employer_id = intval($request->employer_id);
         $this->validate($request, [
-            'name_job' => 'required',
-            'employer_id' => 'required'
+            'name_job' => 'required|max:50',
+            'color_job' => 'max:20',
+            'employer_id' => 'required|numeric'
         ]);
 
-        $jobs = Job::create(['name_job' => $request->name_job, 'color_job' => $request->color_job, 'employer_id' => $request->employer_id]);
+        $job = Job::create(['name_job' => $request->name_job, 'color_job' => $request->color_job, 'employer_id' => $request->employer_id]);
 
-        return response()->json($jobs);
+        $tab = [
+            "id" => $job->id,
+            "name_job" => $job->name_job,
+            "color_job" => $job->color_job,
+            "employer_id" => $job->employer_id,
+            "name_emp" => $this->getEmployer($job->employer_id)->name_emp,
+            "statut" => $this->getEmployer($job->employer_id)->statut
+        ];
+
+        return response()->json($tab);
     }
 
     public function update ($id, Request $request)
     {
         $id = intval($id);
-        $request->employer_id = intval($request->employer_id);
         $this->validate($request, [
-            'name_job' => 'required',
-            'employer_id' => 'required'
+            'name_job' => 'required|max:50',
+            'color_job' => 'max:20',
+            'employer_id' => 'required|numeric'
         ]);
 
-        $jobs = Job::find($id);
-        $jobs->name_job = $request->name_job;
-        $jobs->employer_id = $request->employer_id;
-        $jobs->color_job = $request->color_job;
-        $jobs->save();
+        $job = Job::find($id);
+        $job->name_job = $request->name_job;
+        $job->employer_id = $request->employer_id;
+        $job->color_job = $request->color_job;
+        $job->save();
 
-        return response()->json($jobs);
+        $tab = [
+            "id" => $job->id,
+            "name_job" => $job->name_job,
+            "color_job" => $job->color_job,
+            "employer_id" => $job->employer_id,
+            "name_emp" => $this->getEmployer($job->employer_id)->name_emp,
+            "statut" => $this->getEmployer($job->employer_id)->statut
+        ];
+
+        return response()->json($tab);
     }
 
     //

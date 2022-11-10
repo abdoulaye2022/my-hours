@@ -8,7 +8,7 @@ class Shift extends Model
 {
     public $timestamps = false;
     protected $fillable = [
-        "hours_shift", "date_shift", "location", "job_id", "employer_id"
+        "start_date", "end_date", "location", "statut_shift", "job_id"
     ];
 
     protected $casts = [

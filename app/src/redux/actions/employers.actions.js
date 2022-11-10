@@ -1,5 +1,6 @@
 import { employerConstants } from "../constants/employers.constants";
 import { employerServices } from "../services/employers.services";
+import { jobActions } from "./jobs.actions";
 
 export const employerActions = {
     getAll,
@@ -75,12 +76,13 @@ function add(name_emp, statut) {
     };
 }
 
-function update(id, name) {
+function update(id, name_emp, statut) {
     return function (dispatch) {
         dispatch(request());
-        employerServices.update(id, name)
+        employerServices.update(id, name_emp, statut)
             .then(res => {
                 dispatch(success(res.data));
+                dispatch(jobActions.updateEmployer(res.data));
                 dispatch(modalEmployer());
             })
             .catch(err => {

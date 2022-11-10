@@ -15,12 +15,14 @@ return new class extends Migration
     {
         Schema::create('shifts', function (Blueprint $table) {
             $table->id();
-            $table->float('hours_shift', 2, 2);
-            $table->dateTime('date_shift');
+            $table->dateTime('start_date')->nullable(false);
+            $table->dateTime('end_date')->nullable(false);
             $table->string('location');
+            $table->string('statut_shift', 100)->nullable(false);
             $table->unsignedBigInteger('job_id');
-            $table->unsignedBigInteger('employer_id');
+            $table->unsignedBigInteger('user_id');
             $table->foreign('job_id')->references('id')->on('jobs');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

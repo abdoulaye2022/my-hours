@@ -10,7 +10,7 @@ const statutOptions = [
     { key: '1', text: 'Inactif', value: 0 }
 ];
 
-export const EmployerModal = () => {
+export const EmployerModal = ({ employer, setEmployer }) => {
 
     const modal = useSelector(state => state.employer.modal);
     const dispatch = useDispatch();
@@ -30,17 +30,39 @@ export const EmployerModal = () => {
             return errors;
         },
         onSubmit: (values, { resetForm }) => {
-            dispatch(employerActions.add(values.name_emp, values.statut));
-            resetForm();
+            if (Object.keys(employer).length === 0) {
+                dispatch(employerActions.add(values.name_emp, values.statut));
+                resetForm();
+            }
+            else {
+                dispatch(employerActions.update(employer.id, values.name_emp, values.statut));
+                resetForm();
+            }
         }
     });
 
     return (
         <>
-            <Modal show={modal} onHide={() => {
-                formikemployer.resetForm();
-                formikemployer.setErrors({});
-                dispatch(employerActions.modalEmployer())}} centered>
+            <Modal
+                show={modal}
+                onHide={() => {
+                    formikemployer.resetForm();
+                    formikemployer.setErrors({});
+                    setEmployer({});
+                    dispatch(employerActions.modalEmployer())
+                }}
+                onExited={() => {
+                    formikemployer.resetForm();
+                    formikemployer.setErrors({});
+                    setEmployer({});
+                }}
+                onShow={() => {
+                    if (Object.keys(employer).length !== 0) {
+                        formikemployer.setFieldValue('name_emp', employer.name_emp);
+                        formikemployer.setFieldValue('statut', employer.statut);
+                    }
+                }}
+                centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Ajouter un employeur</Modal.Title>
                 </Modal.Header>
@@ -71,20 +93,18 @@ export const EmployerModal = () => {
                                     //onBlur={formikemployer.handleBlur}
                                     options={statutOptions}
                                     placeholder="Selectionner le statut de l'employeur..."
-                                    //value={formikemployer.values.statut}
-                                    defaultValue={1}
+                                    value={formikemployer.values.statut}
+                                    //defaultValue={1}
                                     search />
                             </Form.Field>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant="secondary" onClick={() => dispatch(employerActions.modalEmployer())}>
+                            <Button type="button" variant="secondary" onClick={() => dispatch(employerActions.modalEmployer())}>
                                 Annuler
                             </Button>
-                            <Form.Field>
-                                <Button primary type="submit">
-                                    Enregistrer
-                                </Button>
-                            </Form.Field>
+                            <Button primary type="submit">
+                                Enregistrer
+                            </Button>
                         </Modal.Footer>
                     </Form>
                 </Formik>

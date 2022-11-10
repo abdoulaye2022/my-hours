@@ -11,16 +11,16 @@ import { registerLocale, setDefaultLocale } from "react-datepicker";
 import ca from 'date-fns/locale/fr-CA';
 registerLocale('ca', ca)
 
-const statutOptions = [
+let statutOptions = [
     { key: '0', text: 'Accomplis', value: 1 },
     { key: '1', text: 'Planifier', value: 0 }
 ];
 
-export const ShiftModal = ({ shift, setShift }) => {
+export const ShiftModal = ({ shift, setShift, setIsOpenAcc }) => {
     const modal = useSelector(state => state.shift.modal);
     const jobs = useSelector(state => state.job.items);
-    const [startDate, setStartDate] = useState();
-    const [endDate, setEndDate] = useState();
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const jobsOptions = [...jobs.map((p, i) => (
         { key: i, text: p.name_job, value: p.id }
     ))]
@@ -70,12 +70,10 @@ export const ShiftModal = ({ shift, setShift }) => {
 
             if (Object.keys(shift).length === 0) {
                 dispatch(shiftActions.add(values.job_id, start_date, end_date, values.statut_shift, values.location, auth.id));
-                dispatch(shiftActions.shiftModal())
+                dispatch(shiftActions.shiftModal());
+            } else {
+                console.log(values);
             }
-            // else {
-            //     dispatch(employerActions.update(employer.id, values.name_emp, values.statut));
-            //     resetForm();
-            // }
         }
     });
 
@@ -88,23 +86,24 @@ export const ShiftModal = ({ shift, setShift }) => {
                     formikshift.resetForm();
                     formikshift.setErrors({});
                     setShift({});
-                    setStartDate();
-                    setEndDate();
-                    if(modal)
+                    setStartDate('');
+                    setEndDate('');
+                    if (modal)
                         dispatch(shiftActions.shiftModal())
                 }}
                 onExited={() => {
                     formikshift.resetForm();
                     formikshift.setErrors({});
                     setShift({});
-                    setStartDate();
-                    setEndDate();
+                    setStartDate('');
+                    setEndDate('');
                 }}
                 onShow={() => {
+                    setIsOpenAcc(false)
                     if (Object.keys(shift).length !== 0) {
                         formikshift.setFieldValue('job_id', shift.job_id);
-                        formikshift.setFieldValue('hours_shift', shift.hours_shift);
-                        formikshift.setFieldValue('date_shift', shift.date_shift);
+                        formikshift.setFieldValue('start_date', (new Date(shift.start_date)));
+                        formikshift.setFieldValue('end_date', (new Date(shift.end_date)));
                         formikshift.setFieldValue('statut_shift', shift.statut_shift);
                         formikshift.setFieldValue('location', shift.location);
                     }
@@ -138,15 +137,55 @@ export const ShiftModal = ({ shift, setShift }) => {
                                     dateFormat="dd/MM/yyyy p"
                                     locale="ca"
                                     timeIntervals={15}
-                                    selected={startDate}
+                                    selected={formikshift.values.start_date}
                                     onChange={(date) => {
                                         setStartDate(date);
+                                        const d = new Date();
+                                        if (date > endDate) {
+                                            formikshift.setFieldValue('end_date', '');
+                                            setEndDate('');
+                                        }
+                                        if (date > d) {
+                                            formikshift.setFieldValue('statut_shift', '');
+                                            statutOptions = [...statutOptions.map((p, i) => {
+                                                if (p.key === '0') {
+                                                    p.disabled = true
+                                                }
+                                                return p;
+                                            })]
+                                        } else {
+                                            formikshift.setFieldValue('statut_shift', '');
+                                            statutOptions = [...statutOptions.map((p, i) => {
+                                                if (p.key === '0') {
+                                                    delete p.disabled;
+                                                }
+                                                return p;
+                                            })]
+                                        }
+                                        if (date < d) {
+                                            formikshift.setFieldValue('statut_shift', '');
+                                            statutOptions = [...statutOptions.map((p, i) => {
+                                                if (p.key === '1') {
+                                                    p.disabled = true
+                                                }
+                                                return p;
+                                            })]
+                                        } else {
+                                            formikshift.setFieldValue('statut_shift', '');
+                                            statutOptions = [...statutOptions.map((p, i) => {
+                                                if (p.key === '1') {
+                                                    delete p.disabled;
+                                                }
+                                                return p;
+                                            })]
+                                        }
                                         formikshift.setFieldValue('start_date', date)
                                     }}
                                     selectsStart
-                                    startDate={startDate}
-                                    endDate={endDate}
+                                    startDate={formikshift.values.start_date}
+                                    endDate={formikshift.values.end_date}
                                     onBlur={formikshift.handleBlur}
+                                    value={formikshift.values.start_date}
                                 />
                                 <span style={{ color: "#9F496E", display: "wrap" }}>{formikshift.errors.start_date && formikshift.touched.start_date && formikshift.errors.start_date}</span>
                             </Form.Field>
@@ -155,11 +194,12 @@ export const ShiftModal = ({ shift, setShift }) => {
                                 <DatePicker
                                     id="end_date"
                                     locale="ca"
-                                    selected={endDate}
+                                    selected={formikshift.values.end_date}
                                     selectsEnd
-                                    startDate={startDate}
+                                    startDate={formikshift.values.start_date}
+                                    disabled={startDate === '' ? true : false}
                                     endDate={endDate}
-                                    minDate={startDate}
+                                    minDate={formikshift.values.start_date}
                                     name="end_date"
                                     timeIntervals={15}
                                     showTimeSelect
@@ -167,11 +207,46 @@ export const ShiftModal = ({ shift, setShift }) => {
                                     filterTime={filterPassedTime}
                                     onChange={(date) => {
                                         setEndDate(date);
+                                        const d = new Date();
+                                        if (date > d) {
+                                            formikshift.setFieldValue('statut_shift', '');
+                                            statutOptions = [...statutOptions.map((p, i) => {
+                                                if (p.key === '0') {
+                                                    p.disabled = true
+                                                }
+                                                return p;
+                                            })]
+                                        } else {
+                                            formikshift.setFieldValue('statut_shift', '');
+                                            statutOptions = [...statutOptions.map((p, i) => {
+                                                if (p.key === '0') {
+                                                    delete p.disabled;
+                                                }
+                                                return p;
+                                            })]
+                                        }
+                                        if (date < d) {
+                                            formikshift.setFieldValue('statut_shift', '');
+                                            statutOptions = [...statutOptions.map((p, i) => {
+                                                if (p.key === '1') {
+                                                    p.disabled = true
+                                                }
+                                                return p;
+                                            })]
+                                        } else {
+                                            formikshift.setFieldValue('statut_shift', '');
+                                            statutOptions = [...statutOptions.map((p, i) => {
+                                                if (p.key === '1') {
+                                                    delete p.disabled;
+                                                }
+                                                return p;
+                                            })]
+                                        }
                                         formikshift.setFieldValue('end_date', date)
                                     }}
                                     onBlur={formikshift.handleBlur}
-                                // placeholder="Entrer la date du travail..."
-                                // value={formikshift.values.end_date}
+                                    // placeholder="Entrer la date du travail..."
+                                    value={formikshift.values.end_date}
                                 />
                                 <span style={{ color: "#9F496E", display: "wrap" }}>{formikshift.errors.end_date && formikshift.touched.end_date && formikshift.errors.end_date}</span>
                             </Form.Field>

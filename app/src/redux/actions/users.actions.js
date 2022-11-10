@@ -2,6 +2,7 @@ import { userConstants } from "../constants/users.constants";
 import { userServices } from "../services/users.services";
 import { employerActions } from "./employers.actions";
 import { jobActions } from "./jobs.actions";
+import { shiftActions } from "./shifts.actions";
 
 export const userActions = {
     login,
@@ -48,6 +49,7 @@ function login(email, password, cb, er) {
                 dispatch(success(res.data));
                 dispatch(employerActions.getAll());
                 dispatch(jobActions.getAll());
+                dispatch(shiftActions.getAll());
                 cb();
             })
             .catch((err) => {

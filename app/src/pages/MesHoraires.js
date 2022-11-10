@@ -4,10 +4,12 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { Icon, Input, Menu, Table, Button, Dropdown, Popup } from 'semantic-ui-react';
 import { ShiftModal } from "../components/Modals/ShiftModal";
 import { shiftActions } from "../redux/actions/shifts.actions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const MesHoraires = () => {
     const [shift, setShift] = useState({});
+    const shifts = useSelector(state => state.shift.items);
+    const [isOpenAcc, setIsOpenAcc] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -18,7 +20,7 @@ const MesHoraires = () => {
                     <Col style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
                         <div>
                             <Button attached='left' primary onClick={() => dispatch(shiftActions.shiftModal())}><Icon name='add' />Ajouter</Button>
-                            <ShiftModal setShift={setShift} shift={shift} />
+                            <ShiftModal setShift={setShift} shift={shift} setIsOpenAcc={setIsOpenAcc} />
                             <Dropdown
                                 text='Filtrer'
                                 icon='filter'
@@ -45,42 +47,83 @@ const MesHoraires = () => {
                             <Table.Header>
                                 <Table.Row>
                                     <Table.HeaderCell>Travail</Table.HeaderCell>
-                                    <Table.HeaderCell>Heure</Table.HeaderCell>
-                                    <Table.HeaderCell>Date</Table.HeaderCell>
+                                    <Table.HeaderCell>Date debut</Table.HeaderCell>
+                                    <Table.HeaderCell>Date fin</Table.HeaderCell>
                                     <Table.HeaderCell>Lieu</Table.HeaderCell>
                                     <Table.HeaderCell>Status</Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
 
                             <Table.Body>
-                                <Popup
-                                    trigger={
-                                        <Table.Row positive className="rowedit">
-                                            <Table.Cell>Securite</Table.Cell>
-                                            <Table.Cell>8 Heures</Table.Cell>
-                                            <Table.Cell>23/01/2023</Table.Cell>
-                                            <Table.Cell>45 rue gauvin</Table.Cell>
-                                            <Table.Cell>
-                                                <Icon name='checkmark' />
-                                                Actif
-                                            </Table.Cell>
-                                        </Table.Row>
-                                    }
-                                    content={
-                                        <div style={{ width: 231 }}>
-                                            <Button
-                                                style={{ backgroundColor: "#9f3a38", color: "white" }}>
-                                                <Icon name="cancel" /> Inactif
-                                            </Button>
-                                            <Button color='green' onClick={() => {
-                                                //setEmployer(p);
-                                                //dispatch(employerActions.modalEmployer());
-                                            }}><Icon name="edit" /> Modifier</Button>
-                                        </div>
-                                    }
-                                    on='click'
-                                    position='top center'
-                                />
+                                {shifts.map((p, i) => (
+                                    p.statut_shift === 1 ? (
+                                        <Popup
+                                            trigger={
+                                                <Table.Row positive className="rowedit">
+                                                    <Table.Cell>{p.name_job}</Table.Cell>
+                                                    <Table.Cell>{p.start_date}</Table.Cell>
+                                                    <Table.Cell>{p.end_date}</Table.Cell>
+                                                    <Table.Cell>{p.location}</Table.Cell>
+                                                    <Table.Cell>
+                                                        <Icon name='checkmark' />
+                                                    </Table.Cell>
+                                                </Table.Row>
+                                            }
+                                            content={
+                                                <div>
+                                                    {/* <Button
+                                                        style={{ backgroundColor: "#9f3a38", color: "white" }}>
+                                                        <Icon name="cancel" /> Inactif
+                                                    </Button> */}
+                                                    <Button color='green' onClick={() => {
+                                                        setShift(p);
+                                                        dispatch(shiftActions.shiftModal());
+                                                    }}><Icon name="edit" /> Modifier</Button>
+                                                </div>
+                                            }
+                                            open={shift.id === p.id ? isOpenAcc : false}
+                                            onOpen={(e) => {
+                                                setShift(p);
+                                                setIsOpenAcc(true); 
+                                            }}
+                                            onClose={() => {
+                                                setShift({});
+                                                setIsOpenAcc(false);
+                                            }}
+                                            on='click'
+                                            position='top center'
+                                        />
+                                    ) : (
+                                        <Popup
+                                            trigger={
+                                                <Table.Row warning className="rowedit">
+                                                    <Table.Cell>{p.name_job}</Table.Cell>
+                                                    <Table.Cell>{p.start_date}</Table.Cell>
+                                                    <Table.Cell>{p.end_date}</Table.Cell>
+                                                    <Table.Cell>{p.location}</Table.Cell>
+                                                    <Table.Cell>
+                                                        <Icon name='warning' />
+                                                    </Table.Cell>
+                                                </Table.Row>
+                                            }
+                                            content={
+                                                <div style={{ width: 255 }}>
+                                                    <Button
+                                                        style={{ backgroundColor: "#c9ba9b", color: "white" }}>
+                                                        <Icon name="checkmark" /> Accomplir
+                                                    </Button>
+                                                    <Button color='green' onClick={() => {
+                                                        //setEmployer(p);
+                                                        //dispatch(employerActions.modalEmployer());
+                                                    }}><Icon name="edit" /> Modifier</Button>
+                                                </div>
+                                            }
+                                            on='click'
+                                            position='top center'
+                                        />
+                                    )
+
+                                ))}
                             </Table.Body>
 
                             <Table.Footer>

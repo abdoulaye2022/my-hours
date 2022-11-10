@@ -32,6 +32,44 @@ export const shift = (state = initialState, action) => {
                 loading: false,
                 error: action.payload
             };
+        case shiftConstants.GETALL_SHIFT_REQUEST:
+            return {
+                ...state,
+                loading: true
+            };
+        case shiftConstants.GETALL_SHIFT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                items: action.payload
+            };
+        case shiftConstants.GETALL_SHIFT_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            };
+        case shiftConstants.UPDATE_SHIFT_REQUEST:
+            return {
+                ...state,
+                loading: true
+            };
+        case shiftConstants.UPDATE_SHIFT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                items: [...state.items.map(p => {
+                    if (p.id === action.payload.id)
+                        p = action.payload;
+                    return p;
+                })]
+            };
+        case shiftConstants.UPDATE_SHIFT_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            };
         default:
             return state;
     }

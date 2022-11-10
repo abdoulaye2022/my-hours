@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use  App\Models\Shift;
 
 use Illuminate\Auth\Authenticatable;
 use Laravel\Lumen\Auth\Authorizable;
@@ -18,6 +19,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $fillable = [
         " firstname", "lastname", "gender", "country", "province", "city", "bio", "email", "new_user", " lang_app", "is_admin"
     ];
+
+    public function shifts()
+    {
+        return $this->hasMany(Shift::class);
+    }
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

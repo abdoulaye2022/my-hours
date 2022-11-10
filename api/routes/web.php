@@ -37,5 +37,6 @@ Route::group([
     // Shift
     Route::get("/shifts", "ShiftController@index");
     Route::post("/shifts", "ShiftController@create");
+    Route::put("/shifts", "ShiftController@update");
 
 });

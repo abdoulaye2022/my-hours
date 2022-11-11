@@ -3,16 +3,16 @@ import { employerServices } from "../services/employers.services";
 import { jobActions } from "./jobs.actions";
 
 export const employerActions = {
-    getAll,
+    getAuthEmployers,
     modalEmployer,
     add,
     update
 }
 
-function getAll() {
+function getAuthEmployers(id) {
     return function (dispatch) {
         dispatch(request());
-        employerServices.getAll()
+        employerServices.getAuthEmployers(id)
             .then(res => {
                 dispatch(success(res.data));
             })
@@ -45,10 +45,10 @@ function modalEmployer() {
     }
 }
 
-function add(name_emp, statut) {
+function add(name_emp, statut, user_id) {
     return function (dispatch) {
         dispatch(request());
-        employerServices.add(name_emp, statut)
+        employerServices.add(name_emp, statut, user_id)
             .then(res => {
                 dispatch(success(res.data));
                 dispatch(modalEmployer());

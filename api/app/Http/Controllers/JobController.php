@@ -19,9 +19,9 @@ class JobController extends Controller
         $this->middleware('auth:api');
     }
 
-    public function index () 
+    public function index ($id) 
     {
-        $jobs = Job::all();
+        $jobs = Job::where('user_id', $id)->get();
 
         $tab = [];
         $i = 0;
@@ -52,10 +52,11 @@ class JobController extends Controller
         $this->validate($request, [
             'name_job' => 'required|max:50',
             'color_job' => 'max:20',
-            'employer_id' => 'required|numeric'
+            'employer_id' => 'required|numeric',
+            'user_id' => 'required|numeric'
         ]);
 
-        $job = Job::create(['name_job' => $request->name_job, 'color_job' => $request->color_job, 'employer_id' => $request->employer_id]);
+        $job = Job::create(['name_job' => $request->name_job, 'color_job' => $request->color_job, 'employer_id' => $request->employer_id, 'user_id' => $request->user_id]);
 
         $tab = [
             "id" => $job->id,

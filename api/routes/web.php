@@ -25,17 +25,18 @@ Route::group([
     Route::put('users/{id}', 'AuthController@update');
 
     // Employers
-    Route::get('/employers', 'EmployerController@index');
+    Route::get('/employers/{id}', 'EmployerController@index');
     Route::post('/employers', 'EmployerController@create');
     Route::put('/employers/{id}', 'EmployerController@update');
 
     // Jobs
-    Route::get('/jobs', 'JobController@index');
+    Route::get('/jobs/{id}', 'JobController@index');
     Route::post('/jobs', 'JobController@create');
     Route::put('/jobs/{id}', 'JobController@update');
 
     // Shift
     Route::get("/shifts", "ShiftController@index");
+    Route::get("/shifts/{id}", "ShiftController@authshift");
     Route::post("/shifts", "ShiftController@create");
     Route::put("/shifts/{id}", "ShiftController@update");
     Route::put("/shifts/complete/{id}", "ShiftController@complete");

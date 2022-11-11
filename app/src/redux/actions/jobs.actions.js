@@ -2,17 +2,17 @@ import { jobConstants } from "../constants/jobs.constants";
 import { jobServices } from "../services/jobs.services";
 
 export const jobActions = {
-    getAll,
+    getAuthJobs,
     modalJob,
     add,
     update,
     updateEmployer
 };
 
-function getAll() {
+function getAuthJobs(id) {
     return function (dispatch) {
         dispatch(request());
-        jobServices.getAll()
+        jobServices.getAuthJobs(id)
             .then(res => {
                 dispatch(success(res.data));
             })
@@ -39,10 +39,10 @@ function getAll() {
     }
 }
 
-function add(name_job, color_job, employer_id) {
+function add(name_job, color_job, employer_id, user_id) {
     return function (dispatch) {
         dispatch(request());
-        jobServices.add(name_job, color_job, employer_id)
+        jobServices.add(name_job, color_job, employer_id, user_id)
             .then(res => {
                 dispatch(success(res.data));
                 dispatch(jobActions.modalJob());

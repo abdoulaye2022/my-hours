@@ -2,13 +2,13 @@ import axios from "../../axios";
 import store from "../../store";
 
 export const employerServices = {
-    getAll,
+    getAuthEmployers,
     add,
     update
 }
 
-async function getAll() {
-    return await axios.get(`/employers`, {
+async function getAuthEmployers(id) {
+    return await axios.get(`/employers/${id}`, {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -17,8 +17,8 @@ async function getAll() {
     });
 }
 
-async function add(name_emp, statut) {
-    return await axios.post(`/employers`, { name_emp: name_emp, statut, statut }, {
+async function add(name_emp, statut, user_id) {
+    return await axios.post(`/employers`, { name_emp: name_emp, statut: statut, user_id: user_id }, {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",

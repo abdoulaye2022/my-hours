@@ -7,6 +7,13 @@ export const shiftActions = {
     getAll,
     update,
     complete,
+    checkStartDateShift,
+    checkEndDateShift,
+    authShift,
+    filterAuthShift,
+    clearFilter,
+    filterModal,
+    filterDropdown
 };
 
 function getAll() {
@@ -149,8 +156,83 @@ function complete(id, statut_shift) {
     }
 }
 
+function authShift(user_id) {
+    return function (dispatch) {
+        dispatch(request());
+        shiftServices.authShift(user_id)
+            .then(res => {
+                dispatch(success(res.data));
+            })
+            .catch(err => {
+                dispatch(failure(err.message))
+            })
+    }
+    function request() {
+        return {
+            type: shiftConstants.AUTH_SHIFT_REQUEST
+        }
+    };
+    function success(shift) {
+        return {
+            type: shiftConstants.AUTH_SHIFT_SUCCESS,
+            payload: shift
+        }
+    };
+    function failure(error) {
+        return {
+            type: shiftConstants.AUTH_SHIFT_FAILURE,
+            payload: error
+        }
+    }
+}
+
+function filterAuthShift (accomplis, planifier, annuler, start_date, end_date) {
+    return {
+        type: shiftConstants.FILTER_AUTH_SHIFT,
+        accomplis,
+        planifier,
+        annuler,
+        start_date,
+        end_date
+    }
+}
+
 function shiftModal() {
     return {
         type: shiftConstants.MODAL_SHIFT,
     };
+}
+
+function checkStartDateShift(user_id, start_date) {
+    return {
+        type: shiftConstants.CHECK_START_DATE_EXIST,
+        user_id,
+        start_date
+    }
+}
+
+function checkEndDateShift(user_id, end_date) {
+    return {
+        type: shiftConstants.CHECK_END_DATE_EXIST,
+        user_id,
+        end_date
+    }
+}
+
+function clearFilter () {
+    return {
+        type: shiftConstants.CLEAR_FILTER_SHIFT
+    }
+}
+
+function filterModal () {
+    return {
+        type: shiftConstants.FILTER_MODAL
+    }
+}
+
+function filterDropdown () {
+    return {
+        type: shiftConstants.FILTER_DROPDOWN
+    }
 }

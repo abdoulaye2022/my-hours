@@ -17,6 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string('name_emp', 100)->nullable(false);
             $table->integer("statut")->default(1);
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+
         });
     }
 

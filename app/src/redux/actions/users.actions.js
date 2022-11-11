@@ -47,9 +47,10 @@ function login(email, password, cb, er) {
             .login(email, password)
             .then((res) => {
                 dispatch(success(res.data));
-                dispatch(employerActions.getAll());
-                dispatch(jobActions.getAll());
+                dispatch(employerActions.getAuthEmployers(res.data.user.id));
+                dispatch(jobActions.getAuthJobs(res.data.user.id));
                 dispatch(shiftActions.getAll());
+                dispatch(shiftActions.authShift(res.data.user.id));
                 cb();
             })
             .catch((err) => {

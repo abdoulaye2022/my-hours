@@ -6,7 +6,7 @@ import { jobActions } from "../../redux/actions/jobs.actions";
 import { useDispatch, useSelector } from "react-redux";
 
 export const JobModal = ({ job, setJob }) => {
-
+    const auth = useSelector(state => state.user.user);
     const modal = useSelector(state => state.job.modal);
     const employers = useSelector(state => state.employer.items);
     const emp = [...employers.map((p, i) => (
@@ -34,7 +34,7 @@ export const JobModal = ({ job, setJob }) => {
         },
         onSubmit: (values, { resetForm }) => {
             if (Object.keys(job).length === 0) {
-                dispatch(jobActions.add(values.name_job, values.color_job, values.employer_id));
+                dispatch(jobActions.add(values.name_job, values.color_job, values.employer_id, auth.id));
                 resetForm();
             }
             else {

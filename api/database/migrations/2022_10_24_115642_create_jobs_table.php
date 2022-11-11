@@ -18,7 +18,9 @@ return new class extends Migration
             $table->string('name_job', 50)->nullable(false);
             $table->string('color_job', 20);
             $table->unsignedBigInteger('employer_id');
+            $table->unsignedBigInteger('user_id');
             $table->foreign('employer_id')->references('id')->on('employers');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

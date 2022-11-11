@@ -11,7 +11,7 @@ const statutOptions = [
 ];
 
 export const EmployerModal = ({ employer, setEmployer }) => {
-
+    const auth = useSelector(state => state.user.user);
     const modal = useSelector(state => state.employer.modal);
     const dispatch = useDispatch();
 
@@ -31,7 +31,7 @@ export const EmployerModal = ({ employer, setEmployer }) => {
         },
         onSubmit: (values, { resetForm }) => {
             if (Object.keys(employer).length === 0) {
-                dispatch(employerActions.add(values.name_emp, values.statut));
+                dispatch(employerActions.add(values.name_emp, values.statut, auth.id));
                 resetForm();
             }
             else {

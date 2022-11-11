@@ -18,9 +18,9 @@ class EmployerController extends Controller
         $this->middleware('auth:api');
     }
 
-    public function index () 
+    public function index ($id) 
     {
-        $employers = Employer::all();
+        $employers = Employer::where('user_id', $id)->get();
 
         return response()->json($employers);
     }
@@ -29,10 +29,11 @@ class EmployerController extends Controller
     {
         $this->validate($request, [
             'name_emp' => 'required',
-            'statut' => 'required'
+            'statut' => 'required|numeric',
+            'user_id' => 'required|numeric'
         ]);
 
-        $employers = Employer::create(['name_emp' => $request->name_emp, 'statut' => $request->statut]);
+        $employers = Employer::create(['name_emp' => $request->name_emp, 'statut' => $request->statut, 'user_id' => $request->user_id]);
 
         return response()->json($employers);
     }

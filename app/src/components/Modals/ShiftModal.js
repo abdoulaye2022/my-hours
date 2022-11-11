@@ -18,6 +18,8 @@ let statutOptions = [
 
 export const ShiftModal = ({ shift, setShift, setIsOpenAcc, setIsOpenPla }) => {
     const modal = useSelector((state) => state.shift.modal);
+    const startDateExist = useSelector((state) => state.shift.startDateExist);
+    const endDateExist = useSelector((state) => state.shift.endDateExist);
     const jobs = useSelector((state) => state.job.items);
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
@@ -72,6 +74,14 @@ export const ShiftModal = ({ shift, setShift, setIsOpenAcc, setIsOpenPla }) => {
 
             if (values.statut_shift !== 0 && values.statut_shift !== 1) {
                 errors.statut_shift = "Trvail est obligatoire.";
+            }
+
+            if (startDateExist) {
+                errors.start_date = "Cette date est deja occupe."
+            }
+
+            if (endDateExist) {
+                errors.end_date = "Cette date est deja occupe."
             }
 
             return errors;
@@ -189,11 +199,22 @@ export const ShiftModal = ({ shift, setShift, setIsOpenAcc, setIsOpenPla }) => {
                                             selected.value
                                         );
                                     }}
+                                    onBlur={formikshift.handleBlur}
                                     options={jobsOptions}
                                     placeholder="Selectionner le travail..."
                                     value={formikshift.values.job_id}
                                     search
                                 />
+                                <span
+                                    style={{
+                                        color: "#9F496E",
+                                        display: "wrap",
+                                    }}
+                                >
+                                    {formikshift.errors.job_id &&
+                                        formikshift.touched.job_id &&
+                                        formikshift.errors.job_id}
+                                </span>
                             </Form.Field>
                             <Form.Field>
                                 <label style={{ fontWeight: "normal" }}>
@@ -275,6 +296,7 @@ export const ShiftModal = ({ shift, setShift, setIsOpenAcc, setIsOpenPla }) => {
                                             "start_date",
                                             date
                                         );
+                                        dispatch(shiftActions.checkStartDateShift(auth.id, date));
                                     }}
                                     selectsStart
                                     startDate={formikshift.values.start_date}
@@ -372,6 +394,7 @@ export const ShiftModal = ({ shift, setShift, setIsOpenAcc, setIsOpenPla }) => {
                                             "end_date",
                                             date
                                         );
+                                        dispatch(shiftActions.checkEndDateShift(auth.id, date));
                                     }}
                                     onBlur={formikshift.handleBlur}
                                     // placeholder="Entrer la date du travail..."

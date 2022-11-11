@@ -46,6 +46,33 @@ class ShiftController extends Controller
         return response()->json($tab);
     }
 
+    public function authshift ($id) 
+    {
+        $shifts = Shift::where('user_id', $id)->get();
+
+        $tab = [];
+        $i = 0;
+
+        while ($i < count($shifts)) {
+            $tab [] = [
+                "id" => $shifts[$i]->id,
+                "start_date" => $shifts[$i]->start_date,
+                "end_date" => $shifts[$i]->end_date,
+                "location" => $shifts[$i]->location,
+                "statut_shift" => $shifts[$i]->statut_shift,
+                "user_id" => $this->getUser($shifts[$i]->user_id)->id,
+                "first_name" => $this->getUser($shifts[$i]->user_id)->firstname,
+                "last_name" => $this->getUser($shifts[$i]->user_id)->lastname,
+                "job_id" => $this->getJob($shifts[$i]->job_id)->id,
+                "name_job" => $this->getJob($shifts[$i]->job_id)->name_job
+            ];
+
+            $i++;
+        }
+
+        return response()->json($tab);
+    }
+
     public function getJob ($id) 
     {
         return Job::find($id);

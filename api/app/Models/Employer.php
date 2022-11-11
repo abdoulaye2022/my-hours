@@ -9,7 +9,7 @@ class Employer extends Model
 {
     public $timestamps = false;
     protected $fillable = [
-        "name_emp", "statut"
+        "name_emp", "statut", "user_id"
     ];
 
     public function jobs()

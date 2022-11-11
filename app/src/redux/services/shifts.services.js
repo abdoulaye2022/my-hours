@@ -6,6 +6,7 @@ export const shiftServices = {
     getAll,
     update,
     complete,
+    authShift
 };
 
 async function add(
@@ -87,4 +88,14 @@ async function complete(id, statut_shift) {
             },
         }
     );
+}
+
+async function authShift(user_id) {
+    return await axios.get(`/shifts/${user_id}`, {
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${store.getState().user.token}`,
+        },
+    });
 }

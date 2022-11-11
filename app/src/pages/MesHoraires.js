@@ -13,12 +13,19 @@ import {
 import { ShiftModal } from "../components/Modals/ShiftModal";
 import { shiftActions } from "../redux/actions/shifts.actions";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
+import { shiftConstants } from "../redux/constants/shifts.constants";
+import FilterModal from "../components/Modals/FilterModal";
 
 const MesHoraires = () => {
     const [shift, setShift] = useState({});
-    const shifts = useSelector((state) => state.shift.items);
+    const shifts = useSelector((state) => state.shift.authShifts);
+    const filterAuthShift = useSelector((state) => state.shift.filterAuthShift);
+    const filterShift = useSelector(state => state.shift.filterShift);
+    const filterDropdown = useSelector(state => state.shift.filterDropdown);
     const [isOpenAcc, setIsOpenAcc] = useState(false);
     const [isOpenPla, setIsOpenPla] = useState(false);
+    const [currentDate, setCurrentDate] = useState(new Date());
 
     const dispatch = useDispatch();
 
@@ -37,9 +44,10 @@ const MesHoraires = () => {
                             <Button
                                 attached="left"
                                 primary
-                                onClick={() =>
-                                    dispatch(shiftActions.shiftModal())
-                                }
+                                onClick={() => {
+                                    dispatch(shiftActions.shiftModal());
+                                    dispatch(shiftActions.clearFilter());
+                                }}
                             >
                                 <Icon name="add" />
                                 Ajouter
@@ -51,21 +59,49 @@ const MesHoraires = () => {
                                 setIsOpenPla={setIsOpenPla}
                             />
                             <Dropdown
-                                text="Filtrer"
-                                icon="filter"
+                                text={
+                                    filterShift ? (
+                                        <div>
+                                            Annuler
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            Filtrer
+                                        </div>
+                                    )
+
+                                }
+                                icon={filterShift ? "cancel" : "filter"}
+                                // icon={filterShift ? (<Icon name="cancel"
+                                //     onClick={() => {
+                                //         dispatch(shiftActions.clearFilter());
+                                //         dispatch(shiftActions.filterDropdown())
+                                //         // e.stopPropagation();
+                                //     }} />) : <Icon onClick={() => {
+                                //         dispatch(shiftActions.clearFilter());
+                                //         dispatch(shiftActions.filterDropdown())
+                                //         // e.stopPropagation();
+                                //     }} name="filter" />}
                                 floating
                                 labeled
                                 button
+                                open={filterDropdown}
+                                onClose={() => dispatch(shiftActions.filterDropdown())}
+                                onOpen={() => {
+                                    if (filterShift) {
+                                        dispatch(shiftActions.clearFilter());
+                                    }
+                                    dispatch(shiftActions.filterDropdown());
+                                }}
                                 className="icon"
                             >
                                 <Dropdown.Menu>
-                                    <Dropdown.Header
-                                        icon="tags"
-                                        content="Filter by tag"
-                                    />
-                                    <Dropdown.Item>Important</Dropdown.Item>
-                                    <Dropdown.Item>Announcement</Dropdown.Item>
-                                    <Dropdown.Item>Discussion</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => dispatch(shiftActions.filterAuthShift(1, null, null, null))}><Icon name="checkmark" />Accomplis</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => dispatch(shiftActions.filterAuthShift(null, 0, null, null))}><Icon name="warning" /> Planifier</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => dispatch(shiftActions.filterAuthShift(null, null, 2, null))}><Icon name="cancel" /> Annuler</Dropdown.Item>
+                                    <Dropdown.Divider />
+                                    <Dropdown.Item onClick={() => dispatch(shiftActions.filterModal())}><Icon name="list" /> Filtre avancer</Dropdown.Item>
+                                    <FilterModal />
                                 </Dropdown.Menu>
                             </Dropdown>
                             {/* <Button attached='right'>Filtrer</Button> */}
@@ -95,7 +131,7 @@ const MesHoraires = () => {
                             </Table.Header>
 
                             <Table.Body>
-                                {shifts.map((p, i) =>
+                                {filterShift ? (filterAuthShift.map((p, i) =>
                                     p.statut_shift === 1 ? (
                                         <Popup
                                             trigger={
@@ -107,10 +143,10 @@ const MesHoraires = () => {
                                                         {p.name_job}
                                                     </Table.Cell>
                                                     <Table.Cell>
-                                                        {p.start_date}
+                                                        {moment(p.start_date).format("YYYY-MM-DD HH:mm")}
                                                     </Table.Cell>
                                                     <Table.Cell>
-                                                        {p.end_date}
+                                                        {moment(p.end_date).format("YYYY-MM-DD HH:mm")}
                                                     </Table.Cell>
                                                     <Table.Cell>
                                                         {p.location}
@@ -167,10 +203,10 @@ const MesHoraires = () => {
                                                         {p.name_job}
                                                     </Table.Cell>
                                                     <Table.Cell>
-                                                        {p.start_date}
+                                                        {moment(p.start_date).format("YYYY-MM-DD HH:mm")}
                                                     </Table.Cell>
                                                     <Table.Cell>
-                                                        {p.end_date}
+                                                        {moment(p.end_date).format("YYYY-MM-DD HH:mm")}
                                                     </Table.Cell>
                                                     <Table.Cell>
                                                         {p.location}
@@ -192,6 +228,8 @@ const MesHoraires = () => {
                                                             dispatch(shiftActions.complete(p.id, 1));
                                                             setIsOpenPla(false);
                                                         }}
+                                                        disabled={moment(p.end_date).isAfter(currentDate)}
+                                                    // disabled={true}
                                                     >
                                                         <Icon name="checkmark" />{" "}
                                                         Accomplir
@@ -227,12 +265,156 @@ const MesHoraires = () => {
                                             position="top center"
                                         />
                                     )
-                                )}
+                                )) :
+                                    shifts.map((p, i) =>
+                                        p.statut_shift === 1 ? (
+                                            <Popup
+                                                trigger={
+                                                    <Table.Row
+                                                        positive
+                                                        className="rowedit"
+                                                    >
+                                                        <Table.Cell>
+                                                            {p.name_job}
+                                                        </Table.Cell>
+                                                        <Table.Cell>
+                                                            {moment(p.start_date).format("YYYY-MM-DD HH:mm")}
+                                                        </Table.Cell>
+                                                        <Table.Cell>
+                                                            {moment(p.end_date).format("YYYY-MM-DD HH:mm")}
+                                                        </Table.Cell>
+                                                        <Table.Cell>
+                                                            {p.location}
+                                                        </Table.Cell>
+                                                        <Table.Cell>
+                                                            <Icon name="checkmark" />
+                                                        </Table.Cell>
+                                                    </Table.Row>
+                                                }
+                                                content={
+                                                    <div>
+                                                        {/* <Button
+                                                        style={{ backgroundColor: "#9f3a38", color: "white" }}>
+                                                        <Icon name="cancel" /> Inactif
+                                                    </Button> */}
+                                                        <Button
+                                                            color="green"
+                                                            onClick={() => {
+                                                                setShift(p);
+                                                                dispatch(
+                                                                    shiftActions.shiftModal()
+                                                                );
+                                                            }}
+                                                        >
+                                                            <Icon name="edit" />{" "}
+                                                            Modifier
+                                                        </Button>
+                                                    </div>
+                                                }
+                                                open={
+                                                    shift.id === p.id
+                                                        ? isOpenAcc
+                                                        : false
+                                                }
+                                                onOpen={(e) => {
+                                                    setShift(p);
+                                                    setIsOpenAcc(true);
+                                                }}
+                                                onClose={() => {
+                                                    setShift({});
+                                                    setIsOpenAcc(false);
+                                                }}
+                                                on="click"
+                                                position="top center"
+                                            />
+                                        ) : (
+                                            <Popup
+                                                trigger={
+                                                    <Table.Row
+                                                        warning
+                                                        className="rowedit"
+                                                    >
+                                                        <Table.Cell>
+                                                            {p.name_job}
+                                                        </Table.Cell>
+                                                        <Table.Cell>
+                                                            {moment(p.start_date).format("YYYY-MM-DD HH:mm")}
+                                                        </Table.Cell>
+                                                        <Table.Cell>
+                                                            {moment(p.end_date).format("YYYY-MM-DD HH:mm")}
+                                                        </Table.Cell>
+                                                        <Table.Cell>
+                                                            {p.location}
+                                                        </Table.Cell>
+                                                        <Table.Cell>
+                                                            <Icon name="warning" />
+                                                        </Table.Cell>
+                                                    </Table.Row>
+                                                }
+                                                content={
+                                                    <div style={{ width: 255 }}>
+                                                        <Button
+                                                            style={{
+                                                                backgroundColor:
+                                                                    "#c9ba9b",
+                                                                color: "white",
+                                                            }}
+                                                            onClick={() => {
+                                                                dispatch(shiftActions.complete(p.id, 1));
+                                                                setIsOpenPla(false);
+                                                            }}
+                                                            disabled={moment(p.end_date).isAfter(currentDate)}
+                                                        // disabled={true}
+                                                        >
+                                                            <Icon name="checkmark" />{" "}
+                                                            Accomplir
+                                                        </Button>
+                                                        <Button
+                                                            color="green"
+                                                            onClick={() => {
+                                                                setShift(p);
+                                                                dispatch(
+                                                                    shiftActions.shiftModal()
+                                                                );
+                                                            }}
+                                                        >
+                                                            <Icon name="edit" />{" "}
+                                                            Modifier
+                                                        </Button>
+                                                    </div>
+                                                }
+                                                open={
+                                                    shift.id === p.id
+                                                        ? isOpenPla
+                                                        : false
+                                                }
+                                                onOpen={(e) => {
+                                                    setShift(p);
+                                                    setIsOpenPla(true);
+                                                }}
+                                                onClose={() => {
+                                                    setShift({});
+                                                    setIsOpenPla(false);
+                                                }}
+                                                on="click"
+                                                position="top center"
+                                            />
+                                        )
+                                    )}
+                                {((filterShift === true) && (filterAuthShift.length === 0)) ?
+                                    (
+                                        <Table.Row>
+                                            <Table.Cell colSpan={5}>
+                                                <p style={{ textAlign: "center" }}>Aucun element trouver</p>
+                                            </Table.Cell>
+                                        </Table.Row>
+                                    )
+                                    : null}
                             </Table.Body>
 
                             <Table.Footer>
                                 <Table.Row>
-                                    <Table.HeaderCell colSpan="3">
+                                    <Table.HeaderCell colSpan="5">
                                         <Menu floated="right" pagination>
                                             <Menu.Item as="a" icon>
                                                 <Icon name="chevron left" />

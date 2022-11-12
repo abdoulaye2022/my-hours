@@ -138,19 +138,23 @@ export const shift = (state = initialState, action) => {
                 error: action.payload
             };
         case shiftConstants.FILTER_AUTH_SHIFT:
-            console.log("Date de deubt" + Date(action.start_date))
+            // let tab = [];
+            // if(action.accomplis === 1) {
+            //     tab = [...state.authShifts.filter(p => p.statut_shift === action.accomplis)]
+            // }
+            // if()
             return {
                 ...state,
                 loading: false,
                 filterShift: true,
                 filterAuthShift: action.accomplis === 1 ? (
-                    [...state.authShifts.filter(p => p.statut_shift === action.accomplis)]
+                    [state.filterAuthShift, ...state.authShifts.filter(p => p.statut_shift === action.accomplis)]
                 ) : action.planifier === 0 ? (
-                    [...state.authShifts.filter(p => p.statut_shift === action.planifier)]
+                    [state.filterAuthShift, ...state.authShifts.filter(p => p.statut_shift === action.planifier)]
                 ) : action.annuler === 2 ? (
-                    [...state.authShifts.filter(p => p.statut_shift === action.annuler)]
+                    [state.filterAuthShift, ...state.authShifts.filter(p => p.statut_shift === action.annuler)]
                 ) : ((action.start_date !== '') && (action.end_date !== '')) ? (
-                    [...state.authShifts.filter(p => moment(p.start_date).isBetween(action.start_date, action.end_date))]
+                    [state.filterAuthShift, ...state.authShifts.filter(p => moment(p.start_date).isBetween(action.start_date, action.end_date))]
                 ) : (
                     []
                 )

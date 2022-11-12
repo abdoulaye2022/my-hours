@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from "react-redux";
 import { shiftActions } from "../../redux/actions/shifts.actions";
-import { Button, Input, Form, Select, Checkbox } from 'semantic-ui-react';
+import { Button, Input, Form, Checkbox } from 'semantic-ui-react';
 import { useFormik, Formik } from "formik";
 import DatePicker from "react-datepicker";
 
 const FilterModal = () => {
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
+    const filterShift = useSelector(state => state.shift.filterShift);
     const filterModal = useSelector(state => state.shift.filterModal);
     const dispatch = useDispatch();
 
@@ -33,15 +34,16 @@ const FilterModal = () => {
                     formikfilter.resetForm();
                     formikfilter.setErrors({});
                     dispatch(shiftActions.filterModal());
-                    dispatch(shiftActions.filterDropdown());
+                    if(filterShift)
+                        dispatch(shiftActions.filterDropdown());
                 }}
                 onExited={() => {
                     formikfilter.resetForm();
                     formikfilter.setErrors({});
                 }}
-                onShow={() => {
-                    dispatch(shiftActions.filterDropdown())
-                }}
+                // onShow={() => {
+                //     dispatch(shiftActions.filterDropdown())
+                // }}
                 centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Filtre avancer</Modal.Title>

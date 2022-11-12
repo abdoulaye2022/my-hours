@@ -5,12 +5,13 @@ import { Icon, Button } from 'semantic-ui-react';
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { userActions } from "../../redux/actions/users.actions";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const HeaderApp = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { pathname } = useLocation();
     
     const redirectToLogin = () => {
         return navigate('/');
@@ -44,11 +45,11 @@ export const HeaderApp = () => {
                             </Nav.Link> */}
                         </Nav>
                         <Nav>
-                            <Nav.Link><Link to="/accueil" class="react">Accueil</Link></Nav.Link>
-                            <Nav.Link><Link to="/mes-horaires" class="react">Mes horraires</Link></Nav.Link>
-                            <Nav.Link><Link to="/configuration" class="react">Configuration</Link></Nav.Link>
+                            <Nav.Link><Link to="/accueil" class={pathname === '/accueil' ? ("react-sel") : ("react")}>Accueil</Link></Nav.Link>
+                            <Nav.Link><Link to="/mes-horaires" class={pathname === '/mes-horaires' ? ("react-sel") : ("react")}>Mes horraires</Link></Nav.Link>
+                            <Nav.Link><Link to="/configuration" class={pathname === '/configuration' ? ("react-sel") : ("react")}>Configuration</Link></Nav.Link>
                             <Nav.Link>
-                                <Link to="/profil" class="react">Profil</Link>
+                                <Link to="/profil" class={pathname === '/profil' ? ("react-sel") : ("react")}>Profil</Link>
                             </Nav.Link>
                             <Button color='red' onClick={() => dispatch(userActions.logout(redirectToLogin))}>
                                 <Icon name='sign out' /> Deconexion

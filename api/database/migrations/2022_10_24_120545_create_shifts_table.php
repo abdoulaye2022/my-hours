@@ -19,6 +19,7 @@ return new class extends Migration
             $table->dateTime('end_date')->nullable(false);
             $table->string('location');
             $table->integer('statut_shift');
+            $table->dateTime('added_at');
             $table->unsignedBigInteger('job_id');
             $table->unsignedBigInteger('user_id');
             $table->foreign('job_id')->references('id')->on('jobs');

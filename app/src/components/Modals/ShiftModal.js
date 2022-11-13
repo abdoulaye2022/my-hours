@@ -16,7 +16,8 @@ let statutOptions = [
     { key: "1", text: "Planifier", value: 0 },
 ];
 
-export const ShiftModal = ({ shift, setShift, setIsOpenAcc, setIsOpenPla }) => {
+export const ShiftModal = () => {
+    const shift = useSelector(state => state.shift.item);
     const modal = useSelector((state) => state.shift.modal);
     const startDateExist = useSelector((state) => state.shift.startDateExist);
     const endDateExist = useSelector((state) => state.shift.endDateExist);
@@ -24,7 +25,7 @@ export const ShiftModal = ({ shift, setShift, setIsOpenAcc, setIsOpenPla }) => {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const jobsOptions = [
-        ...jobs.map((p, i) => ({ key: i, text: p.name_job, value: p.id })),
+        ...jobs.filter(p => p.statut === 1).map((p, i) => ({ key: i, text: p.name_job, value: p.id })),
     ];
     const auth = useSelector((state) => state.user.user);
     const dispatch = useDispatch();
@@ -91,6 +92,7 @@ export const ShiftModal = ({ shift, setShift, setIsOpenAcc, setIsOpenPla }) => {
                 "YYYY-MM-DD HH:mm"
             );
             let end_date = moment(values.end_date).format("YYYY-MM-DD HH:mm");
+            let added_at = moment().format("YYYY-MM-DD HH:mm");
 
             if (Object.keys(shift).length === 0) {
                 dispatch(
@@ -100,7 +102,8 @@ export const ShiftModal = ({ shift, setShift, setIsOpenAcc, setIsOpenPla }) => {
                         end_date,
                         values.statut_shift,
                         values.location,
-                        auth.id
+                        auth.id,
+                        added_at
                     )
                 );
                 dispatch(shiftActions.shiftModal());
@@ -135,7 +138,8 @@ export const ShiftModal = ({ shift, setShift, setIsOpenAcc, setIsOpenPla }) => {
                 onHide={() => {
                     formikshift.resetForm();
                     formikshift.setErrors({});
-                    setShift({});
+                    //setShift({});
+                    dispatch(shiftActions.shiftItem({}));
                     setStartDate("");
                     setEndDate("");
                     if (modal) dispatch(shiftActions.shiftModal());
@@ -143,13 +147,16 @@ export const ShiftModal = ({ shift, setShift, setIsOpenAcc, setIsOpenPla }) => {
                 onExited={() => {
                     formikshift.resetForm();
                     formikshift.setErrors({});
-                    setShift({});
+                   // setShift({});
+                    dispatch(shiftActions.shiftItem({}));
                     setStartDate("");
                     setEndDate("");
                 }}
                 onShow={() => {
-                    setIsOpenAcc(false);
-                    setIsOpenPla(false);
+                    //setIsOpenAcc(false);
+                    dispatch(shiftActions.shiftPopupAcc())
+                    dispatch(shiftActions.shiftPopupPla());
+                    // setIsOpenPla(false);
                     if (Object.keys(shift).length !== 0) {
                         let da = new Date();
                         let s_date = new Date(shift.start_date);

@@ -12,6 +12,8 @@ const initialState = {
     filterModal: false,
     startDateExist: false,
     endDateExist: false,
+    shiftPopupAcc: false,
+    shiftPopupPla: false,
     error: "",
 };
 
@@ -33,7 +35,7 @@ export const shift = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                authShifts: [...state.authShifts, action.payload],
+                authShifts: [action.payload, ...state.authShifts],
             };
         case shiftConstants.ADD_SHIFT_FAILURE:
             return {
@@ -129,7 +131,7 @@ export const shift = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                authShifts: action.payload
+                authShifts: action.payload.sort((a, b) => new Date(a.added_at) - new Date(b.added_at)) 
             };
         case shiftConstants.AUTH_SHIFT_FAILURE:
             return {
@@ -174,7 +176,22 @@ export const shift = (state = initialState, action) => {
             return {
                 ...state,
                 filterDropdown: !state.filterDropdown
-            }
+            };
+        case shiftConstants.SHIFT_POPUP_ACC:
+            return {
+                ...state,
+                shiftPopupAcc: !state.shiftPopupAcc
+            };
+        case shiftConstants.SHIFT_POPUP_PLA:
+            return {
+                ...state,
+                shiftPopupPla: !state.shiftPopupPla
+            };
+        case shiftConstants.SHIFT_ITEM:
+            return {
+                ...state,
+                item: action.payload
+            };
         default:
             return state;
     }

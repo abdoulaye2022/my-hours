@@ -91,7 +91,8 @@ class ShiftController extends Controller
             'statut_shift' => 'required|numeric',
             'location' => 'max:255',
             'start_date' =>  'required|date_format:"Y-m-d H:i"',
-            'end_date' =>  'required|date_format:"Y-m-d H:i"'
+            'end_date' =>  'required|date_format:"Y-m-d H:i"',
+            'added_at' => 'required|date_format:"Y-m-d H:i"'
         ]);
 
         $shift = Shift::create($request->all());

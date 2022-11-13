@@ -19,13 +19,16 @@ import { shiftConstants } from "../redux/constants/shifts.constants";
 import FilterModal from "../components/Modals/FilterModal";
 
 const MesHoraires = () => {
-    const [shift, setShift] = useState({});
+    //const [shift, setShift] = useState({});
+    const shift = useSelector(state => state.shift.item);
     const shifts = useSelector((state) => state.shift.authShifts);
     const filterAuthShift = useSelector((state) => state.shift.filterAuthShift);
     const filterShift = useSelector((state) => state.shift.filterShift);
     const filterDropdown = useSelector((state) => state.shift.filterDropdown);
-    const [isOpenAcc, setIsOpenAcc] = useState(false);
-    const [isOpenPla, setIsOpenPla] = useState(false);
+    //const [isOpenAcc, setIsOpenAcc] = useState(false);
+    const isOpenAcc = useSelector(state => state.shift.shiftPopupAcc);
+    const isOpenPla = useSelector(state => state.shift.shiftPopupPla);
+    //const [isOpenPla, setIsOpenPla] = useState(false);
     const [currentDate, setCurrentDate] = useState(new Date());
 
     const dispatch = useDispatch();
@@ -54,10 +57,10 @@ const MesHoraires = () => {
                                 Ajouter
                             </Button>
                             <ShiftModal
-                                setShift={setShift}
-                                shift={shift}
-                                setIsOpenAcc={setIsOpenAcc}
-                                setIsOpenPla={setIsOpenPla}
+                               // setShift={setShift}
+                               // shift={shift}
+                                // setIsOpenAcc={setIsOpenAcc}
+                                // setIsOpenPla={setIsOpenPla}
                             />
                             <Dropdown
                                 text={
@@ -211,7 +214,8 @@ const MesHoraires = () => {
                                                           <Button
                                                               color="green"
                                                               onClick={() => {
-                                                                  setShift(p);
+                                                                 // setShift(p);
+                                                                 dispatch(shiftActions.shiftItem(p));
                                                                   dispatch(
                                                                       shiftActions.shiftModal()
                                                                   );
@@ -228,12 +232,16 @@ const MesHoraires = () => {
                                                           : false
                                                   }
                                                   onOpen={(e) => {
-                                                      setShift(p);
-                                                      setIsOpenAcc(true);
+                                                      //setShift(p);
+                                                      dispatch(shiftActions.shiftItem(p));
+                                                      dispatch(shiftActions.shiftPopupAcc())
+                                                      //setIsOpenAcc(true);
                                                   }}
                                                   onClose={() => {
-                                                      setShift({});
-                                                      setIsOpenAcc(false);
+                                                      //setShift({});
+                                                      dispatch(shiftActions.shiftItem({}));
+                                                      dispatch(shiftActions.shiftPopupAcc())
+                                                      //setIsOpenAcc(false);
                                                   }}
                                                   on="click"
                                                   position="top center"
@@ -287,9 +295,10 @@ const MesHoraires = () => {
                                                                           1
                                                                       )
                                                                   );
-                                                                  setIsOpenPla(
-                                                                      false
-                                                                  );
+                                                                  dispatch(shiftActions.shiftPopupPla());
+                                                                //   setIsOpenPla(
+                                                                //       false
+                                                                //   );
                                                               }}
                                                               disabled={moment(
                                                                   p.end_date
@@ -304,7 +313,8 @@ const MesHoraires = () => {
                                                           <Button
                                                               color="green"
                                                               onClick={() => {
-                                                                  setShift(p);
+                                                                  //setShift(p);
+                                                                  dispatch(shiftActions.shiftItem(p));
                                                                   dispatch(
                                                                       shiftActions.shiftModal()
                                                                   );
@@ -321,12 +331,16 @@ const MesHoraires = () => {
                                                           : false
                                                   }
                                                   onOpen={(e) => {
-                                                      setShift(p);
-                                                      setIsOpenPla(true);
+                                                      //setShift(p);
+                                                      dispatch(shiftActions.shiftItem(p));
+                                                      dispatch(shiftActions.shiftPopupPla());
+                                                      //setIsOpenPla(true);
                                                   }}
                                                   onClose={() => {
-                                                      setShift({});
-                                                      setIsOpenPla(false);
+                                                      //setShift({});
+                                                      dispatch(shiftActions.shiftItem({}));
+                                                      dispatch(shiftActions.shiftPopupPla());
+                                                      //setIsOpenPla(false);
                                                   }}
                                                   on="click"
                                                   position="top center"
@@ -375,7 +389,8 @@ const MesHoraires = () => {
                                                           <Button
                                                               color="green"
                                                               onClick={() => {
-                                                                  setShift(p);
+                                                                  //setShift(p);
+                                                                  dispatch(shiftActions.shiftItem(p));
                                                                   dispatch(
                                                                       shiftActions.shiftModal()
                                                                   );
@@ -392,12 +407,16 @@ const MesHoraires = () => {
                                                           : false
                                                   }
                                                   onOpen={(e) => {
-                                                      setShift(p);
-                                                      setIsOpenAcc(true);
+                                                     // setShift(p);
+                                                      dispatch(shiftActions.shiftItem(p));
+                                                      dispatch(shiftActions.shiftPopupAcc())
+                                                    //   setIsOpenAcc(true);
                                                   }}
                                                   onClose={() => {
-                                                      setShift({});
-                                                      setIsOpenAcc(false);
+                                                      //setShift({});
+                                                      dispatch(shiftActions.shiftItem({}));
+                                                      dispatch(shiftActions.shiftPopupAcc())
+                                                    //   setIsOpenAcc(false);
                                                   }}
                                                   on="click"
                                                   position="top center"
@@ -451,9 +470,10 @@ const MesHoraires = () => {
                                                                           1
                                                                       )
                                                                   );
-                                                                  setIsOpenPla(
-                                                                      false
-                                                                  );
+                                                                  dispatch(shiftActions.shiftPopupPla());
+                                                                //   setIsOpenPla(
+                                                                //       false
+                                                                //   );
                                                               }}
                                                               disabled={moment(
                                                                   p.end_date
@@ -468,7 +488,8 @@ const MesHoraires = () => {
                                                           <Button
                                                               color="green"
                                                               onClick={() => {
-                                                                  setShift(p);
+                                                                  //setShift(p);
+                                                                  dispatch(shiftActions.shiftItem(p));
                                                                   dispatch(
                                                                       shiftActions.shiftModal()
                                                                   );
@@ -485,20 +506,24 @@ const MesHoraires = () => {
                                                           : false
                                                   }
                                                   onOpen={(e) => {
-                                                      setShift(p);
-                                                      setIsOpenPla(true);
+                                                      //setShift(p);
+                                                      dispatch(shiftActions.shiftItem(p));
+                                                      dispatch(shiftActions.shiftPopupPla());
+                                                      //setIsOpenPla(true);
                                                   }}
                                                   onClose={() => {
-                                                      setShift({});
-                                                      setIsOpenPla(false);
+                                                      //setShift({});
+                                                      dispatch(shiftActions.shiftItem({}));
+                                                      dispatch(shiftActions.shiftPopupPla());
+                                                      //setIsOpenPla(false);
                                                   }}
                                                   on="click"
                                                   position="top center"
                                               />
                                           )
                                       )}
-                                {(filterShift === true &&
-                                (filterAuthShift.length === 0) || (shifts.length === 0)) ? (
+                                {((filterShift === true) &&
+                                ((filterAuthShift.length === 0) || (shifts.length === 0))) ? (
                                     <Table.Row>
                                         <Table.Cell colSpan={5}>
                                             <p style={{ textAlign: "center" }}>

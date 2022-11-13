@@ -15,7 +15,8 @@ async function add(
     end_date,
     statut_shift,
     location,
-    user_id
+    user_id, 
+    added_at
 ) {
     return await axios.post(
         `/shifts`,
@@ -26,6 +27,7 @@ async function add(
             statut_shift: statut_shift,
             location: location,
             user_id: user_id,
+            added_at: added_at
         },
         {
             headers: {

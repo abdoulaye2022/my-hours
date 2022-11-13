@@ -13,7 +13,10 @@ export const shiftActions = {
     filterAuthShift,
     clearFilter,
     filterModal,
-    filterDropdown
+    filterDropdown,
+    shiftPopupAcc,
+    shiftPopupPla,
+    shiftItem
 };
 
 function getAll() {
@@ -47,11 +50,11 @@ function getAll() {
     }
 }
 
-function add(job_id, start_date, end_date, statut_shift, location, user_id) {
+function add(job_id, start_date, end_date, statut_shift, location, user_id, added_at) {
     return function (dispatch) {
         dispatch(request());
         shiftServices
-            .add(job_id, start_date, end_date, statut_shift, location, user_id)
+            .add(job_id, start_date, end_date, statut_shift, location, user_id, added_at)
             .then((res) => {
                 dispatch(success(res.data));
             })
@@ -234,5 +237,24 @@ function filterModal () {
 function filterDropdown () {
     return {
         type: shiftConstants.FILTER_DROPDOWN
+    }
+}
+
+function shiftPopupAcc () {
+    return {
+        type: shiftConstants.SHIFT_POPUP_ACC
+    }
+}
+
+function shiftPopupPla () {
+    return {
+        type: shiftConstants.SHIFT_POPUP_PLA
+    }
+}
+
+function shiftItem (shift) {
+    return {
+        type: shiftConstants.SHIFT_ITEM,
+        payload: shift
     }
 }

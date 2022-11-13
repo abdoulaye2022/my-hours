@@ -197,9 +197,13 @@ export const shift = (state = initialState, action) => {
             return {
                 ...state,
                 authShifts: [...state.authShifts.map((p, i) => {
-                    store.getState().job.items.map((k, i) => {
-                        if((k.id === action.id) && k.id === p.job_id) {
-                            p.statut = 2;
+                    action.payload.map((k, i) => {
+                        if(k.id === p.job_id && k.statut === 0) {
+                            console.log("Rendre le statut a 2")
+                            p.statut_shift = 2;
+                        } else if(k.id === p.job_id && k.statut === 1) {
+                            console.log("Rendre le statut actif")
+                            p.statut_shift = k.statut
                         }
                     });
                     return p;

@@ -4,6 +4,7 @@ import { Formik, useFormik } from 'formik';
 import { Modal } from 'react-bootstrap';
 import { Button, Input, Form, Select } from 'semantic-ui-react';
 import { employerActions } from "../../redux/actions/employers.actions";
+import { shiftActions } from "../../redux/actions/shifts.actions";
 
 const statutOptions = [
     { key: '0', text: 'Actif', value: 1 },
@@ -13,6 +14,7 @@ const statutOptions = [
 export const EmployerModal = ({ employer, setEmployer }) => {
     const auth = useSelector(state => state.user.user);
     const modal = useSelector(state => state.employer.modal);
+    const jobs = useSelector(state => state.job.items);
     const dispatch = useDispatch();
 
     const formikemployer = useFormik({
@@ -35,11 +37,16 @@ export const EmployerModal = ({ employer, setEmployer }) => {
                 resetForm();
             }
             else {
-                dispatch(employerActions.update(employer.id, values.name_emp, values.statut));
+                dispatch(employerActions.update(employer.id, values.name_emp, values.statut, updateEmployer));
+                
                 resetForm();
             }
         }
     });
+
+    const updateEmployer = () => {
+        dispatch(shiftActions.updateEmployerStatut([...jobs.filter(p => p.employer_id === employer.id)]));
+    }
 
     return (
         <>

@@ -193,7 +193,7 @@ export const ShiftModal = () => {
                 <Formik>
                     <Form onSubmit={formikshift.handleSubmit}>
                         <Modal.Body>
-                            <Form.Field>
+                            <Form.Field required>
                                 <label style={{ fontWeight: "normal" }}>
                                     Travail
                                 </label>
@@ -223,7 +223,7 @@ export const ShiftModal = () => {
                                         formikshift.errors.job_id}
                                 </span>
                             </Form.Field>
-                            <Form.Field>
+                            <Form.Field required>
                                 <label style={{ fontWeight: "normal" }}>
                                     Date debut
                                 </label>
@@ -322,7 +322,7 @@ export const ShiftModal = () => {
                                         formikshift.errors.start_date}
                                 </span>
                             </Form.Field>
-                            <Form.Field>
+                            <Form.Field required>
                                 <label style={{ fontWeight: "normal" }}>
                                     Date de fin
                                 </label>
@@ -418,7 +418,7 @@ export const ShiftModal = () => {
                                         formikshift.errors.end_date}
                                 </span>
                             </Form.Field>
-                            <Form.Field>
+                            <Form.Field required>
                                 <label style={{ fontWeight: "normal" }}>
                                     Statut
                                 </label>

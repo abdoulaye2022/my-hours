@@ -1,6 +1,7 @@
 import { employerConstants } from "../constants/employers.constants";
 import { employerServices } from "../services/employers.services";
 import { jobActions } from "./jobs.actions";
+import { shiftActions } from "./shifts.actions";
 
 export const employerActions = {
     getAuthEmployers,
@@ -83,6 +84,7 @@ function update(id, name_emp, statut) {
             .then(res => {
                 dispatch(success(res.data));
                 dispatch(jobActions.updateEmployer(res.data));
+                dispatch(shiftActions.updateEmployerStatut(res.data));
                 dispatch(modalEmployer());
             })
             .catch(err => {

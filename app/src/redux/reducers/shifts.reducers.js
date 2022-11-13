@@ -1,5 +1,6 @@
 import { shiftConstants } from "../constants/shifts.constants";
 import moment from "moment";
+import store from "../../store";
 
 const initialState = {
     loading: false,
@@ -192,6 +193,18 @@ export const shift = (state = initialState, action) => {
                 ...state,
                 item: action.payload
             };
+        case shiftConstants.UPDATE_EMPLOYER_SHIFT:
+            return {
+                ...state,
+                authShifts: [...state.authShifts.map((p, i) => {
+                    store.getState().job.items.map((k, i) => {
+                        if((k.id === action.id) && k.id === p.job_id) {
+                            p.statut = 2;
+                        }
+                    });
+                    return p;
+                })]
+            }
         default:
             return state;
     }

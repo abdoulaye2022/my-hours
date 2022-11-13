@@ -59,7 +59,7 @@ export const job = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 items: [...state.items.map((p, indxe) => {
-                    if(p.id === action.payload.id)
+                    if (p.id === action.payload.id)
                         p = action.payload;
 
                     return p;
@@ -75,14 +75,14 @@ export const job = (state = initialState, action) => {
             return {
                 ...state,
                 items: [...state.items.map((p, i) => {
-                    if(p.employer_id === action.payload.id) {
+                    if (p.employer_id === action.payload.id) {
                         p.name_emp = action.payload.name_emp;
                         p.statut = action.payload.statut;
                     }
                     return p;
                 })]
-            }
+            };
         default:
-return state;
+            return state;
     }
 }

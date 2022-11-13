@@ -16,7 +16,8 @@ export const shiftActions = {
     filterDropdown,
     shiftPopupAcc,
     shiftPopupPla,
-    shiftItem
+    shiftItem,
+    updateEmployerStatut
 };
 
 function getAll() {
@@ -256,5 +257,12 @@ function shiftItem (shift) {
     return {
         type: shiftConstants.SHIFT_ITEM,
         payload: shift
+    }
+}
+
+function updateEmployerStatut (employer) {
+    return {
+        type: shiftConstants.UPDATE_EMPLOYER_SHIFT,
+        payload: employer
     }
 }

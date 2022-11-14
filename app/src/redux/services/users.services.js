@@ -3,11 +3,16 @@ import store from "../../store";
 
 export const userServices = {
     login,
-    update
+    update,
+    register
 }
 
 async function login(email, password) {
     return await axios.post(`/login`, { email: email, password: password });
+}
+
+async function register (firstname, lastname, email, password) {
+    return await axios.post(`/register`, { firstname: firstname, lastname: lastname, email: email, password: password });
 }
 
 async function update(id, firstname, lastname, gender, country, province, city, bio, password) {

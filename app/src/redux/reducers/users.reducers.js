@@ -30,6 +30,25 @@ export const user = (state = initialState, action) => {
                 loading: false,
                 error: action.payload
             };
+        case userConstants.REGISTER_USER_REQUEST:
+            return {
+                ...state,
+                loading: true
+            };
+        case userConstants.REGISTER_USER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                token: action.payload.access_token,
+                user: action.payload.user,
+                authenticathed: true,
+            };
+        case userConstants.REGISTER_USER_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
         // case userConstants.GETALL_USER_REQUEST:
         //     return {
         //         ...state,

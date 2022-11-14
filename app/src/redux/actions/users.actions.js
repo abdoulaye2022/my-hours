@@ -6,6 +6,7 @@ import { shiftActions } from "./shifts.actions";
 
 export const userActions = {
     login,
+    register,
     logout,
     update
 };
@@ -83,4 +84,39 @@ function logout(cb) {
     return {
         type: userConstants.LOGOUT_USER,
     };
+}
+
+function register(firstname, lastname, email, password, cb) {
+    return function (dispatch) {
+        dispatch(request());
+        userServices.register(firstname, lastname, email, password)
+            .then(res => {
+                dispatch(success(res.data));
+                dispatch(employerActions.getAuthEmployers(res.data.user.id));
+                dispatch(jobActions.getAuthJobs(res.data.user.id));
+                dispatch(shiftActions.getAll());
+                dispatch(shiftActions.authShift(res.data.user.id));
+                cb();
+            })
+            .catch(err => [
+                dispatch(failure(err.message))
+            ])
+    };
+    function request() {
+        return {
+            type: userConstants.REGISTER_USER_REQUEST
+        }
+    };
+    function success(user) {
+        return {
+            type: userConstants.REGISTER_USER_SUCCESS,
+            payload: user
+        }
+    };
+    function failure(error) {
+        return {
+            type: userConstants.REGISTER_USER_FAILURE,
+            payload: error
+        }
+    }
 }

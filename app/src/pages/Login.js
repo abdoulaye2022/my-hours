@@ -16,6 +16,36 @@ const Login = () => {
         return navigator("/");
     };
 
+    const formiklogin = useFormik({
+        initialValues: { email: "", password: "" },
+        validate: (values) => {
+            const errors = {};
+            console.log(values.password.length)
+            if (!values.email) {
+                errors.email = 'E-mail est obligatoire';
+            } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+                errors.email = 'E-mail est invalid';
+            }
+
+            if (!values.password) {
+                errors.password = "Mot de passe est obligatoire";
+            } else if (values.password.length < 5) {
+                errors.password = "Mot de passe doit être supérieur à 4 caractères";
+            }
+
+            return errors;
+        },
+        onSubmit: (values, { resetForm }) => {
+            dispatch(
+                userActions.login(
+                    values.email,
+                    values.password,
+                    redirectToHome
+                )
+            );
+        },
+    });
+
     const formikcompte = useFormik({
         initialValues: { firstname: "", lastname: "", email: "", password: "" },
         validate: (values) => {
@@ -29,17 +59,21 @@ const Login = () => {
             }
 
             if (!values.email) {
-                errors.email = "E-mail est obligatoire";
+                errors.email = 'E-mail est obligatoire';
+            } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+                errors.email = 'E-mail est invalid';
             }
 
             if (!values.password) {
-                errors.password = "Nom est obligatoire";
+                errors.password = "Mot de passe est obligatoire";
+            } else if (values.password.length <= 5) {
+                errors.password = "Mot de passe doit être supérieur à 6 caractères";
             }
 
             return errors;
         },
         onSubmit: (values, { resetForm }) => {
-            console.log(values);
+            dispatch(userActions.register(values.firstname, values.lastname, values.email, values.password, redirectToHome));
         },
     });
 
@@ -48,97 +82,53 @@ const Login = () => {
             menuItem: "Authentification",
             render: () => (
                 <div style={{ paddingTop: 10 }}>
-                    <Formik
-                        initialValues={{ email: "", password: "" }}
-                        validate={(values) => {
-                            const errors = {};
-                            if (!values.email) {
-                                errors.email = "E-mail est obligatoire";
-                            } else if (
-                                !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
-                                    values.email
-                                )
-                            ) {
-                                errors.email = "E-mail est invalide";
-                            }
-
-                            if (!values.password) {
-                                errors.password = "Mot de passe est obligatoir";
-                            }
-                            return errors;
-                        }}
-                        onSubmit={(values, { setSubmitting }) => {
-                            dispatch(
-                                userActions.login(
-                                    values.email,
-                                    values.password,
-                                    redirectToHome
-                                )
-                            );
-                        }}
-                    >
-                        {({
-                            values,
-                            errors,
-                            touched,
-                            handleChange,
-                            handleBlur,
-                            handleSubmit,
-                            isSubmitting,
-                            /* and other goodies */
-                        }) => (
-                            <Form id="login" onSubmit={handleSubmit}>
-                                <Form.Field required>
-                                    <label style={{ fontWeight: "normal" }}>
-                                        E-mail
-                                    </label>
-                                    <Input
-                                        type="email"
-                                        name="email"
-                                        placeholder="Entrer votre adress courriel"
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        value={values.email}
-                                        //style={{ width: 300 }}
-                                    />
-                                    <span
-                                        style={{
-                                            color: "#9F496E",
-                                            display: "block",
-                                        }}
-                                    >
-                                        {errors.email &&
-                                            touched.email &&
-                                            errors.email}
-                                    </span>
-                                </Form.Field>
-                                <Form.Field required>
-                                    <label style={{ fontWeight: "normal" }}>
-                                        Mot de passe
-                                    </label>
-                                    <Input
-                                        type="password"
-                                        name="password"
-                                        placeholder="Entrer votre mot de passe"
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        value={values.password}
-                                        //style={{ width: 300 }}
-                                    />
-                                    <span
-                                        style={{
-                                            color: "#9F496E",
-                                            display: "block",
-                                        }}
-                                    >
-                                        {errors.password &&
-                                            touched.password &&
-                                            errors.password}
-                                    </span>
-                                </Form.Field>
-                                <Form.Button>Se connecter</Form.Button>
-                            </Form>
-                        )}
+                    <Formik>
+                        <Form id="login" onSubmit={formiklogin.handleSubmit}>
+                            <Form.Field required>
+                                <label style={{ fontWeight: "normal" }}>
+                                    E-mail
+                                </label>
+                                <Input
+                                    type="email"
+                                    name="email"
+                                    placeholder="Entrer votre adress courriel"
+                                    onChange={formiklogin.handleChange}
+                                    onBlur={formiklogin.handleBlur}
+                                    value={formiklogin.values.email}
+                                />
+                                <span style={{
+                                    color: "#9F496E",
+                                    display: "wrap",
+                                }}>{formiklogin.errors.email &&
+                                    formiklogin.touched.email &&
+                                    formiklogin.errors.email}</span>
+                            </Form.Field>
+                            <Form.Field required>
+                                <label style={{ fontWeight: "normal" }}>
+                                    Mot de passe
+                                </label>
+                                <Input
+                                    type="password"
+                                    name="password"
+                                    placeholder="Entrer votre mot de passe"
+                                    onChange={formiklogin.handleChange}
+                                    onBlur={formiklogin.handleBlur}
+                                    value={formiklogin.values.password}
+                                    error={formiklogin.errors.password &&
+                                        formiklogin.touched.password &&
+                                        formiklogin.errors.password}
+                                />
+                                <span style={{
+                                    color: "#9F496E",
+                                    display: "wrap",
+                                }}>{formiklogin.errors.password &&
+                                    formiklogin.touched.password &&
+                                    formiklogin.errors.password}</span>
+                            </Form.Field>
+                            <Form.Field>
+                                <Button type="submit">Se connecter</Button>
+                            </Form.Field>
+                        </Form>
                     </Formik>
                 </div>
             ),
@@ -148,9 +138,9 @@ const Login = () => {
             render: () => (
                 <div style={{ paddingTop: 10 }}>
                     <Formik>
-                        <Form onSubmit={formikcompte.handleSubmit}>
+                        <Form id="created" onSubmit={formikcompte.handleSubmit}>
                             <Form.Field required>
-                                <span>Prénom</span>
+                                <label style={{ fontWeight: "normal" }}>Prénom</label>
                                 <Input
                                     id="firstname"
                                     name="firstname"
@@ -163,7 +153,7 @@ const Login = () => {
                                 <span
                                     style={{
                                         color: "#9F496E",
-                                        display: "wrap",
+                                        display: "wrap"
                                     }}
                                 >
                                     {formikcompte.errors.firstname &&
@@ -172,7 +162,7 @@ const Login = () => {
                                 </span>
                             </Form.Field>
                             <Form.Field required>
-                                <span>Nom</span>
+                                <label style={{ fontWeight: "normal" }}>Nom</label>
                                 <Input
                                     id="lastname"
                                     name="lastname"
@@ -182,19 +172,15 @@ const Login = () => {
                                     onBlur={formikcompte.handleBlur}
                                     value={formikcompte.values.lastname}
                                 />
-                                <span
-                                    style={{
-                                        color: "#9F496E",
-                                        display: "wrap",
-                                    }}
-                                >
-                                    {formikcompte.errors.lastname &&
-                                        formikcompte.touched.lastname &&
-                                        formikcompte.errors.lastname}
-                                </span>
+                                <span style={{
+                                    color: "#9F496E",
+                                    display: "wrap",
+                                }}>{formikcompte.errors.lastname &&
+                                    formikcompte.touched.lastname &&
+                                    formikcompte.errors.lastname}</span>
                             </Form.Field>
                             <Form.Field required>
-                                <span>E-mail</span>
+                                <label style={{ fontWeight: "normal" }}>E-mail</label>
                                 <Input
                                     id="email"
                                     name="email"
@@ -204,20 +190,16 @@ const Login = () => {
                                     onBlur={formikcompte.handleBlur}
                                     value={formikcompte.values.email}
                                 />
-                                <span
-                                    style={{
-                                        color: "#9F496E",
-                                        display: "wrap",
-                                    }}
-                                >
-                                    {formikcompte.errors.email &&
-                                        formikcompte.touched.email &&
-                                        formikcompte.errors.email}
-                                </span>
+                                <span style={{
+                                    color: "#9F496E",
+                                    display: "wrap",
+                                }}>{formikcompte.errors.email &&
+                                    formikcompte.touched.email &&
+                                    formikcompte.errors.email}</span>
                             </Form.Field>
                             <Form.Field required>
-                                <span>Password</span>
-                                <Input
+                                <label style={{ fontWeight: "normal" }}>Password</label>
+                                <Form.Input
                                     id="password"
                                     name="password"
                                     type="password"
@@ -226,16 +208,12 @@ const Login = () => {
                                     onBlur={formikcompte.handleBlur}
                                     value={formikcompte.values.password}
                                 />
-                                <span
-                                    style={{
-                                        color: "#9F496E",
-                                        display: "wrap",
-                                    }}
-                                >
-                                    {formikcompte.errors.password &&
-                                        formikcompte.touched.password &&
-                                        formikcompte.errors.password}
-                                </span>
+                                 <span style={{
+                                    color: "#9F496E",
+                                    display: "wrap",
+                                }}>{formikcompte.errors.password &&
+                                    formikcompte.touched.password &&
+                                    formikcompte.errors.password}</span>
                             </Form.Field>
                             <Form.Field>
                                 <Button type="submit">Créer un compte</Button>

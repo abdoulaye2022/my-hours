@@ -13,12 +13,18 @@
 |
 */
 
+$app->get('/', function () use ($app) {return $app->version();});
+
 Route::group([
 
     'prefix' => 'api'
 
 ], function ($router) {
+    // Router::get("/", function () {
+    //     return "Un text";
+    // });
     Route::post('login', 'AuthController@login');
+    Route::post('register', 'AuthController@register');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('user-profile', 'AuthController@me');

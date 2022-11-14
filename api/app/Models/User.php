@@ -2,6 +2,7 @@
 
 namespace App\Models;
 use  App\Models\Shift;
+use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Auth\Authenticatable;
 use Laravel\Lumen\Auth\Authorizable;
@@ -17,8 +18,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     use Authenticatable, Authorizable;
     public $timestamps = false;
     protected $fillable = [
-        " firstname", "lastname", "gender", "country", "province", "city", "bio", "email", "new_user", " lang_app", "is_admin"
+        "firstname", "lastname", "gender", "country", "province", "city", "bio", "email", "new_user", " lang_app", "is_admin", "password"
     ];
+
+    protected $hidden = [
+        'password'
+    ];
+
+    public function setPasswordAttribute($password)
+    {
+        $this->attributes['password'] = Hash::make($password);
+    }
 
     public function shifts()
     {

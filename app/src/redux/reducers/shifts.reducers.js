@@ -13,6 +13,7 @@ const initialState = {
     filterModal: false,
     startDateExist: false,
     endDateExist: false,
+    dateExist: false,
     shiftPopupAcc: false,
     shiftPopupPla: false,
     error: "",
@@ -25,7 +26,8 @@ export const shift = (state = initialState, action) => {
                 ...state,
                 modal: !state.modal,
                 startDateExist: false,
-                endDateExist: false
+                endDateExist: false,
+                dateExist: false
             };
         case shiftConstants.ADD_SHIFT_REQUEST:
             return {
@@ -123,6 +125,17 @@ export const shift = (state = initialState, action) => {
                 ...state,
                 endDateExist: authEndDateShiftsExist.length === 0 ? false : true
             };
+        case shiftConstants.CHECK_DATE_EXIST:
+            let authDateShiftsExist = [...state.authShifts.filter(p => (
+                (p.user_id === action.user_id) && (
+                    (moment(p.start_date).isBetween(action.start_date, action.end_date)) ||
+                    (moment(p.end_date).isBetween(action.start_date, action.end_date))
+                )
+            ))];
+            return {
+                ...state,
+                dateExist: authDateShiftsExist.length === 0 ? false : true
+            }
         case shiftConstants.AUTH_SHIFT_REQUEST:
             return {
                 ...state,
@@ -132,7 +145,7 @@ export const shift = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                authShifts: action.payload.sort((a, b) => new Date(a.added_at) - new Date(b.added_at)) 
+                authShifts: action.payload
             };
         case shiftConstants.AUTH_SHIFT_FAILURE:
             return {
@@ -141,26 +154,65 @@ export const shift = (state = initialState, action) => {
                 error: action.payload
             };
         case shiftConstants.FILTER_AUTH_SHIFT:
-            // let tab = [];
-            // if(action.accomplis === 1) {
-            //     tab = [...state.authShifts.filter(p => p.statut_shift === action.accomplis)]
-            // }
-            // if()
             return {
                 ...state,
                 loading: false,
                 filterShift: true,
-                filterAuthShift: action.accomplis === 1 ? (
-                    [state.filterAuthShift, ...state.authShifts.filter(p => p.statut_shift === action.accomplis)]
-                ) : action.planifier === 0 ? (
-                    [state.filterAuthShift, ...state.authShifts.filter(p => p.statut_shift === action.planifier)]
-                ) : action.annuler === 2 ? (
-                    [state.filterAuthShift, ...state.authShifts.filter(p => p.statut_shift === action.annuler)]
-                ) : ((action.start_date !== '') && (action.end_date !== '')) ? (
-                    [state.filterAuthShift, ...state.authShifts.filter(p => moment(p.start_date).isBetween(action.start_date, action.end_date))]
-                ) : (
-                    []
-                )
+                filterAuthShift: [...state.authShifts.filter(p => {
+                    console.log(action.statut_shift)
+                    if (action.statut_shift != '' || action.statut_shift === 0) {
+                        return p.statut_shift === parseInt(action.statut_shift);
+                    } else {
+                        return p;
+                    }
+                }).filter(p => {
+                    if(action.start_date != null && action.end_date != null) {
+                        const start_date = new Date(action.start_date);
+                        const end_date = new Date(action.end_date);
+                        if (!isNaN(start_date) && !isNaN(end_date)) {
+                            return ((moment(p.start_date).isBetween(action.start_date, action.end_date)) &&
+                                moment(p.end_date).isBetween(action.start_date, action.end_date));
+                        } else if(!isNaN(start_date)) {
+                            let sd = moment(start_date).format("YYYY-MM-DD");
+                            let psd = moment(p.start_date).format("YYYY-MM-DD");
+                            return (moment(psd).isSame(sd));
+                        } else if(!isNaN(end_date)) {
+                            let ed = moment(end_date).format("YYYY-MM-DD");
+                            let ped = moment(p.end_date).format("YYYY-MM-DD");
+                            return (moment(ed).isSame(ped));
+                        } else
+                            return p;
+                    } else {
+                        return p;
+                    }
+                })]
+                // filterAuthShift: [...state.authShifts.filter((p) => {
+                //     let res;
+                //     if (p.statut_shift === action.accomplis)
+                //         res = p;
+                //     else if (p.statut_shift === action.planifier)
+                //         res = p;
+                //     else if (p.statut_shift === action.annuler)
+                //         res = p;
+                //     console.log(action.start_date instanceof Date && !isNaN(action.start_date))
+                //     if (action.start_date !== '' && action.end_date !== '') {
+                //         if (moment(p.start_date).isBetween(action.start_date, action.end_date))
+                //             res = p;
+                //     }
+
+                //     return res;
+                // })]
+                // filterAuthShift: action.accomplis === 1 ? (
+                //     [state.filterAuthShift, ...state.authShifts.filter(p => p.statut_shift === action.accomplis)]
+                // ) : action.planifier === 0 ? (
+                //     [state.filterAuthShift, ...state.authShifts.filter(p => p.statut_shift === action.planifier)]
+                // ) : action.annuler === 2 ? (
+                //     [state.filterAuthShift, ...state.authShifts.filter(p => p.statut_shift === action.annuler)]
+                // ) : ((action.start_date !== '') && (action.end_date !== '')) ? (
+                //     [state.filterAuthShift, ...state.authShifts.filter(p => moment(p.start_date).isBetween(action.start_date, action.end_date))]
+                // ) : (
+                //     []
+                // )
             }
         case shiftConstants.CLEAR_FILTER_SHIFT:
             return {
@@ -198,11 +250,9 @@ export const shift = (state = initialState, action) => {
                 ...state,
                 authShifts: [...state.authShifts.map((p, i) => {
                     action.payload.map((k, i) => {
-                        if(k.id === p.job_id && k.statut === 0) {
-                            console.log("Rendre le statut a 2")
+                        if (k.id === p.job_id && k.statut === 0) {
                             p.statut_shift = 2;
-                        } else if(k.id === p.job_id && k.statut === 1) {
-                            console.log("Rendre le statut actif")
+                        } else if (k.id === p.job_id && k.statut === 1) {
                             p.statut_shift = k.statut
                         }
                     });

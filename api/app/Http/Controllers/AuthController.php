@@ -15,6 +15,7 @@ class AuthController extends Controller
     {
         $this->middleware('auth:api', ['except' => ['login', 'register', 'refresh', 'logout']]);
     }
+
     /**
      * Get a JWT via given credentials.
      *
@@ -25,14 +26,14 @@ class AuthController extends Controller
     {
 
         $this->validate($request, [
-            'email' => 'required|string',
-            'password' => 'required|string',
+            'email' => 'required|email|max:255',
+            'password' => 'required|string|min:6',
         ]);
 
         $credentials = $request->only(['email', 'password']);
 
         if (! $token = Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['message' => 'E-mail ou Mot de passe n\'existe pas'], 401);
         }
 
         return $this->respondWithToken($token);

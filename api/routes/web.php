@@ -13,38 +13,33 @@
 |
 */
 
-$app->get('/', function () use ($app) {return $app->version();});
-
-Route::group([
+$router->group([
 
     'prefix' => 'api'
 
 ], function ($router) {
-    // Router::get("/", function () {
-    //     return "Un text";
-    // });
-    Route::post('login', 'AuthController@login');
-    Route::post('register', 'AuthController@register');
-    Route::post('logout', 'AuthController@logout');
-    Route::post('refresh', 'AuthController@refresh');
-    Route::post('user-profile', 'AuthController@me');
-    Route::put('users/{id}', 'AuthController@update');
+    $router->post('login', 'AuthController@login');
+    $router->post('register', 'AuthController@register');
+    $router->post('logout', 'AuthController@logout');
+    $router->post('refresh', 'AuthController@refresh');
+    $router->post('user-profile', 'AuthController@me');
+    $router->put('users/{id}', 'AuthController@update');
 
     // Employers
-    Route::get('/employers/{id}', 'EmployerController@index');
-    Route::post('/employers', 'EmployerController@create');
-    Route::put('/employers/{id}', 'EmployerController@update');
+    $router->get('/employers/{id}', 'EmployerController@index');
+    $router->post('/employers', 'EmployerController@create');
+    $router->put('/employers/{id}', 'EmployerController@update');
 
     // Jobs
-    Route::get('/jobs/{id}', 'JobController@index');
-    Route::post('/jobs', 'JobController@create');
-    Route::put('/jobs/{id}', 'JobController@update');
+    $router->get('/jobs/{id}', 'JobController@index');
+    $router->post('/jobs', 'JobController@create');
+    $router->put('/jobs/{id}', 'JobController@update');
 
     // Shift
-    Route::get("/shifts", "ShiftController@index");
-    Route::get("/shifts/{id}", "ShiftController@authshift");
-    Route::post("/shifts", "ShiftController@create");
-    Route::put("/shifts/{id}", "ShiftController@update");
-    Route::put("/shifts/complete/{id}", "ShiftController@complete");
+    $router->get("/shifts", "ShiftController@index");
+    $router->get("/shifts/{id}", "ShiftController@authshift");
+    $router->post("/shifts", "ShiftController@create");
+    $router->put("/shifts/{id}", "ShiftController@update");
+    $router->put("/shifts/complete/{id}", "ShiftController@complete");
 
 });

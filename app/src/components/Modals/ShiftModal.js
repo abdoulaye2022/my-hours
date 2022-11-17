@@ -7,7 +7,7 @@ import { shiftActions } from "../../redux/actions/shifts.actions";
 import DatePicker from "react-datepicker";
 import moment from "moment/moment";
 import "react-datepicker/dist/react-datepicker.css";
-import { registerLocale, setDefaultLocale } from "react-datepicker";
+import { registerLocale } from "react-datepicker";
 import ca from "date-fns/locale/fr-CA";
 registerLocale("ca", ca);
 
@@ -21,6 +21,7 @@ export const ShiftModal = () => {
     const modal = useSelector((state) => state.shift.modal);
     const startDateExist = useSelector((state) => state.shift.startDateExist);
     const endDateExist = useSelector((state) => state.shift.endDateExist);
+    const dateExist = useSelector(state => state.shift.dateExist);
     const jobs = useSelector((state) => state.job.items);
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
@@ -47,6 +48,7 @@ export const ShiftModal = () => {
         },
         validate: (values) => {
             const errors = {};
+            console.log(dateExist)
             if (!values.job_id) {
                 errors.job_id = "Trvail est obligatoire.";
             }
@@ -75,6 +77,11 @@ export const ShiftModal = () => {
 
             if (values.statut_shift !== 0 && values.statut_shift !== 1) {
                 errors.statut_shift = "Trvail est obligatoire.";
+            }
+
+            if (dateExist) {
+                errors.start_date = "Cet interval de date est deja occupe."
+                errors.end_date = "Cet interval de date est deja occupe."
             }
 
             if (startDateExist) {
@@ -147,7 +154,7 @@ export const ShiftModal = () => {
                 onExited={() => {
                     formikshift.resetForm();
                     formikshift.setErrors({});
-                   // setShift({});
+                    // setShift({});
                     dispatch(shiftActions.shiftItem({}));
                     setStartDate("");
                     setEndDate("");
@@ -187,8 +194,8 @@ export const ShiftModal = () => {
                     }
                 }}
             >
-                <Modal.Header closeButton>
-                    <Modal.Title>Ajouter un shift</Modal.Title>
+                <Modal.Header closeButton style={{ backgroundColor: "#647295", color: "white", fontWeight: "bold" }}>
+                    <Modal.Title>{Object.keys(shift).length === 0 ? ("Ajouter un shift") : ("Modifier un shift")}</Modal.Title>
                 </Modal.Header>
                 <Formik>
                     <Form onSubmit={formikshift.handleSubmit}>
@@ -402,6 +409,7 @@ export const ShiftModal = () => {
                                             date
                                         );
                                         dispatch(shiftActions.checkEndDateShift(auth.id, date));
+                                        dispatch(shiftActions.checkDateShift(auth.id, startDate, date));
                                     }}
                                     onBlur={formikshift.handleBlur}
                                     // placeholder="Entrer la date du travail..."
@@ -484,7 +492,7 @@ export const ShiftModal = () => {
                             >
                                 Annuler
                             </Button>
-                            <Button primary type="submit">
+                            <Button primary type="submit" style={{ backgroundColor: "#647295", color: "white" }}>
                                 Enregistrer
                             </Button>
                         </Modal.Footer>

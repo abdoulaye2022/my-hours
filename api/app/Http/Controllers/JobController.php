@@ -31,9 +31,9 @@ class JobController extends Controller
                 "id" => $jobs[$i]->id,
                 "name_job" => $jobs[$i]->name_job,
                 "color_job" => $jobs[$i]->color_job,
-                "employer_id" => $jobs[$i]->employer_id,
-                "name_emp" => $this->getEmployer($jobs[$i]->employer_id)->name_emp,
-                "statut" => $this->getEmployer($jobs[$i]->employer_id)->statut
+                "employer_id" => (int) $jobs[$i]->employer_id,
+                "name_emp" => $this->getEmployer((int) $jobs[$i]->employer_id)->name_emp,
+                "statut" => (int) $this->getEmployer((int) $jobs[$i]->employer_id)->statut
             ];
 
             $i++;
@@ -62,9 +62,9 @@ class JobController extends Controller
             "id" => $job->id,
             "name_job" => $job->name_job,
             "color_job" => $job->color_job,
-            "employer_id" => $job->employer_id,
-            "name_emp" => $this->getEmployer($job->employer_id)->name_emp,
-            "statut" => $this->getEmployer($job->employer_id)->statut
+            "employer_id" => (int) $job->employer_id,
+            "name_emp" => $this->getEmployer((int) $job->employer_id)->name_emp,
+            "statut" => (int) $this->getEmployer((int) $job->employer_id)->statut
         ];
 
         return response()->json($tab);
@@ -89,9 +89,9 @@ class JobController extends Controller
             "id" => $job->id,
             "name_job" => $job->name_job,
             "color_job" => $job->color_job,
-            "employer_id" => $job->employer_id,
-            "name_emp" => $this->getEmployer($job->employer_id)->name_emp,
-            "statut" => $this->getEmployer($job->employer_id)->statut
+            "employer_id" => (int) $job->employer_id,
+            "name_emp" => $this->getEmployer((int) $job->employer_id)->name_emp,
+            "statut" => (int) $this->getEmployer((int) $job->employer_id)->statut
         ];
 
         return response()->json($tab);

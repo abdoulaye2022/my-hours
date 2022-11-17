@@ -8,7 +8,8 @@ export const userActions = {
     login,
     register,
     logout,
-    update
+    update,
+    actualiseLoginPage
 };
 
 function update(id, firstname, lastname, gender, country, province, city, bio, password) {
@@ -41,7 +42,7 @@ function update(id, firstname, lastname, gender, country, province, city, bio, p
     }
 }
 
-function login(email, password, cb, er) {
+function login(email, password, cb) {
     return function (dispatch) {
         dispatch(request());
         userServices
@@ -55,8 +56,7 @@ function login(email, password, cb, er) {
                 cb();
             })
             .catch((err) => {
-                er("Incorrect email or password.");
-                dispatch(failure(err.message));
+                dispatch(failure(err.response.data.message));
             });
     };
     function request() {
@@ -118,5 +118,11 @@ function register(firstname, lastname, email, password, cb) {
             type: userConstants.REGISTER_USER_FAILURE,
             payload: error
         }
+    }
+}
+
+function actualiseLoginPage () {
+    return {
+        type: userConstants.ACTUALISE_LOGIN_PAGE
     }
 }

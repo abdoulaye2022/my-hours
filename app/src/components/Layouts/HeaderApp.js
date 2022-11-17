@@ -20,7 +20,7 @@ export const HeaderApp = () => {
         <>
             <Navbar expand="md">
                 <Container fluid>
-                    <Navbar.Brand href="#">My-Hours</Navbar.Brand>
+                    <Navbar.Brand href="#" style={{ fontWeight: "bold", color: "white"}}>My-Hours</Navbar.Brand>
                     <Navbar.Toggle aria-controls="navbarScroll" />
                     <Navbar.Collapse id="navbarScroll">
                         <Nav
@@ -51,7 +51,7 @@ export const HeaderApp = () => {
                             <Nav.Link>
                                 <Link to="/profil" class={pathname === '/profil' ? ("react-sel") : ("react")}>Profil</Link>
                             </Nav.Link>
-                            <Button color='red' onClick={() => dispatch(userActions.logout(redirectToLogin))}>
+                            <Button color='red' onClick={() => dispatch(userActions.logout(redirectToLogin))} style={{ fontWeight: "bold" }}>
                                 <Icon name='sign out' /> Deconexion
                             </Button>
                         </Nav>

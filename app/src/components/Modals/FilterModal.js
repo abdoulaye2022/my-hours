@@ -2,26 +2,29 @@ import React, { useState } from "react";
 import { Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from "react-redux";
 import { shiftActions } from "../../redux/actions/shifts.actions";
-import { Button, Input, Form, Checkbox } from 'semantic-ui-react';
+import { Button, Input, Form, Radio } from 'semantic-ui-react';
 import { useFormik, Formik } from "formik";
 import DatePicker from "react-datepicker";
+import moment from "moment";
 
 const FilterModal = () => {
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const filterShift = useSelector(state => state.shift.filterShift);
     const filterModal = useSelector(state => state.shift.filterModal);
     const dispatch = useDispatch();
 
     const formikfilter = useFormik({
-        initialValues: { accomplis: '', planifier: '', annuler: '', start_date: '', end_date: '' },
+        initialValues: { statut_shift: '', start_date: '', end_date: '' },
         validate: values => {
             const errors = {};
 
             return errors;
         },
         onSubmit: (values, { resetForm }) => {
-            dispatch(shiftActions.filterAuthShift(values.accomplis, values.planifier, values.annuler, values.start_date, values.end_date))
+            let start_date = moment(values.start_date).format("YYYY-MM-DD HH:mm");
+            let end_date = moment(values.end_date).format("YYYY-MM-DD HH:mm");
+            dispatch(shiftActions.filterAuthShift(values.statut_shift, start_date, end_date))
             dispatch(shiftActions.filterModal());
         }
     });
@@ -34,18 +37,21 @@ const FilterModal = () => {
                     formikfilter.resetForm();
                     formikfilter.setErrors({});
                     dispatch(shiftActions.filterModal());
-                    if(filterShift)
+                    if (filterShift)
                         dispatch(shiftActions.filterDropdown());
                 }}
                 onExited={() => {
                     formikfilter.resetForm();
                     formikfilter.setErrors({});
                 }}
-                // onShow={() => {
-                //     dispatch(shiftActions.filterDropdown())
-                // }}
+                onShow={() => {
+                    setStartDate('');
+                    setEndDate('');
+                    formikfilter.resetForm();
+                    formikfilter.setErrors({});
+                }}
                 centered>
-                <Modal.Header closeButton>
+                <Modal.Header closeButton style={{ backgroundColor: "#647295", color: "white", fontWeight: "bold" }}>
                     <Modal.Title>Filtre avancer</Modal.Title>
                 </Modal.Header>
                 <Formik>
@@ -53,34 +59,31 @@ const FilterModal = () => {
                         <Modal.Body>
                             <Form.Group widths='equal'>
                                 <Form.Field>
-                                    <Checkbox
+                                    <Radio
                                         label="Accomplis"
-                                        name="accomplis"
-                                        onChange={() => {
-                                            formikfilter.setFieldValue('accomplis', 1);
-                                        }}
+                                        name="statut_shift"
+                                        value={(1)}
+                                        onChange={(e, { value }) => formikfilter.setFieldValue('statut_shift', value)}
                                         onBlur={formikfilter.handleBlur}
-                                        value={formikfilter.values.accomplis} />
+                                        checked={formikfilter.values.statut_shift === 1} />
                                 </Form.Field>
                                 <Form.Field>
-                                    <Checkbox
+                                    <Radio
                                         label="Planifier"
-                                        name="planifier"
-                                        onChange={() => {
-                                            formikfilter.setFieldValue('planifier', 0);
-                                        }}
+                                        name="statut_shift"
+                                        value={(0)}
+                                        onChange={(e, { value }) => formikfilter.setFieldValue('statut_shift', value)}
                                         onBlur={formikfilter.handleBlur}
-                                        value={formikfilter.values.planifier} />
+                                        checked={formikfilter.values.statut_shift === 0} />
                                 </Form.Field>
                                 <Form.Field>
-                                    <Checkbox
+                                    <Radio
                                         label="Annuler"
-                                        name="annuler"
-                                        onChange={() => {
-                                            formikfilter.setFieldValue('annuler', 2);
-                                        }}
+                                        name="statut_shift"
+                                        value={(2)}
+                                        onChange={(e, { value }) => formikfilter.setFieldValue('statut_shift', value)}
                                         onBlur={formikfilter.handleBlur}
-                                        value={formikfilter.values.annuler} />
+                                        checked={formikfilter.values.statut_shift === 2} />
                                 </Form.Field>
                             </Form.Group>
                             <Form.Group widths='equal'>
@@ -117,7 +120,7 @@ const FilterModal = () => {
                             <Button type="button" variant="secondary" onClick={() => dispatch(shiftActions.filterModal())}>
                                 Annuler
                             </Button>
-                            <Button primary type="submit">
+                            <Button primary type="submit" style={{ backgroundColor: "#647295", color: "white" }}>
                                 Filtrer
                             </Button>
                         </Modal.Footer>

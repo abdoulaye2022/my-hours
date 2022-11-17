@@ -35,11 +35,9 @@ export const JobModal = ({ job, setJob }) => {
         onSubmit: (values, { resetForm }) => {
             if (Object.keys(job).length === 0) {
                 dispatch(jobActions.add(values.name_job, values.color_job, values.employer_id, auth.id));
-                resetForm();
             }
             else {
                 dispatch(jobActions.update(job.id, values.name_job, values.color_job, values.employer_id));
-                resetForm();
             }
         }
     });
@@ -54,7 +52,7 @@ export const JobModal = ({ job, setJob }) => {
                     setJob({});
                     dispatch(jobActions.modalJob());
                 }}
-                onExited={() => {
+                onExiting={() => {
                     formikjob.resetForm();
                     formikjob.setErrors({});
                     setJob({});
@@ -67,8 +65,8 @@ export const JobModal = ({ job, setJob }) => {
                     }
                 }}
                 centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Ajouter un travail</Modal.Title>
+                <Modal.Header closeButton style={{ backgroundColor: "#647295", color: "white", fontWeight: "bold" }}>
+                    <Modal.Title>{Object.keys(job).length === 0 ? ("Ajouter un travail") : ("Modifier un travail")}</Modal.Title>
                 </Modal.Header>
                 <Formik>
                     <Form onSubmit={formikjob.handleSubmit}>
@@ -118,7 +116,7 @@ export const JobModal = ({ job, setJob }) => {
                             <Button type="button" variant="secondary" onClick={() => dispatch(jobActions.modalJob())}>
                                 Annuler
                             </Button>
-                            <Button primary type="submit">
+                            <Button primary type="submit" style={{ backgroundColor: "#647295", color: "white" }}>
                                 Enregistrer
                             </Button>
                         </Modal.Footer>

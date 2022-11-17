@@ -34,12 +34,9 @@ export const EmployerModal = ({ employer, setEmployer }) => {
         onSubmit: (values, { resetForm }) => {
             if (Object.keys(employer).length === 0) {
                 dispatch(employerActions.add(values.name_emp, values.statut, auth.id));
-                resetForm();
             }
             else {
                 dispatch(employerActions.update(employer.id, values.name_emp, values.statut, updateEmployer));
-                
-                resetForm();
             }
         }
     });
@@ -58,7 +55,7 @@ export const EmployerModal = ({ employer, setEmployer }) => {
                     setEmployer({});
                     dispatch(employerActions.modalEmployer())
                 }}
-                onExited={() => {
+                onExiting={() => {
                     formikemployer.resetForm();
                     formikemployer.setErrors({});
                     setEmployer({});
@@ -70,8 +67,8 @@ export const EmployerModal = ({ employer, setEmployer }) => {
                     }
                 }}
                 centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Ajouter un employeur</Modal.Title>
+                <Modal.Header closeButton style={{ backgroundColor: "#647295", color: "white", fontWeight: "bold" }}>
+                    <Modal.Title>{Object.keys(employer).length === 0 ? ("Ajouter un employeur") : ("Modifier un employeur")}</Modal.Title>
                 </Modal.Header>
                 <Formik>
                     <Form onSubmit={formikemployer.handleSubmit}>
@@ -109,7 +106,7 @@ export const EmployerModal = ({ employer, setEmployer }) => {
                             <Button type="button" variant="secondary" onClick={() => dispatch(employerActions.modalEmployer())}>
                                 Annuler
                             </Button>
-                            <Button primary type="submit">
+                            <Button primary type="submit" style={{ backgroundColor: "#647295", color: "white" }}>
                                 Enregistrer
                             </Button>
                         </Modal.Footer>

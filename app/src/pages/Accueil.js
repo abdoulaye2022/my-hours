@@ -1,8 +1,9 @@
 import moment from "moment";
+import "./Accueil.css";
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Badge } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { Card, Button, Transition } from "semantic-ui-react";
+import { Card, Button, Loader } from "semantic-ui-react";
 import { ShiftModal } from "../components/Modals/ShiftModal";
 import { shiftActions } from "../redux/actions/shifts.actions";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +11,9 @@ import { useNavigate } from "react-router-dom";
 const Accueil = () => {
     const authShifts = useSelector((state) => state.shift.authShifts);
     const [visible, setVisible] = useState(false);
+    const loadingJob = useSelector(state => state.job.loading);
+    const loadingEmp = useSelector(state => state.employer.loading);
+    const loadingShift = useSelector(state => state.shift.loading);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -103,82 +107,69 @@ const Accueil = () => {
     };
 
     return (
-        <Transition visible={visible} animation="zoom" duration={500}>
-            <Container fluid style={{ marginTop: 25 }}>
-                <Row style={{ marginBottom: 25 }}>
-                    <Col
-                        xs={12}
-                        md={12}
-                        lg={12}
-                        style={{ display: "flex", justifyContent: "center" }}
+        <Container fluid style={{ marginTop: 25 }}>
+            <Loader content='Loading' active={loadingJob || loadingShift || loadingEmp} />
+            <Row style={{ marginBottom: 25 }}>
+                <Col
+                    xs={12}
+                    md={12}
+                    lg={12}
+                    style={{ display: "flex", justifyContent: "center" }}
+                >
+                    <Button
+                        style={{ margin: "0px 10px", backgroundColor: "#647295", color: "white" }}
+                        onClick={() => dispatch(shiftActions.shiftModal())}
                     >
-                        <Button
-                            style={{ margin: "0px 10px" }}
-                            onClick={() => dispatch(shiftActions.shiftModal())}
-                        >
-                            Ajouter un horaire
-                        </Button>
-                        <Button
-                            style={{ margin: "0px 10px" }}
-                            onClick={() => navigate("/mes-horaires")}
-                        >
-                            Voir mes horaires
-                        </Button>
-                    </Col>
-                </Row>
-                <ShiftModal />
-                <Row>
-                    <Col xs={12} md={4} lg={4}>
-                        <Card style={{ width: "100%", textCenter: "center" }}>
-                            <Card.Content
-                                style={{ textAlign: "center" }}
-                                header="Aujourd'hui"
-                            />
-                            <Card.Content
-                                style={{ textAlign: "center" }}
-                                description={
-                                    <Badge style={{ fontSize: "1.1em" }}>
-                                        {dayHours(authShifts)}
-                                    </Badge>
-                                }
-                            />
-                        </Card>
-                    </Col>
-                    <Col xs={12} md={4} lg={4}>
-                        <Card style={{ width: "100%", textCenter: "center" }}>
-                            <Card.Content
-                                style={{ textAlign: "center" }}
-                                header="Cette semaine"
-                            />
-                            <Card.Content
-                                style={{ textAlign: "center" }}
-                                description={
-                                    <Badge style={{ fontSize: "1.1em" }}>
-                                        {weekHours(authShifts)}
-                                    </Badge>
-                                }
-                            />
-                        </Card>
-                    </Col>
-                    <Col xs={12} md={4} lg={4}>
-                        <Card style={{ width: "100%", textCenter: "center" }}>
-                            <Card.Content
-                                style={{ textAlign: "center" }}
-                                header="Ce mois"
-                            />
-                            <Card.Content
-                                style={{ textAlign: "center" }}
-                                description={
-                                    <Badge style={{ fontSize: "1.1em" }}>
-                                        {monthHours(authShifts)}
-                                    </Badge>
-                                }
-                            />
-                        </Card>
-                    </Col>
-                </Row>
-            </Container>
-        </Transition>
+                        Ajouter un horaire
+                    </Button>
+                    <Button
+                        style={{ margin: "0px 10px", backgroundColor: "#647295", color: "white" }}
+                        onClick={() => navigate("/mes-horaires")}
+                    >
+                        Voir mes horaires
+                    </Button>
+                </Col>
+            </Row>
+            <ShiftModal />
+            <Row>
+                <Col xs={12} md={4} lg={4}>
+                    <Card style={{ width: "100%", textCenter: "center" }}>
+                        <Card.Content
+                            style={{ textAlign: "center" }}
+                            header="Aujourd'hui"
+                        />
+                        <Card.Content
+                            style={{ textAlign: "center", backgroundColor: "#647295", fontWeight: "bold", color: "white", fontSize: "1.1em" }}
+                            description={<span style={{ color: "white" }}>{dayHours(authShifts)}</span>}
+                        />
+                    </Card>
+                </Col>
+                <Col xs={12} md={4} lg={4}>
+                    <Card style={{ width: "100%", textCenter: "center" }}>
+                        <Card.Content
+                            style={{ textAlign: "center" }}
+                            header="Cette semaine"
+                        />
+                        <Card.Content
+                            style={{ textAlign: "center", backgroundColor: "#647295", fontWeight: "bold", color: "white", fontSize: "1.1em" }}
+                            description={<span style={{ color: "white" }}>{weekHours(authShifts)}</span>}
+                        />
+                    </Card>
+                </Col>
+                <Col xs={12} md={4} lg={4}>
+                    <Card style={{ width: "100%", textCenter: "center" }}>
+                        <Card.Content
+                            style={{ textAlign: "center" }}
+                            header="Ce mois"
+                        />
+                        <Card.Content
+                            style={{ textAlign: "center", backgroundColor: "#647295", fontWeight: "bold", color: "white", fontSize: "1.1em" }}
+                            description={<span style={{ color: "white" }}>{monthHours(authShifts)}</span>}
+                        />
+                    </Card>
+                </Col>
+            </Row>
+        </Container>
     );
 };
 

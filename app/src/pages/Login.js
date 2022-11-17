@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ThemeProvider, Container, Row, Col } from "react-bootstrap";
-import { Form, Input, Dimmer, Tab, Button } from "semantic-ui-react";
+import { Form, Input, Tab, Button, Loader, Segment } from "semantic-ui-react";
 import "./Login.css";
 import { Formik, useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +10,12 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
     const dispatch = useDispatch();
     const navigator = useNavigate();
+    const error = useSelector(state => state.user.error);
     const loading = useSelector((state) => state.user.loading);
+
+    useEffect(() => {
+        dispatch(userActions.actualiseLoginPage());
+    }, []);
 
     const redirectToHome = () => {
         return navigator("/");
@@ -20,7 +25,6 @@ const Login = () => {
         initialValues: { email: "", password: "" },
         validate: (values) => {
             const errors = {};
-            console.log(values.password.length)
             if (!values.email) {
                 errors.email = 'E-mail est obligatoire';
             } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
@@ -29,7 +33,7 @@ const Login = () => {
 
             if (!values.password) {
                 errors.password = "Mot de passe est obligatoire";
-            } else if (values.password.length < 5) {
+            } else if (values.password.length < 6) {
                 errors.password = "Mot de passe doit être supérieur à 4 caractères";
             }
 
@@ -66,7 +70,7 @@ const Login = () => {
 
             if (!values.password) {
                 errors.password = "Mot de passe est obligatoire";
-            } else if (values.password.length <= 5) {
+            } else if (values.password.length < 6) {
                 errors.password = "Mot de passe doit être supérieur à 6 caractères";
             }
 
@@ -82,6 +86,10 @@ const Login = () => {
             menuItem: "Authentification",
             render: () => (
                 <div style={{ paddingTop: 10 }}>
+                    <span style={{
+                        color: "#9F496E",
+                        display: "wrap"
+                    }}>{error}</span>
                     <Formik>
                         <Form id="login" onSubmit={formiklogin.handleSubmit}>
                             <Form.Field required>
@@ -126,7 +134,7 @@ const Login = () => {
                                     formiklogin.errors.password}</span>
                             </Form.Field>
                             <Form.Field>
-                                <Button type="submit">Se connecter</Button>
+                                <Button type="submit" style={{ backgroundColor: "#647295", color: "white" }}>Se connecter</Button>
                             </Form.Field>
                         </Form>
                     </Formik>
@@ -208,7 +216,7 @@ const Login = () => {
                                     onBlur={formikcompte.handleBlur}
                                     value={formikcompte.values.password}
                                 />
-                                 <span style={{
+                                <span style={{
                                     color: "#9F496E",
                                     display: "wrap",
                                 }}>{formikcompte.errors.password &&
@@ -216,7 +224,7 @@ const Login = () => {
                                     formikcompte.errors.password}</span>
                             </Form.Field>
                             <Form.Field>
-                                <Button type="submit">Créer un compte</Button>
+                                <Button type="submit" style={{ backgroundColor: "#647295", color: "white" }}>Créer un compte</Button>
                             </Form.Field>
                         </Form>
                     </Formik>
@@ -237,6 +245,7 @@ const Login = () => {
                         sm={0}
                         md
                         style={{ backgroundColor: "#647295" }}
+                        className="d-none d-lg-block"
                     >
                         Logo
                     </Col>
@@ -252,7 +261,10 @@ const Login = () => {
                             flexDirection: "column",
                         }}
                     >
-                        <Tab panes={panes} />
+                        <Segment style={{ border: "1px solid #d4d4d5" }}>
+                            <Loader content='Loading' active={loading} />
+                            <Tab panes={panes} />
+                        </Segment>
                     </Col>
                 </Row>
             </Container>

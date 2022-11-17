@@ -7,7 +7,7 @@ import {
     TextArea,
     Button,
     Select,
-    Transition,
+    Loader,
 } from "semantic-ui-react";
 import { Formik, useFormik } from "formik";
 import { useDispatch } from "react-redux";
@@ -34,7 +34,7 @@ const Profile = () => {
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
     const auth = useSelector((state) => state.user.user);
-
+    const loading = useSelector(state => state.user.loading);
     const dispatch = useDispatch();
 
     const formik = useFormik({
@@ -146,211 +146,54 @@ const Profile = () => {
 
     return (
         <>
-            <Transition visible={visible} animation="zoom" duration={500}>
-                <Container fluid style={{ marginTop: 25 }}>
-                    <Row>
-                        <Col xs={0} md={2} lg={2}></Col>
-                        <Col xs={12} md={8} lg={8}>
-                            <Formik>
-                                <Form onSubmit={formik.handleSubmit}>
-                                    <Form.Group widths="equal">
-                                        <Form.Field required>
-                                            <label
-                                                style={{ fontWeight: "normal" }}
-                                            >
-                                                Prénom
-                                            </label>
-                                            <Input
-                                                id="firsname"
-                                                type="text"
-                                                name="firstname"
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
-                                                placeholder="Entrer votre prénom..."
-                                                value={formik.values.firstname}
-                                            />
-                                            <span
-                                                style={{
-                                                    color: "#9F496E",
-                                                    display: "wrap",
-                                                }}
-                                            >
-                                                {formik.errors.firstname &&
-                                                    formik.touched.firstname &&
-                                                    formik.errors.firstname}
-                                            </span>
-                                        </Form.Field>
-                                        <Form.Field required>
-                                            <label
-                                                style={{ fontWeight: "normal" }}
-                                            >
-                                                Nom
-                                            </label>
-                                            <Input
-                                                id="lastname"
-                                                type="text"
-                                                name="lastname"
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
-                                                placeholder="Entrer votre nom..."
-                                                value={formik.values.lastname}
-                                            />
-                                            <span
-                                                style={{
-                                                    color: "#9F496E",
-                                                    display: "block",
-                                                }}
-                                            >
-                                                {formik.errors.lastname &&
-                                                    formik.touched.lastname &&
-                                                    formik.errors.lastname}
-                                            </span>
-                                        </Form.Field>
-
-                                        <Form.Field>
-                                            <label
-                                                style={{ fontWeight: "normal" }}
-                                            >
-                                                Genre
-                                            </label>
-                                            <Select
-                                                id="gender"
-                                                name="gender"
-                                                onChange={(e, selected) => {
-                                                    formik.setFieldValue(
-                                                        "gender",
-                                                        selected.value
-                                                    );
-                                                }}
-                                                onBlur={formik.handleBlur}
-                                                options={genreOptions}
-                                                placeholder="Selectionner votre genre..."
-                                                value={formik.values.gender}
-                                                search
-                                            />
-                                        </Form.Field>
-                                    </Form.Group>
-                                    <Form.Group widths="equal">
-                                        <Form.Field>
-                                            <label
-                                                style={{ fontWeight: "normal" }}
-                                            >
-                                                Pays
-                                            </label>
-                                            <Select
-                                                id="country"
-                                                name="country"
-                                                onChange={(e, selected) => {
-                                                    setCountry(selected.value);
-                                                    setCities([]);
-                                                    const s = [
-                                                        ...State.getStatesOfCountry(
-                                                            selected.value
-                                                        ).map((p, i) => {
-                                                            return {
-                                                                key: i,
-                                                                text: p.name,
-                                                                value: p.isoCode,
-                                                            };
-                                                        }),
-                                                    ];
-                                                    setStates(s);
-                                                    formik.setFieldValue(
-                                                        "country",
-                                                        selected.value
-                                                    );
-                                                }}
-                                                onBlur={formik.handleBlur}
-                                                options={countries}
-                                                placeholder="Selectionner votre pays..."
-                                                value={formik.values.country}
-                                                search
-                                            />
-                                        </Form.Field>
-                                        <Form.Field>
-                                            <label
-                                                style={{ fontWeight: "normal" }}
-                                            >
-                                                Province
-                                            </label>
-                                            <Select
-                                                type="province"
-                                                name="province"
-                                                onChange={(e, selected) => {
-                                                    const c = [
-                                                        ...City.getCitiesOfState(
-                                                            country,
-                                                            selected.value
-                                                        ).map((p, i) => {
-                                                            return {
-                                                                key: i,
-                                                                text: p.name,
-                                                                value: p.name,
-                                                            };
-                                                        }),
-                                                    ];
-                                                    setCities(c);
-                                                    formik.setFieldValue(
-                                                        "province",
-                                                        selected.value
-                                                    );
-                                                }}
-                                                onBlur={formik.handleBlur}
-                                                options={states}
-                                                placeholder="Selectionner votre province..."
-                                                value={formik.values.province}
-                                                search
-                                            />
-                                        </Form.Field>
-                                        <Form.Field>
-                                            <label
-                                                style={{ fontWeight: "normal" }}
-                                            >
-                                                Ville
-                                            </label>
-                                            <Select
-                                                id="city"
-                                                name="city"
-                                                onChange={(e, selected) => {
-                                                    formik.setFieldValue(
-                                                        "city",
-                                                        selected.value
-                                                    );
-                                                }}
-                                                onBlur={formik.handleBlur}
-                                                options={cities}
-                                                placeholder="Selectionner votre ville..."
-                                                value={formik.values.city}
-                                                search
-                                            />
-                                        </Form.Field>
-                                    </Form.Group>
-                                    <Form.Field>
-                                        <label style={{ fontWeight: "normal" }}>
-                                            Bio
+            <Container fluid style={{ marginTop: 25 }}>
+                <Loader content='Loading' active={loading} />
+                <Row>
+                    <Col xs={0} md={2} lg={2}></Col>
+                    <Col xs={12} md={8} lg={8}>
+                        <Formik>
+                            <Form onSubmit={formik.handleSubmit}>
+                                <Form.Group widths="equal">
+                                    <Form.Field required>
+                                        <label
+                                            style={{ fontWeight: "normal" }}
+                                        >
+                                            Prénom
                                         </label>
-                                        <TextArea
-                                            id="bio"
-                                            name="bio"
+                                        <Input
+                                            id="firsname"
+                                            type="text"
+                                            name="firstname"
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
-                                            placeholder="Entrer votre bio..."
-                                            value={formik.values.bio}
+                                            placeholder="Entrer votre prénom..."
+                                            value={formik.values.firstname}
                                         />
+                                        <span
+                                            style={{
+                                                color: "#9F496E",
+                                                display: "wrap",
+                                            }}
+                                        >
+                                            {formik.errors.firstname &&
+                                                formik.touched.firstname &&
+                                                formik.errors.firstname}
+                                        </span>
                                     </Form.Field>
                                     <Form.Field required>
-                                        <label style={{ fontWeight: "normal" }}>
-                                            E-mail
+                                        <label
+                                            style={{ fontWeight: "normal" }}
+                                        >
+                                            Nom
                                         </label>
                                         <Input
-                                            id="email"
-                                            type="email"
-                                            name="email"
+                                            id="lastname"
+                                            type="text"
+                                            name="lastname"
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
-                                            placeholder="joe@schmoe.com"
-                                            value={formik.values.email}
-                                            disabled={true}
+                                            placeholder="Entrer votre nom..."
+                                            value={formik.values.lastname}
                                         />
                                         <span
                                             style={{
@@ -358,73 +201,229 @@ const Profile = () => {
                                                 display: "block",
                                             }}
                                         >
-                                            {formik.errors.email &&
-                                                formik.touched.email &&
-                                                formik.errors.email}
+                                            {formik.errors.lastname &&
+                                                formik.touched.lastname &&
+                                                formik.errors.lastname}
                                         </span>
                                     </Form.Field>
 
                                     <Form.Field>
-                                        <label style={{ fontWeight: "normal" }}>
-                                            Mot de passe
-                                        </label>
-                                        <Input
-                                            id="password"
-                                            type="password"
-                                            name="password"
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            value={formik.values.password}
-                                            placeholder="Entrer votre mot de passe"
-                                        />
-                                        <span
-                                            style={{
-                                                color: "#9F496E",
-                                                display: "block",
-                                            }}
+                                        <label
+                                            style={{ fontWeight: "normal" }}
                                         >
-                                            {formik.errors.password &&
-                                                formik.touched.password &&
-                                                formik.errors.password}
-                                        </span>
-                                    </Form.Field>
-
-                                    <Form.Field>
-                                        <label style={{ fontWeight: "normal" }}>
-                                            Confirmation mot de passe
+                                            Genre
                                         </label>
-                                        <Input
-                                            id="password2"
-                                            type="password"
-                                            name="password2"
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            value={formik.values.password2}
-                                            placeholder="Entrer votre mot de passe"
-                                        />
-                                        <span
-                                            style={{
-                                                color: "#9F496E",
-                                                display: "block",
+                                        <Select
+                                            id="gender"
+                                            name="gender"
+                                            onChange={(e, selected) => {
+                                                formik.setFieldValue(
+                                                    "gender",
+                                                    selected.value
+                                                );
                                             }}
-                                        >
-                                            {formik.errors.password2 &&
-                                                formik.touched.password2 &&
-                                                formik.errors.password2}
-                                        </span>
+                                            onBlur={formik.handleBlur}
+                                            options={genreOptions}
+                                            placeholder="Selectionner votre genre..."
+                                            value={formik.values.gender}
+                                            search
+                                        />
                                     </Form.Field>
-
+                                </Form.Group>
+                                <Form.Group widths="equal">
                                     <Form.Field>
-                                        <Button type="submit">
-                                            Enregistrer
-                                        </Button>
+                                        <label
+                                            style={{ fontWeight: "normal" }}
+                                        >
+                                            Pays
+                                        </label>
+                                        <Select
+                                            id="country"
+                                            name="country"
+                                            onChange={(e, selected) => {
+                                                setCountry(selected.value);
+                                                setCities([]);
+                                                const s = [
+                                                    ...State.getStatesOfCountry(
+                                                        selected.value
+                                                    ).map((p, i) => {
+                                                        return {
+                                                            key: i,
+                                                            text: p.name,
+                                                            value: p.isoCode,
+                                                        };
+                                                    }),
+                                                ];
+                                                setStates(s);
+                                                formik.setFieldValue(
+                                                    "country",
+                                                    selected.value
+                                                );
+                                            }}
+                                            onBlur={formik.handleBlur}
+                                            options={countries}
+                                            placeholder="Selectionner votre pays..."
+                                            value={formik.values.country}
+                                            search
+                                        />
                                     </Form.Field>
-                                </Form>
-                            </Formik>
-                        </Col>
-                    </Row>
-                </Container>
-            </Transition>
+                                    <Form.Field>
+                                        <label
+                                            style={{ fontWeight: "normal" }}
+                                        >
+                                            Province
+                                        </label>
+                                        <Select
+                                            type="province"
+                                            name="province"
+                                            onChange={(e, selected) => {
+                                                const c = [
+                                                    ...City.getCitiesOfState(
+                                                        country,
+                                                        selected.value
+                                                    ).map((p, i) => {
+                                                        return {
+                                                            key: i,
+                                                            text: p.name,
+                                                            value: p.name,
+                                                        };
+                                                    }),
+                                                ];
+                                                setCities(c);
+                                                formik.setFieldValue(
+                                                    "province",
+                                                    selected.value
+                                                );
+                                            }}
+                                            onBlur={formik.handleBlur}
+                                            options={states}
+                                            placeholder="Selectionner votre province..."
+                                            value={formik.values.province}
+                                            search
+                                        />
+                                    </Form.Field>
+                                    <Form.Field>
+                                        <label
+                                            style={{ fontWeight: "normal" }}
+                                        >
+                                            Ville
+                                        </label>
+                                        <Select
+                                            id="city"
+                                            name="city"
+                                            onChange={(e, selected) => {
+                                                formik.setFieldValue(
+                                                    "city",
+                                                    selected.value
+                                                );
+                                            }}
+                                            onBlur={formik.handleBlur}
+                                            options={cities}
+                                            placeholder="Selectionner votre ville..."
+                                            value={formik.values.city}
+                                            search
+                                        />
+                                    </Form.Field>
+                                </Form.Group>
+                                <Form.Field>
+                                    <label style={{ fontWeight: "normal" }}>
+                                        Bio
+                                    </label>
+                                    <TextArea
+                                        id="bio"
+                                        name="bio"
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        placeholder="Entrer votre bio..."
+                                        value={formik.values.bio}
+                                    />
+                                </Form.Field>
+                                <Form.Field required>
+                                    <label style={{ fontWeight: "normal" }}>
+                                        E-mail
+                                    </label>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        name="email"
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        placeholder="joe@schmoe.com"
+                                        value={formik.values.email}
+                                        disabled={true}
+                                    />
+                                    <span
+                                        style={{
+                                            color: "#9F496E",
+                                            display: "block",
+                                        }}
+                                    >
+                                        {formik.errors.email &&
+                                            formik.touched.email &&
+                                            formik.errors.email}
+                                    </span>
+                                </Form.Field>
+
+                                <Form.Field>
+                                    <label style={{ fontWeight: "normal" }}>
+                                        Mot de passe
+                                    </label>
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        name="password"
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        value={formik.values.password}
+                                        placeholder="Entrer votre mot de passe"
+                                    />
+                                    <span
+                                        style={{
+                                            color: "#9F496E",
+                                            display: "block",
+                                        }}
+                                    >
+                                        {formik.errors.password &&
+                                            formik.touched.password &&
+                                            formik.errors.password}
+                                    </span>
+                                </Form.Field>
+
+                                <Form.Field>
+                                    <label style={{ fontWeight: "normal" }}>
+                                        Confirmation mot de passe
+                                    </label>
+                                    <Input
+                                        id="password2"
+                                        type="password"
+                                        name="password2"
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        value={formik.values.password2}
+                                        placeholder="Entrer votre mot de passe"
+                                    />
+                                    <span
+                                        style={{
+                                            color: "#9F496E",
+                                            display: "block",
+                                        }}
+                                    >
+                                        {formik.errors.password2 &&
+                                            formik.touched.password2 &&
+                                            formik.errors.password2}
+                                    </span>
+                                </Form.Field>
+
+                                <Form.Field>
+                                    <Button type="submit" style={{ backgroundColor: "#647295", color: "white" }}>
+                                        Enregistrer
+                                    </Button>
+                                </Form.Field>
+                            </Form>
+                        </Formik>
+                    </Col>
+                </Row>
+            </Container>
         </>
     );
 };

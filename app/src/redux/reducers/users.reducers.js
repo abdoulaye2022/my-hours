@@ -23,6 +23,7 @@ export const user = (state = initialState, action) => {
                 token: action.payload.access_token,
                 user: action.payload.user,
                 authenticathed: true,
+                error: ""
             };
         case userConstants.LOGIN_USER_FAILURE:
             return {
@@ -116,6 +117,16 @@ export const user = (state = initialState, action) => {
                 token: '',
                 error: ''
             };
+        case userConstants.ACTUALISE_LOGIN_PAGE:
+            return {
+                ...state,
+                loading: false,
+                authenticathed: false,
+                user: {},
+                items: [],
+                token: '',
+                error: ''
+            }
         default:
             return state;
     }

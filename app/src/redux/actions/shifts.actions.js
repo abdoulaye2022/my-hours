@@ -9,6 +9,7 @@ export const shiftActions = {
     complete,
     checkStartDateShift,
     checkEndDateShift,
+    checkDateShift,
     authShift,
     filterAuthShift,
     clearFilter,
@@ -190,12 +191,10 @@ function authShift(user_id) {
     }
 }
 
-function filterAuthShift (accomplis, planifier, annuler, start_date, end_date) {
+function filterAuthShift (statut_shift, start_date, end_date) {
     return {
         type: shiftConstants.FILTER_AUTH_SHIFT,
-        accomplis,
-        planifier,
-        annuler,
+        statut_shift,
         start_date,
         end_date
     }
@@ -219,6 +218,15 @@ function checkEndDateShift(user_id, end_date) {
     return {
         type: shiftConstants.CHECK_END_DATE_EXIST,
         user_id,
+        end_date
+    }
+}
+
+function checkDateShift (user_id, start_date, end_date) {
+    return {
+        type: shiftConstants.CHECK_DATE_EXIST,
+        user_id,
+        start_date,
         end_date
     }
 }

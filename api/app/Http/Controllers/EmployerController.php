@@ -22,7 +22,21 @@ class EmployerController extends Controller
     {
         $employers = Employer::where('user_id', $id)->get();
 
-        return response()->json($employers);
+        $tab = [];
+        $i = 0;
+
+        while ($i < count($employers)) {
+            $tab [] = [
+                'id' => $employers[$i]->id,
+                'name_emp' => $employers[$i]->name_emp,
+                'statut' => (int) $employers[$i]->statut,
+                'user_id' => (int) $employers[$i]->user_id,
+            ];
+
+            $i++;
+        }
+
+        return response()->json($tab);
     }
 
     public function create (Request $request)
@@ -33,9 +47,16 @@ class EmployerController extends Controller
             'user_id' => 'required|numeric'
         ]);
 
-        $employers = Employer::create(['name_emp' => $request->name_emp, 'statut' => $request->statut, 'user_id' => $request->user_id]);
+        $emps = Employer::create(['name_emp' => $request->name_emp, 'statut' => $request->statut, 'user_id' => $request->user_id]);
 
-        return response()->json($employers);
+        $employer = [
+            "id" => $emps->id,
+            "name_emp" => $emps->name_emp,
+            "statut" => (int) $emps->statut,
+            "user_id" => (int) $emps->user_id
+        ];
+
+        return response()->json($employer);
     }
 
     public function update ($id, Request $request)
@@ -46,12 +67,19 @@ class EmployerController extends Controller
             'statut' => 'required|integer'
         ]);
 
-        $employers = Employer::find($id);
-        $employers->name_emp = $request->name_emp;
-        $employers->statut = $request->statut;
-        $employers->save();
+        $emps = Employer::find($id);
+        $emps->name_emp = $request->name_emp;
+        $emps->statut = $request->statut;
+        $emps->save();
 
-        return response()->json($employers);
+        $employer = [
+            "id" => $emps->id,
+            "name_emp" => $emps->name_emp,
+            "statut" => (int) $emps->statut,
+            "user_id" => (int) $emps->user_id
+        ];
+
+        return response()->json($employer);
     }
 
     //

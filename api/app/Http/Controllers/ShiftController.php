@@ -32,12 +32,12 @@ class ShiftController extends Controller
                 "start_date" => $shifts[$i]->start_date,
                 "end_date" => $shifts[$i]->end_date,
                 "location" => $shifts[$i]->location,
-                "statut_shift" => $shifts[$i]->statut_shift,
-                "user_id" => $this->getUser($shifts[$i]->user_id)->id,
-                "first_name" => $this->getUser($shifts[$i]->user_id)->firstname,
-                "last_name" => $this->getUser($shifts[$i]->user_id)->lastname,
-                "job_id" => $this->getJob($shifts[$i]->job_id)->id,
-                "name_job" => $this->getJob($shifts[$i]->job_id)->name_job
+                "statut_shift" => (int) $shifts[$i]->statut_shift,
+                "user_id" => (int) $this->getUser((int) $shifts[$i]->user_id)->id,
+                "first_name" => $this->getUser((int) $shifts[$i]->user_id)->firstname,
+                "last_name" => $this->getUser((int) $shifts[$i]->user_id)->lastname,
+                "job_id" => (int) $this->getJob((int) $shifts[$i]->job_id)->id,
+                "name_job" => $this->getJob((int) $shifts[$i]->job_id)->name_job
             ];
 
             $i++;
@@ -59,12 +59,12 @@ class ShiftController extends Controller
                 "start_date" => $shifts[$i]->start_date,
                 "end_date" => $shifts[$i]->end_date,
                 "location" => $shifts[$i]->location,
-                "statut_shift" => $shifts[$i]->statut_shift,
-                "user_id" => $this->getUser($shifts[$i]->user_id)->id,
-                "first_name" => $this->getUser($shifts[$i]->user_id)->firstname,
-                "last_name" => $this->getUser($shifts[$i]->user_id)->lastname,
-                "job_id" => $this->getJob($shifts[$i]->job_id)->id,
-                "name_job" => $this->getJob($shifts[$i]->job_id)->name_job
+                "statut_shift" => (int) $shifts[$i]->statut_shift,
+                "user_id" => (int) $this->getUser((int) $shifts[$i]->user_id)->id,
+                "first_name" => $this->getUser((int) $shifts[$i]->user_id)->firstname,
+                "last_name" => $this->getUser((int) $shifts[$i]->user_id)->lastname,
+                "job_id" => (int) $this->getJob((int) $shifts[$i]->job_id)->id,
+                "name_job" => $this->getJob((int) $shifts[$i]->job_id)->name_job
             ];
 
             $i++;
@@ -102,12 +102,12 @@ class ShiftController extends Controller
             "start_date" => $shift->start_date,
             "end_date" => $shift->end_date,
             "location" => $shift->location,
-            "statut_shift" => $shift->statut_shift,
-            "user_id" => $this->getUser($shift->user_id)->id,
-            "first_name" => $this->getUser($shift->user_id)->firstname,
-            "last_name" => $this->getUser($shift->user_id)->lastname,
-            "job_id" => $this->getJob($shift->job_id)->id,
-            "name_job" => $this->getJob($shift->job_id)->name_job
+            "statut_shift" => (int) $shift->statut_shift,
+            "user_id" => (int) $this->getUser((int) $shift->user_id)->id,
+            "first_name" => $this->getUser((int) $shift->user_id)->firstname,
+            "last_name" => $this->getUser((int) $shift->user_id)->lastname,
+            "job_id" => (int) $this->getJob((int) $shift->job_id)->id,
+            "name_job" => $this->getJob((int) $shift->job_id)->name_job
         ];
 
         return response()->json($tab);
@@ -138,12 +138,12 @@ class ShiftController extends Controller
             "start_date" => $shift->start_date,
             "end_date" => $shift->end_date,
             "location" => $shift->location,
-            "statut_shift" => $shift->statut_shift,
-            "user_id" => $this->getUser($shift->user_id)->id,
-            "first_name" => $this->getUser($shift->user_id)->firstname,
-            "last_name" => $this->getUser($shift->user_id)->lastname,
-            "job_id" => $this->getJob($shift->job_id)->id,
-            "name_job" => $this->getJob($shift->job_id)->name_job
+            "statut_shift" => (int) $shift->statut_shift,
+            "user_id" => (int) $this->getUser((int) $shift->user_id)->id,
+            "first_name" => $this->getUser((int) $shift->user_id)->firstname,
+            "last_name" => $this->getUser((int) $shift->user_id)->lastname,
+            "job_id" => (int) $this->getJob((int) $shift->job_id)->id,
+            "name_job" => $this->getJob((int) $shift->job_id)->name_job
         ];
 
         return response()->json($tab);
@@ -165,12 +165,12 @@ class ShiftController extends Controller
             "start_date" => $shift->start_date,
             "end_date" => $shift->end_date,
             "location" => $shift->location,
-            "statut_shift" => $shift->statut_shift,
-            "user_id" => $this->getUser($shift->user_id)->id,
-            "first_name" => $this->getUser($shift->user_id)->firstname,
-            "last_name" => $this->getUser($shift->user_id)->lastname,
-            "job_id" => $this->getJob($shift->job_id)->id,
-            "name_job" => $this->getJob($shift->job_id)->name_job
+            "statut_shift" => (int) $shift->statut_shift,
+            "user_id" => (int) $this->getUser((int) $shift->user_id)->id,
+            "first_name" => $this->getUser((int) $shift->user_id)->firstname,
+            "last_name" => $this->getUser((int) $shift->user_id)->lastname,
+            "job_id" => (int) $this->getJob((int) $shift->job_id)->id,
+            "name_job" => $this->getJob((int) $shift->job_id)->name_job
         ];
 
         return response()->json($tab);

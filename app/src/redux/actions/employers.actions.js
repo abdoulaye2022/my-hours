@@ -6,7 +6,9 @@ export const employerActions = {
     getAuthEmployers,
     modalEmployer,
     add,
-    update
+    update,
+    searchEmployer,
+    clearEmployer
 }
 
 function getAuthEmployers(id) {
@@ -107,4 +109,17 @@ function update(id, name_emp, statut, cb) {
             payload: error
         }
     };
+}
+
+function searchEmployer(employer) {
+    return {
+        type: employerConstants.SEARCH_EMPLOYER,
+        payload: employer
+    }
+}
+
+function clearEmployer() {
+    return {
+        type: employerConstants.CLEAR_SEARCH_EMPLOYER
+    }
 }

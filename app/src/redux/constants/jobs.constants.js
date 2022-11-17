@@ -13,5 +13,8 @@ export const jobConstants = {
     
     UPDATE_EMPLOYER_STATE: "UPDATE_EMPLOYER_STATE",
 
+    SEARCH_JOB: "SEARCH_JOB",
+    CLEAR_SERACH_JOB: "CLEAR_SERACH_JOB",
+
     MODAL_JOB: "MODAL_JOB"
 }

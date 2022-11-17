@@ -6,7 +6,9 @@ export const jobActions = {
     modalJob,
     add,
     update,
-    updateEmployer
+    updateEmployer,
+    searchJob,
+    clearSearchJob
 };
 
 function getAuthJobs(id) {
@@ -111,5 +113,18 @@ function updateEmployer (employer) {
     return {
         type: jobConstants.UPDATE_EMPLOYER_STATE,
         payload: employer
+    }
+}
+
+function searchJob (job) {
+    return {
+        type: jobConstants.SEARCH_JOB,
+        payload: job
+    }
+}
+
+function clearSearchJob () {
+    return {
+        type: jobConstants.CLEAR_SERACH_JOB
     }
 }

@@ -5,6 +5,8 @@ const initialState = {
     item: {},
     items: [],
     modal: false,
+    searchJobs: [],
+    searchJob: false,
     error: ""
 };
 
@@ -82,6 +84,21 @@ export const job = (state = initialState, action) => {
                     return p;
                 })]
             };
+        case jobConstants.SEARCH_JOB:
+            return {
+                ...state,
+                searchJob: true,
+                searchJobs: [...state.items.filter(
+                    p => p.name_job.toLowerCase()
+                        .includes(action.payload.toLowerCase())
+                )]
+            };
+        case jobConstants.CLEAR_SERACH_JOB:
+            return {
+                ...state,
+                searchJob: false,
+                searchJobs: []
+            }
         default:
             return state;
     }

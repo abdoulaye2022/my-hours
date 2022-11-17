@@ -18,7 +18,9 @@ export const shiftActions = {
     shiftPopupAcc,
     shiftPopupPla,
     shiftItem,
-    updateEmployerStatut
+    updateEmployerStatut,
+    searchShift,
+    clearSearchShift
 };
 
 function getAll() {
@@ -272,5 +274,18 @@ function updateEmployerStatut (employer) {
     return {
         type: shiftConstants.UPDATE_EMPLOYER_SHIFT,
         payload: employer
+    }
+}
+
+function searchShift (shift) {
+    return {
+        type: shiftConstants.SEARCH_SHIFT,
+        payload: shift
+    }
+}
+
+function clearSearchShift () {
+    return {
+        type: shiftConstants.CLEAR_FILTER_SHIFT,
     }
 }

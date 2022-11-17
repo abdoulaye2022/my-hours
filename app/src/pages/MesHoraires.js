@@ -18,6 +18,11 @@ import moment from "moment";
 import { shiftConstants } from "../redux/constants/shifts.constants";
 import FilterModal from "../components/Modals/FilterModal";
 import { Pagination } from "../components/Pagination/Pagination";
+import 'moment/locale/fr'
+
+moment.locale('fr');
+
+const jours = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
 const MesHoraires = () => {
     //const [shift, setShift] = useState({});
@@ -53,6 +58,22 @@ const MesHoraires = () => {
             setVisible(true);
         };
     }, []);
+
+    const detectMob = () => {
+        const toMatch = [
+            /Android/i,
+            /webOS/i,
+            /iPhone/i,
+            /iPad/i,
+            /iPod/i,
+            /BlackBerry/i,
+            /Windows Phone/i
+        ];
+
+        return toMatch.some((toMatchItem) => {
+            return navigator.userAgent.match(toMatchItem);
+        });
+    }
 
     return (
         <>
@@ -164,14 +185,16 @@ const MesHoraires = () => {
                             <FilterModal />
                             {/* <Button attached='right'>Filtrer</Button> */}
                         </div>
-                        <Search
+                        <Input
                             icon="search"
                             placeholder="Rechercher..."
-                            //style={{ width: 120 }}
-                            //onSearchChange={(e, data) => console.log(data.value)}
-                            onSelectionChange={(e, data) =>
-                                console.log(data.value)
-                            }
+                            style={{ width: detectMob() ? 125 : null }}
+                        // onChange={(e) => {
+                        //     dispatch(employerActions.searchEmployer(e.target.value));
+                        //     if (e.target.value === '') {
+                        //         dispatch(employerActions.clearEmployer());
+                        //     }
+                        // }}
                         />
                     </Col>
                 </Row>
@@ -212,18 +235,18 @@ const MesHoraires = () => {
                                                             {p.name_job}
                                                         </Table.Cell>
                                                         <Table.Cell>
-                                                            {moment(
-                                                                p.start_date
-                                                            ).format(
-                                                                "YYYY-MM-DD HH:mm"
-                                                            )}
+                                                            {jours[moment(p.start_date).day()] + ", " +
+                                                                moment(p.start_date).date() + " " +
+                                                                moment(p.start_date).format("MMMM") + " " +
+                                                                moment(p.start_date).year() + ", à " +
+                                                                moment(p.start_date).format("HH:mm")}
                                                         </Table.Cell>
                                                         <Table.Cell>
-                                                            {moment(
-                                                                p.end_date
-                                                            ).format(
-                                                                "YYYY-MM-DD HH:mm"
-                                                            )}
+                                                            {jours[moment(p.end_date).day()] + ", " +
+                                                                moment(p.end_date).date() + " " +
+                                                                moment(p.end_date).format("MMMM") + " " +
+                                                                moment(p.end_date).year() + ",  à " +
+                                                                moment(p.end_date).format("HH:mm")}
                                                         </Table.Cell>
                                                         <Table.Cell>
                                                             {p.location}
@@ -301,18 +324,18 @@ const MesHoraires = () => {
                                                             {p.name_job}
                                                         </Table.Cell>
                                                         <Table.Cell>
-                                                            {moment(
-                                                                p.start_date
-                                                            ).format(
-                                                                "YYYY-MM-DD HH:mm"
-                                                            )}
+                                                            {jours[moment(p.start_date).day()] + ", " +
+                                                                moment(p.start_date).date() + " " +
+                                                                moment(p.start_date).format("MMMM") + " " +
+                                                                moment(p.start_date).year() + ", à " +
+                                                                moment(p.start_date).format("HH:mm")}
                                                         </Table.Cell>
                                                         <Table.Cell>
-                                                            {moment(
-                                                                p.end_date
-                                                            ).format(
-                                                                "YYYY-MM-DD HH:mm"
-                                                            )}
+                                                            {jours[moment(p.end_date).day()] + ", " +
+                                                                moment(p.end_date).date() + " " +
+                                                                moment(p.end_date).format("MMMM") + " " +
+                                                                moment(p.end_date).year() + ",  à " +
+                                                                moment(p.end_date).format("HH:mm")}
                                                         </Table.Cell>
                                                         <Table.Cell>
                                                             {p.location}
@@ -423,18 +446,18 @@ const MesHoraires = () => {
                                                             {p.name_job}
                                                         </Table.Cell>
                                                         <Table.Cell>
-                                                            {moment(
-                                                                p.start_date
-                                                            ).format(
-                                                                "YYYY-MM-DD HH:mm"
-                                                            )}
+                                                            {jours[moment(p.start_date).day()] + ", " +
+                                                                moment(p.start_date).date() + " " +
+                                                                moment(p.start_date).format("MMMM") + " " +
+                                                                moment(p.start_date).year() + ", à " +
+                                                                moment(p.start_date).format("HH:mm")}
                                                         </Table.Cell>
                                                         <Table.Cell>
-                                                            {moment(
-                                                                p.end_date
-                                                            ).format(
-                                                                "YYYY-MM-DD HH:mm"
-                                                            )}
+                                                            {jours[moment(p.end_date).day()] + ", " +
+                                                                moment(p.end_date).date() + " " +
+                                                                moment(p.end_date).format("MMMM") + " " +
+                                                                moment(p.end_date).year() + ",  à " +
+                                                                moment(p.end_date).format("HH:mm")}
                                                         </Table.Cell>
                                                         <Table.Cell>
                                                             {p.location}
@@ -512,18 +535,18 @@ const MesHoraires = () => {
                                                             {p.name_job}
                                                         </Table.Cell>
                                                         <Table.Cell>
-                                                            {moment(
-                                                                p.start_date
-                                                            ).format(
-                                                                "YYYY-MM-DD HH:mm"
-                                                            )}
+                                                            {jours[moment(p.start_date).day()] + ", " +
+                                                                moment(p.start_date).date() + " " +
+                                                                moment(p.start_date).format("MMMM") + " " +
+                                                                moment(p.start_date).year() + ", à " +
+                                                                moment(p.start_date).format("HH:mm")}
                                                         </Table.Cell>
                                                         <Table.Cell>
-                                                            {moment(
-                                                                p.end_date
-                                                            ).format(
-                                                                "YYYY-MM-DD HH:mm"
-                                                            )}
+                                                            {jours[moment(p.end_date).day()] + ", " +
+                                                                moment(p.end_date).date() + " " +
+                                                                moment(p.end_date).format("MMMM") + " " +
+                                                                moment(p.end_date).year() + ",  à " +
+                                                                moment(p.end_date).format("HH:mm")}
                                                         </Table.Cell>
                                                         <Table.Cell>
                                                             {p.location}

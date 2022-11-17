@@ -5,6 +5,8 @@ const initialState = {
     item: {},
     items: [],
     modal: false,
+    searchEmp: false,
+    searchEmployers: [],
     error: ""
 };
 
@@ -69,6 +71,21 @@ export const employer = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 error: action.payload
+            };
+        case employerConstants.SEARCH_EMPLOYER:
+            return {
+                ...state,
+                searchEmp: true,
+                searchEmployers: [...state.items.filter(
+                    p => p.name_emp.toLowerCase()
+                        .includes(action.payload.toLowerCase())
+                )]
+            };
+        case employerConstants.CLEAR_SEARCH_EMPLOYER:
+            return {
+                ...state,
+                searchEmp: false,
+                searchEmployers: []
             };
         default:
             return state;

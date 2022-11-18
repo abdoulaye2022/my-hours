@@ -18,6 +18,8 @@ const Configuration = () => {
     const searchEmp = useSelector(state => state.employer.searchEmp);
     const searchJobs = useSelector(state => state.job.searchJobs);
     const searchJob = useSelector(state => state.job.searchJob);
+    const searchValueEmployer = useSelector(state => state.employer.searchValueEmployer);
+    const searchValueJob = useSelector(state => state.job.searchValueJob);
     const jobs = useSelector((state) => state.job.items);
     const loadingJob = useSelector(state => state.job.loading);
     const loadingEmp = useSelector(state => state.employer.loading);
@@ -75,11 +77,12 @@ const Configuration = () => {
                                     <Button
                                         attached="left"
                                         primary
-                                        onClick={() =>
+                                        onClick={() => {
                                             dispatch(
                                                 employerActions.modalEmployer()
                                             )
-                                        }
+                                            dispatch(employerActions.clearEmployer());
+                                        }}
                                         style={{ backgroundColor: "#647295", color: "white" }}
                                     >
                                         <Icon name="add" />
@@ -99,6 +102,7 @@ const Configuration = () => {
                                             dispatch(employerActions.clearEmployer());
                                         }
                                     }}
+                                    value={searchValueEmployer}
                                 />
                             </Col>
                         </Row>
@@ -325,9 +329,10 @@ const Configuration = () => {
                                     <Button
                                         attached="left"
                                         primary
-                                        onClick={() =>
-                                            dispatch(jobActions.modalJob())
-                                        }
+                                        onClick={() => {
+                                            dispatch(jobActions.modalJob());
+                                            dispatch(jobActions.clearSearchJob());
+                                        }}
                                         style={{ backgroundColor: "#647295", color: "white" }}
                                     >
                                         <Icon name="add" />
@@ -344,6 +349,7 @@ const Configuration = () => {
                                             dispatch(jobActions.clearSearchJob());
                                         }
                                     }}
+                                    value={searchValueJob}
                                 />
                             </Col>
                         </Row>{" "}

@@ -14,6 +14,7 @@ registerLocale("ca", ca);
 let statutOptions = [
     { key: "0", text: "Accomplis", value: 1 },
     { key: "1", text: "Planifier", value: 0 },
+    { key: "2", text: "Annuler", value: 2 },
 ];
 
 export const ShiftModal = () => {
@@ -48,9 +49,9 @@ export const ShiftModal = () => {
         },
         validate: (values) => {
             const errors = {};
-            console.log(dateExist)
+
             if (!values.job_id) {
-                errors.job_id = "Trvail est obligatoire.";
+                errors.job_id = "Travail est obligatoire.";
             }
 
             if (
@@ -75,8 +76,8 @@ export const ShiftModal = () => {
                 errors.end_date = "Date de fin est invalide.";
             }
 
-            if (values.statut_shift !== 0 && values.statut_shift !== 1) {
-                errors.statut_shift = "Trvail est obligatoire.";
+            if (values.statut_shift !== 0 && values.statut_shift !== 1 && values.statut_shift !== 2) {
+                errors.statut_shift = "Statut est obligatoire.";
             }
 
             if (dateExist) {
@@ -151,13 +152,14 @@ export const ShiftModal = () => {
                     setEndDate("");
                     if (modal) dispatch(shiftActions.shiftModal());
                 }}
-                onExited={() => {
+                onExiting={() => {
                     formikshift.resetForm();
                     formikshift.setErrors({});
                     // setShift({});
                     dispatch(shiftActions.shiftItem({}));
                     setStartDate("");
                     setEndDate("");
+                    dispatch(shiftActions.clearSearchShift());
                 }}
                 onShow={() => {
                     //setIsOpenAcc(false);

@@ -7,6 +7,7 @@ const initialState = {
     modal: false,
     searchJobs: [],
     searchJob: false,
+    searchValueJob: '',
     error: ""
 };
 
@@ -91,13 +92,15 @@ export const job = (state = initialState, action) => {
                 searchJobs: [...state.items.filter(
                     p => p.name_job.toLowerCase()
                         .includes(action.payload.toLowerCase())
-                )]
+                )],
+                searchValueJob: action.payload
             };
         case jobConstants.CLEAR_SERACH_JOB:
             return {
                 ...state,
                 searchJob: false,
-                searchJobs: []
+                searchJobs: [],
+                searchValueJob: ''
             }
         default:
             return state;

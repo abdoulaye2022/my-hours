@@ -119,7 +119,7 @@ function updateEmployer (employer) {
 function searchJob (job) {
     return {
         type: jobConstants.SEARCH_JOB,
-        payload: job
+        payload: job,
     }
 }
 

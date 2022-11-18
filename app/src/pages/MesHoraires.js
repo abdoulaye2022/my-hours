@@ -35,6 +35,9 @@ const MesHoraires = () => {
     //const [isOpenAcc, setIsOpenAcc] = useState(false);
     const isOpenAcc = useSelector((state) => state.shift.shiftPopupAcc);
     const isOpenPla = useSelector((state) => state.shift.shiftPopupPla);
+    const searchShift = useSelector(state => state.shift.searchShift);
+    const searchShifts = useSelector(state => state.shift.searchShifts);
+    const searchValueShift = useSelector(state => state.shift.searchValueShift);
     //const [isOpenPla, setIsOpenPla] = useState(false);
     const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -93,6 +96,7 @@ const MesHoraires = () => {
                                 onClick={() => {
                                     dispatch(shiftActions.shiftModal());
                                     dispatch(shiftActions.clearFilter());
+                                    dispatch(shiftActions.clearSearchShift());
                                 }}
                                 style={{ backgroundColor: "#647295", color: "white" }}
                             >
@@ -117,6 +121,7 @@ const MesHoraires = () => {
                                     dispatch(shiftActions.filterDropdown())
                                 }
                                 onOpen={() => {
+                                    dispatch(shiftActions.clearSearchShift());
                                     if (filterShift) {
                                         dispatch(
                                             shiftActions.clearFilter()
@@ -189,12 +194,13 @@ const MesHoraires = () => {
                             icon="search"
                             placeholder="Rechercher..."
                             style={{ width: detectMob() ? 125 : null }}
-                        // onChange={(e) => {
-                        //     dispatch(employerActions.searchEmployer(e.target.value));
-                        //     if (e.target.value === '') {
-                        //         dispatch(employerActions.clearEmployer());
-                        //     }
-                        // }}
+                            onChange={(e) => {
+                                dispatch(shiftActions.searchShifts(e.target.value));
+                                if (e.target.value === '') {
+                                    dispatch(shiftActions.clearSearchShift());
+                                }
+                            }}
+                            value={searchValueShift}
                         />
                     </Col>
                 </Row>
@@ -222,8 +228,8 @@ const MesHoraires = () => {
                             </Table.Header>
 
                             <Table.Body>
-                                {filterShift
-                                    ? filterAuthShift.sort((a, b) => new Date(a.added_at) - new Date(b.added_at)).map((p, i) =>
+                                {searchShift ? (
+                                    searchShifts.sort((a, b) => new Date(a.added_at) - new Date(b.added_at)).map((p, i) =>
                                         p.statut_shift === 1 ? (
                                             <Popup
                                                 trigger={
@@ -259,220 +265,9 @@ const MesHoraires = () => {
                                                 content={
                                                     <div>
                                                         {/* <Button
-                                                        style={{ backgroundColor: "#9f3a38", color: "white" }}>
-                                                        <Icon name="cancel" /> Inactif
-                                                    </Button> */}
-                                                        <Button
-                                                            color="green"
-                                                            onClick={() => {
-                                                                // setShift(p);
-                                                                dispatch(
-                                                                    shiftActions.shiftItem(
-                                                                        p
-                                                                    )
-                                                                );
-                                                                dispatch(
-                                                                    shiftActions.shiftModal()
-                                                                );
-                                                            }}
-                                                        >
-                                                            <Icon name="edit" />{" "}
-                                                            Modifier
-                                                        </Button>
-                                                    </div>
-                                                }
-                                                open={
-                                                    shift.id === p.id
-                                                        ? isOpenAcc
-                                                        : false
-                                                }
-                                                onOpen={(e) => {
-                                                    //setShift(p);
-                                                    dispatch(
-                                                        shiftActions.shiftItem(
-                                                            p
-                                                        )
-                                                    );
-                                                    dispatch(
-                                                        shiftActions.shiftPopupAcc()
-                                                    );
-                                                    //setIsOpenAcc(true);
-                                                }}
-                                                onClose={() => {
-                                                    //setShift({});
-                                                    dispatch(
-                                                        shiftActions.shiftItem(
-                                                            {}
-                                                        )
-                                                    );
-                                                    dispatch(
-                                                        shiftActions.shiftPopupAcc()
-                                                    );
-                                                    //setIsOpenAcc(false);
-                                                }}
-                                                on="click"
-                                                position="top center"
-                                            />
-                                        ) : (
-                                            <Popup
-                                                trigger={
-                                                    <Table.Row
-                                                        warning
-                                                        className="rowedit"
-                                                    >
-                                                        <Table.Cell>
-                                                            {p.name_job}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            {jours[moment(p.start_date).day()] + ", " +
-                                                                moment(p.start_date).date() + " " +
-                                                                moment(p.start_date).format("MMMM") + " " +
-                                                                moment(p.start_date).year() + ", à " +
-                                                                moment(p.start_date).format("HH:mm")}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            {jours[moment(p.end_date).day()] + ", " +
-                                                                moment(p.end_date).date() + " " +
-                                                                moment(p.end_date).format("MMMM") + " " +
-                                                                moment(p.end_date).year() + ",  à " +
-                                                                moment(p.end_date).format("HH:mm")}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            {p.location}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            <Icon name="warning" />
-                                                        </Table.Cell>
-                                                    </Table.Row>
-                                                }
-                                                content={
-                                                    <div
-                                                        style={{
-                                                            width: 255,
-                                                        }}
-                                                    >
-                                                        <Button
-                                                            style={{
-                                                                backgroundColor:
-                                                                    "#c9ba9b",
-                                                                color: "white",
-                                                            }}
-                                                            onClick={() => {
-                                                                dispatch(
-                                                                    shiftActions.complete(
-                                                                        p.id,
-                                                                        1
-                                                                    )
-                                                                );
-                                                                dispatch(
-                                                                    shiftActions.shiftPopupPla()
-                                                                );
-                                                                //   setIsOpenPla(
-                                                                //       false
-                                                                //   );
-                                                            }}
-                                                            disabled={moment(
-                                                                p.end_date
-                                                            ).isAfter(
-                                                                currentDate
-                                                            )}
-                                                        // disabled={true}
-                                                        >
-                                                            <Icon name="checkmark" />{" "}
-                                                            Accomplir
-                                                        </Button>
-                                                        <Button
-                                                            color="green"
-                                                            onClick={() => {
-                                                                //setShift(p);
-                                                                dispatch(
-                                                                    shiftActions.shiftItem(
-                                                                        p
-                                                                    )
-                                                                );
-                                                                dispatch(
-                                                                    shiftActions.shiftModal()
-                                                                );
-                                                            }}
-                                                        >
-                                                            <Icon name="edit" />{" "}
-                                                            Modifier
-                                                        </Button>
-                                                    </div>
-                                                }
-                                                open={
-                                                    shift.id === p.id
-                                                        ? isOpenPla
-                                                        : false
-                                                }
-                                                onOpen={(e) => {
-                                                    //setShift(p);
-                                                    dispatch(
-                                                        shiftActions.shiftItem(
-                                                            p
-                                                        )
-                                                    );
-                                                    dispatch(
-                                                        shiftActions.shiftPopupPla()
-                                                    );
-                                                    //setIsOpenPla(true);
-                                                }}
-                                                onClose={() => {
-                                                    //setShift({});
-                                                    dispatch(
-                                                        shiftActions.shiftItem(
-                                                            {}
-                                                        )
-                                                    );
-                                                    dispatch(
-                                                        shiftActions.shiftPopupPla()
-                                                    );
-                                                    //setIsOpenPla(false);
-                                                }}
-                                                on="click"
-                                                position="top center"
-                                            />
-                                        )
-                                    )
-                                    : currentRecords.sort((a, b) => new Date(a.added_at) - new Date(b.added_at)).map((p, i) =>
-                                        p.statut_shift === 1 ? (
-                                            <Popup
-                                                trigger={
-                                                    <Table.Row
-                                                        positive
-                                                        className="rowedit"
-                                                    >
-                                                        <Table.Cell>
-                                                            {p.name_job}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            {jours[moment(p.start_date).day()] + ", " +
-                                                                moment(p.start_date).date() + " " +
-                                                                moment(p.start_date).format("MMMM") + " " +
-                                                                moment(p.start_date).year() + ", à " +
-                                                                moment(p.start_date).format("HH:mm")}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            {jours[moment(p.end_date).day()] + ", " +
-                                                                moment(p.end_date).date() + " " +
-                                                                moment(p.end_date).format("MMMM") + " " +
-                                                                moment(p.end_date).year() + ",  à " +
-                                                                moment(p.end_date).format("HH:mm")}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            {p.location}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            <Icon name="checkmark" />
-                                                        </Table.Cell>
-                                                    </Table.Row>
-                                                }
-                                                content={
-                                                    <div>
-                                                        {/* <Button
-                                                        style={{ backgroundColor: "#9f3a38", color: "white" }}>
-                                                        <Icon name="cancel" /> Inactif
-                                                    </Button> */}
+                                                    style={{ backgroundColor: "#9f3a38", color: "white" }}>
+                                                    <Icon name="cancel" /> Inactif
+                                                </Button> */}
                                                         <Button
                                                             color="green"
                                                             onClick={() => {
@@ -524,7 +319,7 @@ const MesHoraires = () => {
                                                 on="click"
                                                 position="top center"
                                             />
-                                        ) : (
+                                        ) : p.statut_shift === 0 ? (
                                             <Popup
                                                 trigger={
                                                     <Table.Row
@@ -643,8 +438,671 @@ const MesHoraires = () => {
                                                 on="click"
                                                 position="top center"
                                             />
+                                        ) : p.statut_shift === 2 ? (
+                                            <Popup
+                                                trigger={
+                                                    <Table.Row
+                                                        error
+                                                        className="rowedit"
+                                                    >
+                                                        <Table.Cell>
+                                                            {p.name_job}
+                                                        </Table.Cell>
+                                                        <Table.Cell>
+                                                            {jours[moment(p.start_date).day()] + ", " +
+                                                                moment(p.start_date).date() + " " +
+                                                                moment(p.start_date).format("MMMM") + " " +
+                                                                moment(p.start_date).year() + ", à " +
+                                                                moment(p.start_date).format("HH:mm")}
+                                                        </Table.Cell>
+                                                        <Table.Cell>
+                                                            {jours[moment(p.end_date).day()] + ", " +
+                                                                moment(p.end_date).date() + " " +
+                                                                moment(p.end_date).format("MMMM") + " " +
+                                                                moment(p.end_date).year() + ",  à " +
+                                                                moment(p.end_date).format("HH:mm")}
+                                                        </Table.Cell>
+                                                        <Table.Cell>
+                                                            {p.location}
+                                                        </Table.Cell>
+                                                        <Table.Cell>
+                                                            <Icon name="cancel" />
+                                                        </Table.Cell>
+                                                    </Table.Row>
+                                                }
+                                                content={
+                                                    <div
+                                                        style={{
+                                                            width: 255,
+                                                        }}
+                                                    >
+                                                        <Button
+                                                            style={{
+                                                                backgroundColor:
+                                                                    "#c9ba9b",
+                                                                color: "white",
+                                                            }}
+                                                            onClick={() => {
+                                                                dispatch(
+                                                                    shiftActions.complete(
+                                                                        p.id,
+                                                                        1
+                                                                    )
+                                                                );
+                                                                dispatch(
+                                                                    shiftActions.shiftPopupPla()
+                                                                );
+                                                                //   setIsOpenPla(
+                                                                //       false
+                                                                //   );
+                                                            }}
+                                                            disabled={moment(
+                                                                p.end_date
+                                                            ).isAfter(
+                                                                currentDate
+                                                            )}
+                                                        // disabled={true}
+                                                        >
+                                                            <Icon name="checkmark" />{" "}
+                                                            Accomplir
+                                                        </Button>
+                                                        <Button
+                                                            color="green"
+                                                            onClick={() => {
+                                                                //setShift(p);
+                                                                dispatch(
+                                                                    shiftActions.shiftItem(
+                                                                        p
+                                                                    )
+                                                                );
+                                                                dispatch(
+                                                                    shiftActions.shiftModal()
+                                                                );
+                                                            }}
+                                                        >
+                                                            <Icon name="edit" />{" "}
+                                                            Modifier
+                                                        </Button>
+                                                    </div>
+                                                }
+                                                open={
+                                                    shift.id === p.id
+                                                        ? isOpenPla
+                                                        : false
+                                                }
+                                                onOpen={(e) => {
+                                                    //setShift(p);
+                                                    dispatch(
+                                                        shiftActions.shiftItem(
+                                                            p
+                                                        )
+                                                    );
+                                                    dispatch(
+                                                        shiftActions.shiftPopupPla()
+                                                    );
+                                                    //setIsOpenPla(true);
+                                                }}
+                                                onClose={() => {
+                                                    //setShift({});
+                                                    dispatch(
+                                                        shiftActions.shiftItem(
+                                                            {}
+                                                        )
+                                                    );
+                                                    dispatch(
+                                                        shiftActions.shiftPopupPla()
+                                                    );
+                                                    //setIsOpenPla(false);
+                                                }}
+                                                on="click"
+                                                position="top center"
+                                            />
+                                        ) : (null)
+                                    )
+                                ) : (
+                                    filterShift
+                                        ? filterAuthShift.sort((a, b) => new Date(a.added_at) - new Date(b.added_at)).map((p, i) =>
+                                            p.statut_shift === 1 ? (
+                                                <Popup
+                                                    trigger={
+                                                        <Table.Row
+                                                            positive
+                                                            className="rowedit"
+                                                        >
+                                                            <Table.Cell>
+                                                                {p.name_job}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.start_date).day()] + ", " +
+                                                                    moment(p.start_date).date() + " " +
+                                                                    moment(p.start_date).format("MMMM") + " " +
+                                                                    moment(p.start_date).year() + ", à " +
+                                                                    moment(p.start_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.end_date).day()] + ", " +
+                                                                    moment(p.end_date).date() + " " +
+                                                                    moment(p.end_date).format("MMMM") + " " +
+                                                                    moment(p.end_date).year() + ",  à " +
+                                                                    moment(p.end_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {p.location}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                <Icon name="checkmark" />
+                                                            </Table.Cell>
+                                                        </Table.Row>
+                                                    }
+                                                    content={
+                                                        <div>
+                                                            {/* <Button
+                                                        style={{ backgroundColor: "#9f3a38", color: "white" }}>
+                                                        <Icon name="cancel" /> Inactif
+                                                    </Button> */}
+                                                            <Button
+                                                                color="green"
+                                                                onClick={() => {
+                                                                    // setShift(p);
+                                                                    dispatch(
+                                                                        shiftActions.shiftItem(
+                                                                            p
+                                                                        )
+                                                                    );
+                                                                    dispatch(
+                                                                        shiftActions.shiftModal()
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <Icon name="edit" />{" "}
+                                                                Modifier
+                                                            </Button>
+                                                        </div>
+                                                    }
+                                                    open={
+                                                        shift.id === p.id
+                                                            ? isOpenAcc
+                                                            : false
+                                                    }
+                                                    onOpen={(e) => {
+                                                        //setShift(p);
+                                                        dispatch(
+                                                            shiftActions.shiftItem(
+                                                                p
+                                                            )
+                                                        );
+                                                        dispatch(
+                                                            shiftActions.shiftPopupAcc()
+                                                        );
+                                                        //setIsOpenAcc(true);
+                                                    }}
+                                                    onClose={() => {
+                                                        //setShift({});
+                                                        dispatch(
+                                                            shiftActions.shiftItem(
+                                                                {}
+                                                            )
+                                                        );
+                                                        dispatch(
+                                                            shiftActions.shiftPopupAcc()
+                                                        );
+                                                        //setIsOpenAcc(false);
+                                                    }}
+                                                    on="click"
+                                                    position="top center"
+                                                />
+                                            ) : p.statut_shift === 0 ? (
+                                                <Popup
+                                                    trigger={
+                                                        <Table.Row
+                                                            warning
+                                                            className="rowedit"
+                                                        >
+                                                            <Table.Cell>
+                                                                {p.name_job}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.start_date).day()] + ", " +
+                                                                    moment(p.start_date).date() + " " +
+                                                                    moment(p.start_date).format("MMMM") + " " +
+                                                                    moment(p.start_date).year() + ", à " +
+                                                                    moment(p.start_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.end_date).day()] + ", " +
+                                                                    moment(p.end_date).date() + " " +
+                                                                    moment(p.end_date).format("MMMM") + " " +
+                                                                    moment(p.end_date).year() + ",  à " +
+                                                                    moment(p.end_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {p.location}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                <Icon name="warning" />
+                                                            </Table.Cell>
+                                                        </Table.Row>
+                                                    }
+                                                    content={
+                                                        <div
+                                                            style={{
+                                                                width: 255,
+                                                            }}
+                                                        >
+                                                            <Button
+                                                                style={{
+                                                                    backgroundColor:
+                                                                        "#c9ba9b",
+                                                                    color: "white",
+                                                                }}
+                                                                onClick={() => {
+                                                                    dispatch(
+                                                                        shiftActions.complete(
+                                                                            p.id,
+                                                                            1
+                                                                        )
+                                                                    );
+                                                                    dispatch(
+                                                                        shiftActions.shiftPopupPla()
+                                                                    );
+                                                                    //   setIsOpenPla(
+                                                                    //       false
+                                                                    //   );
+                                                                }}
+                                                                disabled={moment(
+                                                                    p.end_date
+                                                                ).isAfter(
+                                                                    currentDate
+                                                                )}
+                                                            // disabled={true}
+                                                            >
+                                                                <Icon name="checkmark" />{" "}
+                                                                Accomplir
+                                                            </Button>
+                                                            <Button
+                                                                color="green"
+                                                                onClick={() => {
+                                                                    //setShift(p);
+                                                                    dispatch(
+                                                                        shiftActions.shiftItem(
+                                                                            p
+                                                                        )
+                                                                    );
+                                                                    dispatch(
+                                                                        shiftActions.shiftModal()
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <Icon name="edit" />{" "}
+                                                                Modifier
+                                                            </Button>
+                                                        </div>
+                                                    }
+                                                    open={
+                                                        shift.id === p.id
+                                                            ? isOpenPla
+                                                            : false
+                                                    }
+                                                    onOpen={(e) => {
+                                                        //setShift(p);
+                                                        dispatch(
+                                                            shiftActions.shiftItem(
+                                                                p
+                                                            )
+                                                        );
+                                                        dispatch(
+                                                            shiftActions.shiftPopupPla()
+                                                        );
+                                                        //setIsOpenPla(true);
+                                                    }}
+                                                    onClose={() => {
+                                                        //setShift({});
+                                                        dispatch(
+                                                            shiftActions.shiftItem(
+                                                                {}
+                                                            )
+                                                        );
+                                                        dispatch(
+                                                            shiftActions.shiftPopupPla()
+                                                        );
+                                                        //setIsOpenPla(false);
+                                                    }}
+                                                    on="click"
+                                                    position="top center"
+                                                />
+                                            ) : p.statut_shift === 2 ?
+                                                (<Popup
+                                                    trigger={
+                                                        <Table.Row
+                                                            error
+                                                            className="rowedit"
+                                                        >
+                                                            <Table.Cell>
+                                                                {p.name_job}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.start_date).day()] + ", " +
+                                                                    moment(p.start_date).date() + " " +
+                                                                    moment(p.start_date).format("MMMM") + " " +
+                                                                    moment(p.start_date).year() + ", à " +
+                                                                    moment(p.start_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.end_date).day()] + ", " +
+                                                                    moment(p.end_date).date() + " " +
+                                                                    moment(p.end_date).format("MMMM") + " " +
+                                                                    moment(p.end_date).year() + ",  à " +
+                                                                    moment(p.end_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {p.location}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                <Icon name="cancel" />
+                                                            </Table.Cell>
+                                                        </Table.Row>
+                                                    }
+                                                    content={
+                                                        <div
+                                                            style={{
+                                                                width: 255,
+                                                            }}
+                                                        >
+                                                            <Button
+                                                                style={{
+                                                                    backgroundColor:
+                                                                        "#c9ba9b",
+                                                                    color: "white",
+                                                                }}
+                                                                onClick={() => {
+                                                                    dispatch(
+                                                                        shiftActions.complete(
+                                                                            p.id,
+                                                                            1
+                                                                        )
+                                                                    );
+                                                                    dispatch(
+                                                                        shiftActions.shiftPopupPla()
+                                                                    );
+                                                                    //   setIsOpenPla(
+                                                                    //       false
+                                                                    //   );
+                                                                }}
+                                                                disabled={moment(
+                                                                    p.end_date
+                                                                ).isAfter(
+                                                                    currentDate
+                                                                )}
+                                                            // disabled={true}
+                                                            >
+                                                                <Icon name="checkmark" />{" "}
+                                                                Accomplir
+                                                            </Button>
+                                                            <Button
+                                                                color="green"
+                                                                onClick={() => {
+                                                                    //setShift(p);
+                                                                    dispatch(
+                                                                        shiftActions.shiftItem(
+                                                                            p
+                                                                        )
+                                                                    );
+                                                                    dispatch(
+                                                                        shiftActions.shiftModal()
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <Icon name="edit" />{" "}
+                                                                Modifier
+                                                            </Button>
+                                                        </div>
+                                                    }
+                                                    open={
+                                                        shift.id === p.id
+                                                            ? isOpenPla
+                                                            : false
+                                                    }
+                                                    onOpen={(e) => {
+                                                        //setShift(p);
+                                                        dispatch(
+                                                            shiftActions.shiftItem(
+                                                                p
+                                                            )
+                                                        );
+                                                        dispatch(
+                                                            shiftActions.shiftPopupPla()
+                                                        );
+                                                        //setIsOpenPla(true);
+                                                    }}
+                                                    onClose={() => {
+                                                        //setShift({});
+                                                        dispatch(
+                                                            shiftActions.shiftItem(
+                                                                {}
+                                                            )
+                                                        );
+                                                        dispatch(
+                                                            shiftActions.shiftPopupPla()
+                                                        );
+                                                        //setIsOpenPla(false);
+                                                    }}
+                                                    on="click"
+                                                    position="top center"
+                                                />
+                                                ) : null
                                         )
-                                    )}
+                                        : currentRecords.sort((a, b) => new Date(a.added_at) - new Date(b.added_at)).map((p, i) =>
+                                            p.statut_shift === 1 ? (
+                                                <Popup
+                                                    trigger={
+                                                        <Table.Row
+                                                            positive
+                                                            className="rowedit"
+                                                        >
+                                                            <Table.Cell>
+                                                                {p.name_job}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.start_date).day()] + ", " +
+                                                                    moment(p.start_date).date() + " " +
+                                                                    moment(p.start_date).format("MMMM") + " " +
+                                                                    moment(p.start_date).year() + ", à " +
+                                                                    moment(p.start_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.end_date).day()] + ", " +
+                                                                    moment(p.end_date).date() + " " +
+                                                                    moment(p.end_date).format("MMMM") + " " +
+                                                                    moment(p.end_date).year() + ",  à " +
+                                                                    moment(p.end_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {p.location}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                <Icon name="checkmark" />
+                                                            </Table.Cell>
+                                                        </Table.Row>
+                                                    }
+                                                    content={
+                                                        <div>
+                                                            {/* <Button
+                                                        style={{ backgroundColor: "#9f3a38", color: "white" }}>
+                                                        <Icon name="cancel" /> Inactif
+                                                    </Button> */}
+                                                            <Button
+                                                                color="green"
+                                                                onClick={() => {
+                                                                    //setShift(p);
+                                                                    dispatch(
+                                                                        shiftActions.shiftItem(
+                                                                            p
+                                                                        )
+                                                                    );
+                                                                    dispatch(
+                                                                        shiftActions.shiftModal()
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <Icon name="edit" />{" "}
+                                                                Modifier
+                                                            </Button>
+                                                        </div>
+                                                    }
+                                                    open={
+                                                        shift.id === p.id
+                                                            ? isOpenAcc
+                                                            : false
+                                                    }
+                                                    onOpen={(e) => {
+                                                        // setShift(p);
+                                                        dispatch(
+                                                            shiftActions.shiftItem(
+                                                                p
+                                                            )
+                                                        );
+                                                        dispatch(
+                                                            shiftActions.shiftPopupAcc()
+                                                        );
+                                                        //   setIsOpenAcc(true);
+                                                    }}
+                                                    onClose={() => {
+                                                        //setShift({});
+                                                        dispatch(
+                                                            shiftActions.shiftItem(
+                                                                {}
+                                                            )
+                                                        );
+                                                        dispatch(
+                                                            shiftActions.shiftPopupAcc()
+                                                        );
+                                                        //   setIsOpenAcc(false);
+                                                    }}
+                                                    on="click"
+                                                    position="top center"
+                                                />
+                                            ) : (
+                                                <Popup
+                                                    trigger={
+                                                        <Table.Row
+                                                            warning
+                                                            className="rowedit"
+                                                        >
+                                                            <Table.Cell>
+                                                                {p.name_job}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.start_date).day()] + ", " +
+                                                                    moment(p.start_date).date() + " " +
+                                                                    moment(p.start_date).format("MMMM") + " " +
+                                                                    moment(p.start_date).year() + ", à " +
+                                                                    moment(p.start_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.end_date).day()] + ", " +
+                                                                    moment(p.end_date).date() + " " +
+                                                                    moment(p.end_date).format("MMMM") + " " +
+                                                                    moment(p.end_date).year() + ",  à " +
+                                                                    moment(p.end_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {p.location}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                <Icon name="warning" />
+                                                            </Table.Cell>
+                                                        </Table.Row>
+                                                    }
+                                                    content={
+                                                        <div
+                                                            style={{
+                                                                width: 255,
+                                                            }}
+                                                        >
+                                                            <Button
+                                                                style={{
+                                                                    backgroundColor:
+                                                                        "#c9ba9b",
+                                                                    color: "white",
+                                                                }}
+                                                                onClick={() => {
+                                                                    dispatch(
+                                                                        shiftActions.complete(
+                                                                            p.id,
+                                                                            1
+                                                                        )
+                                                                    );
+                                                                    dispatch(
+                                                                        shiftActions.shiftPopupPla()
+                                                                    );
+                                                                    //   setIsOpenPla(
+                                                                    //       false
+                                                                    //   );
+                                                                }}
+                                                                disabled={moment(
+                                                                    p.end_date
+                                                                ).isAfter(
+                                                                    currentDate
+                                                                )}
+                                                            // disabled={true}
+                                                            >
+                                                                <Icon name="checkmark" />{" "}
+                                                                Accomplir
+                                                            </Button>
+                                                            <Button
+                                                                color="green"
+                                                                onClick={() => {
+                                                                    //setShift(p);
+                                                                    dispatch(
+                                                                        shiftActions.shiftItem(
+                                                                            p
+                                                                        )
+                                                                    );
+                                                                    dispatch(
+                                                                        shiftActions.shiftModal()
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <Icon name="edit" />{" "}
+                                                                Modifier
+                                                            </Button>
+                                                        </div>
+                                                    }
+                                                    open={
+                                                        shift.id === p.id
+                                                            ? isOpenPla
+                                                            : false
+                                                    }
+                                                    onOpen={(e) => {
+                                                        //setShift(p);
+                                                        dispatch(
+                                                            shiftActions.shiftItem(
+                                                                p
+                                                            )
+                                                        );
+                                                        dispatch(
+                                                            shiftActions.shiftPopupPla()
+                                                        );
+                                                        //setIsOpenPla(true);
+                                                    }}
+                                                    onClose={() => {
+                                                        //setShift({});
+                                                        dispatch(
+                                                            shiftActions.shiftItem(
+                                                                {}
+                                                            )
+                                                        );
+                                                        dispatch(
+                                                            shiftActions.shiftPopupPla()
+                                                        );
+                                                        //setIsOpenPla(false);
+                                                    }}
+                                                    on="click"
+                                                    position="top center"
+                                                />
+                                            )
+                                        )
+                                )}
                                 {filterShift === true &&
                                     (filterAuthShift.length === 0 ||
                                         shifts.length === 0) ? (

@@ -56,6 +56,7 @@ export const JobModal = ({ job, setJob }) => {
                     formikjob.resetForm();
                     formikjob.setErrors({});
                     setJob({});
+                    dispatch(jobActions.clearSearchJob());
                 }}
                 onShow={() => {
                     if (Object.keys(job).length !== 0) {

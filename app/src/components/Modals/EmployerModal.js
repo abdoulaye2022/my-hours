@@ -59,6 +59,7 @@ export const EmployerModal = ({ employer, setEmployer }) => {
                     formikemployer.resetForm();
                     formikemployer.setErrors({});
                     setEmployer({});
+                    dispatch(employerActions.clearEmployer());
                 }}
                 onShow={() => {
                     if (Object.keys(employer).length !== 0) {

@@ -16,6 +16,9 @@ const initialState = {
     dateExist: false,
     shiftPopupAcc: false,
     shiftPopupPla: false,
+    searchShift: false,
+    searchShifts: [],
+    searchValueShift: '',
     error: "",
 };
 
@@ -166,17 +169,17 @@ export const shift = (state = initialState, action) => {
                         return p;
                     }
                 }).filter(p => {
-                    if(action.start_date != null && action.end_date != null) {
+                    if (action.start_date != null && action.end_date != null) {
                         const start_date = new Date(action.start_date);
                         const end_date = new Date(action.end_date);
                         if (!isNaN(start_date) && !isNaN(end_date)) {
                             return ((moment(p.start_date).isBetween(action.start_date, action.end_date)) &&
                                 moment(p.end_date).isBetween(action.start_date, action.end_date));
-                        } else if(!isNaN(start_date)) {
+                        } else if (!isNaN(start_date)) {
                             let sd = moment(start_date).format("YYYY-MM-DD");
                             let psd = moment(p.start_date).format("YYYY-MM-DD");
                             return (moment(psd).isSame(sd));
-                        } else if(!isNaN(end_date)) {
+                        } else if (!isNaN(end_date)) {
                             let ed = moment(end_date).format("YYYY-MM-DD");
                             let ped = moment(p.end_date).format("YYYY-MM-DD");
                             return (moment(ed).isSame(ped));
@@ -258,6 +261,23 @@ export const shift = (state = initialState, action) => {
                     });
                     return p;
                 })]
+            };
+        case shiftConstants.SEARCH_SHIFT:
+            return {
+                ...state,
+                searchShift: true,
+                searchShifts: [...state.items.filter(
+                    p => p.name_job.toLowerCase()
+                        .includes(action.payload.toLowerCase())
+                )],
+                searchValueShift: action.payload
+            };
+        case shiftConstants.CLEAR_SEARCH_SHIFT:
+            return {
+                ...state,
+                searchShift: false,
+                searchShifts: [],
+                searchValueShift: ''
             }
         default:
             return state;

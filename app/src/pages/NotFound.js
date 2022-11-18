@@ -22,14 +22,15 @@ const NotFound = () => {
                         style={{
                             border: "2px solid #FCEDDA",
                             padding: 50,
-                            backgroundColor: "#FCEDDA",
+                            backgroundColor: "#647295",
+                            color: "white",
                             display: "flex",
                             flexDirection: "column",
                             justifyItems: "center"
                         }}
                     >
                         <h3>404 - Page introuvable</h3>
-                        <Button onClick={() => navigate(-1)}>
+                        <Button onClick={() => navigate(-1)} style={{ backgroundColor: "white", color: "#647295" }}>
                             Retour en arriere !
                         </Button>
                     </div>

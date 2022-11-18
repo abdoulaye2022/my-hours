@@ -12,6 +12,7 @@ const Login = () => {
     const navigator = useNavigate();
     const error = useSelector(state => state.user.error);
     const loading = useSelector((state) => state.user.loading);
+    //const is_admin = useSelector(state => state.user.user.is_admin);
 
     useEffect(() => {
         dispatch(userActions.actualiseLoginPage());
@@ -19,6 +20,10 @@ const Login = () => {
 
     const redirectToHome = () => {
         return navigator("/");
+    };
+
+    const redirectToDashboard = () => {
+        return navigator("/dashboard");
     };
 
     const formiklogin = useFormik({
@@ -44,7 +49,8 @@ const Login = () => {
                 userActions.login(
                     values.email,
                     values.password,
-                    redirectToHome
+                    redirectToHome,
+                    redirectToDashboard
                 )
             );
         },

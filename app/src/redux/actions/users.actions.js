@@ -42,7 +42,7 @@ function update(id, firstname, lastname, gender, country, province, city, bio, p
     }
 }
 
-function login(email, password, cb) {
+function login(email, password, cb1, cb2) {
     return function (dispatch) {
         dispatch(request());
         userServices
@@ -53,7 +53,11 @@ function login(email, password, cb) {
                 dispatch(jobActions.getAuthJobs(res.data.user.id));
                 dispatch(shiftActions.getAll());
                 dispatch(shiftActions.authShift(res.data.user.id));
-                cb();
+                if(parseInt(res.data.user.is_admin) === 1)
+                    cb2();
+                else if(parseInt(res.data.user.is_admin) === 0)
+                    cb1();
+               
             })
             .catch((err) => {
                 dispatch(failure(err.response.data.message));

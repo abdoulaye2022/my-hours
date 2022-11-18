@@ -8,7 +8,7 @@ import { ShiftModal } from "../components/Modals/ShiftModal";
 import { shiftActions } from "../redux/actions/shifts.actions";
 import { useNavigate } from "react-router-dom";
 
-const mois = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+const mois = ["", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 const jours = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
 const Accueil = () => {
@@ -23,10 +23,24 @@ const Accueil = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        //getUserMonthsNumber(authShifts)
         return () => {
             setVisible(true);
         };
-    }, []);
+    }, [authShifts]);
+
+    const getUserMonthsNumber = (shift) => {
+        let months = [];
+
+        shift.map((p, i) => {
+            let v = parseInt(moment(p.start_date).format("M"));
+            if (!months.includes(v)) {
+                months = [...months, v];
+            }
+        });
+
+        return months;
+    }
 
     const dayHours = (shifts) => {
         let time;
@@ -110,8 +124,20 @@ const Accueil = () => {
         return time;
     };
 
+    const hoursShift = (start, end) => {
+        let start_date = moment(start)
+        let end_date = moment(end)
+        let time;
+
+        var duration = moment.duration(end_date.diff(start_date));
+
+        time = duration.hours() + " h " + duration.minutes() + " m ";
+
+        return time;
+    }
+
     return (
-        <Container fluid style={{ marginTop: 25 }}>
+        <Container fluid style={{ marginTop: 25, paddingBottom: 30 }}>
             <Loader content='Loading' active={loadingJob || loadingShift || loadingEmp} />
             <Row style={{ marginBottom: 25 }}>
                 <Col
@@ -173,21 +199,25 @@ const Accueil = () => {
                     </Card>
                 </Col>
             </Row>
-            <Row style={{ marginTop: 25 }}>
+            <Row style={{ marginTop: 25}}>
                 <Col>
-                    <h3 style={{ textAlign: "center" }}>Historique de mes shifts</h3>
+                    <h3 style={{ textAlign: "center" }}>Historique de mes horaires</h3>
                     <Accordion fluid styled>
-                        {mois.map((p, i) => (
+                        {getUserMonthsNumber(authShifts).sort((a, b) => a - b).map((p, i) => (
                             <>
                                 <Accordion.Title
-                                    active={activeIndex === (i + 1)}
+                                    active={activeIndex === i + 1}
                                     index={0}
-                                    onClick={() => setActiveIndex(i + 1)}
+                                    onClick={() => {
+
+                                        setActiveIndex(activeIndex === 0 ? (i + 1) : (0));
+                                    }}
+                                    style={{ color: "#647295" }}
                                 >
                                     <Icon name='dropdown' />
-                                    {p}
+                                    {mois[p]}
                                 </Accordion.Title>
-                                <Accordion.Content active={activeIndex === (i + 1)}>
+                                <Accordion.Content active={activeIndex === i + 1}>
                                     <Table celled striped>
                                         <Table.Header>
                                             <Table.Row>
@@ -201,6 +231,9 @@ const Accueil = () => {
                                                     Date fin
                                                 </Table.HeaderCell>
                                                 <Table.HeaderCell>
+                                                    Durée
+                                                </Table.HeaderCell>
+                                                <Table.HeaderCell>
                                                     Lieu
                                                 </Table.HeaderCell>
                                                 <Table.HeaderCell>
@@ -209,96 +242,106 @@ const Accueil = () => {
                                             </Table.Row>
                                         </Table.Header>
                                         <Table.Body>
-                                            {authShifts.sort((a, b) => new Date(a.added_at) - new Date(b.added_at)).map((p, k) => (
-                                                p.statut_shift === 1 ? (
-                                                    <Table.Row
-                                                        positive
-                                                        className="rowedit"
-                                                    >
-                                                        <Table.Cell>
-                                                            {p.name_job}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            {jours[moment(p.start_date).day()] + ", " +
-                                                                moment(p.start_date).date() + " " +
-                                                                moment(p.start_date).format("MMMM") + " " +
-                                                                moment(p.start_date).year() + ", à " +
-                                                                moment(p.start_date).format("HH:mm")}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            {jours[moment(p.end_date).day()] + ", " +
-                                                                moment(p.end_date).date() + " " +
-                                                                moment(p.end_date).format("MMMM") + " " +
-                                                                moment(p.end_date).year() + ",  à " +
-                                                                moment(p.end_date).format("HH:mm")}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            {p.location}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            <Icon name="checkmark" />
-                                                        </Table.Cell>
-                                                    </Table.Row>
-                                                ) : p.statut_shift === 0 ? (
-                                                    <Table.Row
-                                                        warning
-                                                        className="rowedit"
-                                                    >
-                                                        <Table.Cell>
-                                                            {p.name_job}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            {jours[moment(p.start_date).day()] + ", " +
-                                                                moment(p.start_date).date() + " " +
-                                                                moment(p.start_date).format("MMMM") + " " +
-                                                                moment(p.start_date).year() + ", à " +
-                                                                moment(p.start_date).format("HH:mm")}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            {jours[moment(p.end_date).day()] + ", " +
-                                                                moment(p.end_date).date() + " " +
-                                                                moment(p.end_date).format("MMMM") + " " +
-                                                                moment(p.end_date).year() + ",  à " +
-                                                                moment(p.end_date).format("HH:mm")}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            {p.location}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            <Icon name="warning" />
-                                                        </Table.Cell>
-                                                    </Table.Row>
-                                                ) : p.statut_shift === 2 ? (
-                                                    <Table.Row
-                                                        error
-                                                        className="rowedit"
-                                                    >
-                                                        <Table.Cell>
-                                                            {p.name_job}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            {jours[moment(p.start_date).day()] + ", " +
-                                                                moment(p.start_date).date() + " " +
-                                                                moment(p.start_date).format("MMMM") + " " +
-                                                                moment(p.start_date).year() + ", à " +
-                                                                moment(p.start_date).format("HH:mm")}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            {jours[moment(p.end_date).day()] + ", " +
-                                                                moment(p.end_date).date() + " " +
-                                                                moment(p.end_date).format("MMMM") + " " +
-                                                                moment(p.end_date).year() + ",  à " +
-                                                                moment(p.end_date).format("HH:mm")}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            {p.location}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            <Icon name="cancel" />
-                                                        </Table.Cell>
-                                                    </Table.Row>
-                                                ) : (null)
-                                            ))}
+                                            {authShifts.sort((a, b) => new Date(a.added_at) - new Date(b.added_at))
+                                                .filter(t => parseInt(moment(t.start_date).format("M")) === p).map((p, k) => (
+                                                    p.statut_shift === 1 ? (
+                                                        <Table.Row
+                                                            positive
+                                                            className="rowedit"
+                                                        >
+                                                            <Table.Cell>
+                                                                {p.name_job}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.start_date).day()] + ", " +
+                                                                    moment(p.start_date).date() + " " +
+                                                                    moment(p.start_date).format("MMMM") + " " +
+                                                                    moment(p.start_date).year() + ", à " +
+                                                                    moment(p.start_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.end_date).day()] + ", " +
+                                                                    moment(p.end_date).date() + " " +
+                                                                    moment(p.end_date).format("MMMM") + " " +
+                                                                    moment(p.end_date).year() + ",  à " +
+                                                                    moment(p.end_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {hoursShift(p.start_date, p.end_date)}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {p.location}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                <Icon name="checkmark" />
+                                                            </Table.Cell>
+                                                        </Table.Row>
+                                                    ) : p.statut_shift === 0 ? (
+                                                        <Table.Row
+                                                            warning
+                                                            className="rowedit"
+                                                        >
+                                                            <Table.Cell>
+                                                                {p.name_job}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.start_date).day()] + ", " +
+                                                                    moment(p.start_date).date() + " " +
+                                                                    moment(p.start_date).format("MMMM") + " " +
+                                                                    moment(p.start_date).year() + ", à " +
+                                                                    moment(p.start_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.end_date).day()] + ", " +
+                                                                    moment(p.end_date).date() + " " +
+                                                                    moment(p.end_date).format("MMMM") + " " +
+                                                                    moment(p.end_date).year() + ",  à " +
+                                                                    moment(p.end_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {hoursShift(p.start_date, p.end_date)}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {p.location}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                <Icon name="warning" />
+                                                            </Table.Cell>
+                                                        </Table.Row>
+                                                    ) : p.statut_shift === 2 ? (
+                                                        <Table.Row
+                                                            error
+                                                            className="rowedit"
+                                                        >
+                                                            <Table.Cell>
+                                                                {p.name_job}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.start_date).day()] + ", " +
+                                                                    moment(p.start_date).date() + " " +
+                                                                    moment(p.start_date).format("MMMM") + " " +
+                                                                    moment(p.start_date).year() + ", à " +
+                                                                    moment(p.start_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.end_date).day()] + ", " +
+                                                                    moment(p.end_date).date() + " " +
+                                                                    moment(p.end_date).format("MMMM") + " " +
+                                                                    moment(p.end_date).year() + ",  à " +
+                                                                    moment(p.end_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {hoursShift(p.start_date, p.end_date)}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {p.location}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                <Icon name="cancel" />
+                                                            </Table.Cell>
+                                                        </Table.Row>
+                                                    ) : (null)
+                                                ))}
                                         </Table.Body>
                                     </Table>
                                 </Accordion.Content>

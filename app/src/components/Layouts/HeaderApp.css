@@ -27,3 +27,11 @@
     border: 2px solid white;
     color: white;
 } */
+
+.navbar .navbar-toggler {
+    color: white;
+}
+
+.navbar-toggler-icon {
+    color: white;
+}

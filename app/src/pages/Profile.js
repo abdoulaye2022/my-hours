@@ -146,7 +146,7 @@ const Profile = () => {
 
     return (
         <>
-            <Container fluid style={{ marginTop: 25 }}>
+            <Container fluid style={{ marginTop: 25, paddingBottom: 30 }}>
                 <Loader content='Loading' active={loading} />
                 <Row>
                     <Col xs={0} md={2} lg={2}></Col>

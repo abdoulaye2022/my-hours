@@ -78,9 +78,21 @@ const MesHoraires = () => {
         });
     }
 
+    const hoursShift = (start, end) => {
+        let start_date = moment(start)
+        let end_date = moment(end)
+        let time;
+
+        var duration = moment.duration(end_date.diff(start_date));
+
+        time = duration.hours() + " h " + duration.minutes() + " m ";
+
+        return time;
+    }
+
     return (
         <>
-            <Container fluid style={{ marginTop: 25 }}>
+            <Container fluid style={{ marginTop: 25, paddingBottom: 30 }}>
                 <Row>
                     <Col
                         style={{
@@ -219,6 +231,9 @@ const MesHoraires = () => {
                                         Date fin
                                     </Table.HeaderCell>
                                     <Table.HeaderCell>
+                                        Durée
+                                    </Table.HeaderCell>
+                                    <Table.HeaderCell>
                                         Lieu
                                     </Table.HeaderCell>
                                     <Table.HeaderCell>
@@ -253,6 +268,9 @@ const MesHoraires = () => {
                                                                 moment(p.end_date).format("MMMM") + " " +
                                                                 moment(p.end_date).year() + ",  à " +
                                                                 moment(p.end_date).format("HH:mm")}
+                                                        </Table.Cell>
+                                                        <Table.Cell>
+                                                            {hoursShift(p.start_date, p.end_date)}
                                                         </Table.Cell>
                                                         <Table.Cell>
                                                             {p.location}
@@ -342,6 +360,9 @@ const MesHoraires = () => {
                                                                 moment(p.end_date).format("MMMM") + " " +
                                                                 moment(p.end_date).year() + ",  à " +
                                                                 moment(p.end_date).format("HH:mm")}
+                                                        </Table.Cell>
+                                                        <Table.Cell>
+                                                            {hoursShift(p.start_date, p.end_date)}
                                                         </Table.Cell>
                                                         <Table.Cell>
                                                             {p.location}
@@ -461,6 +482,9 @@ const MesHoraires = () => {
                                                                 moment(p.end_date).format("MMMM") + " " +
                                                                 moment(p.end_date).year() + ",  à " +
                                                                 moment(p.end_date).format("HH:mm")}
+                                                        </Table.Cell>
+                                                        <Table.Cell>
+                                                            {hoursShift(p.start_date, p.end_date)}
                                                         </Table.Cell>
                                                         <Table.Cell>
                                                             {p.location}
@@ -587,6 +611,9 @@ const MesHoraires = () => {
                                                                     moment(p.end_date).format("HH:mm")}
                                                             </Table.Cell>
                                                             <Table.Cell>
+                                                                {hoursShift(p.start_date, p.end_date)}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
                                                                 {p.location}
                                                             </Table.Cell>
                                                             <Table.Cell>
@@ -674,6 +701,9 @@ const MesHoraires = () => {
                                                                     moment(p.end_date).format("MMMM") + " " +
                                                                     moment(p.end_date).year() + ",  à " +
                                                                     moment(p.end_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {hoursShift(p.start_date, p.end_date)}
                                                             </Table.Cell>
                                                             <Table.Cell>
                                                                 {p.location}
@@ -793,6 +823,9 @@ const MesHoraires = () => {
                                                                     moment(p.end_date).format("MMMM") + " " +
                                                                     moment(p.end_date).year() + ",  à " +
                                                                     moment(p.end_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {hoursShift(p.start_date, p.end_date)}
                                                             </Table.Cell>
                                                             <Table.Cell>
                                                                 {p.location}
@@ -917,6 +950,9 @@ const MesHoraires = () => {
                                                                     moment(p.end_date).format("HH:mm")}
                                                             </Table.Cell>
                                                             <Table.Cell>
+                                                                {hoursShift(p.start_date, p.end_date)}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
                                                                 {p.location}
                                                             </Table.Cell>
                                                             <Table.Cell>
@@ -981,7 +1017,7 @@ const MesHoraires = () => {
                                                     on="click"
                                                     position="top center"
                                                 />
-                                            ) : (
+                                            ) : p.statut_shift === 0 ? (
                                                 <Popup
                                                     trigger={
                                                         <Table.Row
@@ -1004,6 +1040,9 @@ const MesHoraires = () => {
                                                                     moment(p.end_date).format("MMMM") + " " +
                                                                     moment(p.end_date).year() + ",  à " +
                                                                     moment(p.end_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {hoursShift(p.start_date, p.end_date)}
                                                             </Table.Cell>
                                                             <Table.Cell>
                                                                 {p.location}
@@ -1100,7 +1139,129 @@ const MesHoraires = () => {
                                                     on="click"
                                                     position="top center"
                                                 />
-                                            )
+                                            ) : p.statut_shift === 2 ? (
+                                                <Popup
+                                                    trigger={
+                                                        <Table.Row
+                                                            error
+                                                            className="rowedit"
+                                                        >
+                                                            <Table.Cell>
+                                                                {p.name_job}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.start_date).day()] + ", " +
+                                                                    moment(p.start_date).date() + " " +
+                                                                    moment(p.start_date).format("MMMM") + " " +
+                                                                    moment(p.start_date).year() + ", à " +
+                                                                    moment(p.start_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {jours[moment(p.end_date).day()] + ", " +
+                                                                    moment(p.end_date).date() + " " +
+                                                                    moment(p.end_date).format("MMMM") + " " +
+                                                                    moment(p.end_date).year() + ",  à " +
+                                                                    moment(p.end_date).format("HH:mm")}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {hoursShift(p.start_date, p.end_date)}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                {p.location}
+                                                            </Table.Cell>
+                                                            <Table.Cell>
+                                                                <Icon name="cancel" />
+                                                            </Table.Cell>
+                                                        </Table.Row>
+                                                    }
+                                                    content={
+                                                        <div
+                                                            style={{
+                                                                width: 255,
+                                                            }}
+                                                        >
+                                                            <Button
+                                                                style={{
+                                                                    backgroundColor:
+                                                                        "#c9ba9b",
+                                                                    color: "white",
+                                                                }}
+                                                                onClick={() => {
+                                                                    dispatch(
+                                                                        shiftActions.complete(
+                                                                            p.id,
+                                                                            1
+                                                                        )
+                                                                    );
+                                                                    dispatch(
+                                                                        shiftActions.shiftPopupPla()
+                                                                    );
+                                                                    //   setIsOpenPla(
+                                                                    //       false
+                                                                    //   );
+                                                                }}
+                                                                disabled={moment(
+                                                                    p.end_date
+                                                                ).isAfter(
+                                                                    currentDate
+                                                                )}
+                                                            // disabled={true}
+                                                            >
+                                                                <Icon name="checkmark" />{" "}
+                                                                Accomplir
+                                                            </Button>
+                                                            <Button
+                                                                color="green"
+                                                                onClick={() => {
+                                                                    //setShift(p);
+                                                                    dispatch(
+                                                                        shiftActions.shiftItem(
+                                                                            p
+                                                                        )
+                                                                    );
+                                                                    dispatch(
+                                                                        shiftActions.shiftModal()
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <Icon name="edit" />{" "}
+                                                                Modifier
+                                                            </Button>
+                                                        </div>
+                                                    }
+                                                    open={
+                                                        shift.id === p.id
+                                                            ? isOpenPla
+                                                            : false
+                                                    }
+                                                    onOpen={(e) => {
+                                                        //setShift(p);
+                                                        dispatch(
+                                                            shiftActions.shiftItem(
+                                                                p
+                                                            )
+                                                        );
+                                                        dispatch(
+                                                            shiftActions.shiftPopupPla()
+                                                        );
+                                                        //setIsOpenPla(true);
+                                                    }}
+                                                    onClose={() => {
+                                                        //setShift({});
+                                                        dispatch(
+                                                            shiftActions.shiftItem(
+                                                                {}
+                                                            )
+                                                        );
+                                                        dispatch(
+                                                            shiftActions.shiftPopupPla()
+                                                        );
+                                                        //setIsOpenPla(false);
+                                                    }}
+                                                    on="click"
+                                                    position="top center"
+                                                />
+                                            ) : (null)
                                         )
                                 )}
                                 {filterShift === true &&
@@ -1122,7 +1283,7 @@ const MesHoraires = () => {
 
                             <Table.Footer>
                                 <Table.Row>
-                                    <Table.HeaderCell colSpan="5">
+                                    <Table.HeaderCell colSpan="6">
                                         <Pagination
                                             nPages={nPages}
                                             currentPage={currentPage}

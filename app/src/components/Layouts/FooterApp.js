@@ -8,12 +8,11 @@ export const FooterApp = () => {
                 left: 0,
                 bottom: 0,
                 width: "100%",
-                backgroundColor: "gray",
+                backgroundColor: "#647295",
                 color: "white",
                 textAlign: "center",
             }}>
                 <center>Copyrigh &copy; 2022</center>
-
             </div>
         </>
     );

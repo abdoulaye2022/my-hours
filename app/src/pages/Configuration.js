@@ -54,7 +54,7 @@ const Configuration = () => {
 
     return (
         <>
-            <Container fluid style={{ marginTop: 25 }}>
+            <Container fluid style={{ marginTop: 25, paddingBottom: 30 }}>
                 <Loader content='Loading' active={loadingJob || loadingEmp} />
                 <Row>
                     <Col xs={12} sm={6} md={6} lg={6}>

@@ -14,7 +14,9 @@ export const userActions = {
     filterModal,
     filterDropdown,
     filterUsers,
-    clearFilterUsers
+    clearFilterUsers,
+    searchUsers,
+    clearSearchUsers
 };
 
 function update(id, firstname, lastname, gender, country, province, city, bio, password) {
@@ -194,5 +196,18 @@ function filterUsers (is_admin, statut, country, province, city, date_connexion)
 function clearFilterUsers () {
     return {
         type: userConstants.CLEAR_FILTER_USERS
+    }
+}
+
+function searchUsers (user) {
+    return {
+        type: userConstants.SEARCH_USERS,
+        payload: user
+    }
+}
+
+function clearSearchUsers () {
+    return {
+        type: userConstants.CLEAR_SEARCH_USERS
     }
 }

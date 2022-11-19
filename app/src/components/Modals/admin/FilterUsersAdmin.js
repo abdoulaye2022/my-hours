@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Modal } from "react-bootstrap";
-import { Button, Radio, Form, Dropdown, Select, Input } from "semantic-ui-react";
+import {
+    Button,
+    Radio,
+    Form,
+    Dropdown,
+    Select,
+    Input,
+} from "semantic-ui-react";
 import { userActions } from "../../../redux/actions/users.actions";
 import { Country, State, City } from "country-state-city";
 import { Formik, useFormik } from "formik";
@@ -12,19 +19,36 @@ const FilterUsersAdmin = () => {
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
-    const filterModal = useSelector(state => state.user.filterModal);
+    const filterModal = useSelector((state) => state.user.filterModal);
     const dispatch = useDispatch();
 
     const formikfilter = useFormik({
-        initialValues: { is_admin: '', statut: '', country: '', province: '', city: '', date_connexion: '' },
-        validate: values => {
+        initialValues: {
+            is_admin: "",
+            statut: "",
+            country: "",
+            province: "",
+            city: "",
+            date_connexion: "",
+        },
+        validate: (values) => {
             const errors = {};
 
             return errors;
         },
         onSubmit: (values, { resetForm }) => {
-            console.log(values)
-        }
+            dispatch(
+                userActions.filterUsers(
+                    values.is_admin,
+                    values.statut,
+                    values.country,
+                    values.province,
+                    values.city,
+                    values.date_connexion
+                )
+            );
+            dispatch(userActions.filterModal());
+        },
     });
 
     return (
@@ -39,8 +63,8 @@ const FilterUsersAdmin = () => {
                     //     dispatch(shiftActions.filterDropdown());
                 }}
                 onExited={() => {
-                formikfilter.resetForm();
-                formikfilter.setErrors({});
+                    formikfilter.resetForm();
+                    formikfilter.setErrors({});
                 }}
                 onShow={() => {
                     const c = [
@@ -54,8 +78,16 @@ const FilterUsersAdmin = () => {
                     // formikfilter.resetForm();
                     // formikfilter.setErrors({});
                 }}
-                centered>
-                <Modal.Header closeButton style={{ backgroundColor: "#647295", color: "white", fontWeight: "bold" }}>
+                centered
+            >
+                <Modal.Header
+                    closeButton
+                    style={{
+                        backgroundColor: "#647295",
+                        color: "white",
+                        fontWeight: "bold",
+                    }}
+                >
                     <Modal.Title>Filtre avancer</Modal.Title>
                 </Modal.Header>
                 <Formik>
@@ -63,16 +95,35 @@ const FilterUsersAdmin = () => {
                         <Modal.Body>
                             <Form.Group widths="equal">
                                 <Form.Field>
-                                    <Dropdown text="Role" name="is_admin">
+                                    <Dropdown
+                                        text={
+                                            formikfilter.values.is_admin !== ""
+                                                ? (formikfilter.values.is_admin === 1 ? "Admin" : "Utilisateur")
+                                                : "Role"
+                                        }
+                                        name="is_admin"
+                                    >
                                         <Dropdown.Menu>
                                             <Dropdown.Item
                                                 onClick={() => {
-                                                    formikfilter.setFieldValue('is_admin', 1);
-                                                }}>Admin</Dropdown.Item>
+                                                    formikfilter.setFieldValue(
+                                                        "is_admin",
+                                                        1
+                                                    );
+                                                }}
+                                            >
+                                                Admin
+                                            </Dropdown.Item>
                                             <Dropdown.Item
                                                 onClick={() => {
-                                                    formikfilter.setFieldValue('is_admin', 0);
-                                                }}>Utilisateur</Dropdown.Item>
+                                                    formikfilter.setFieldValue(
+                                                        "is_admin",
+                                                        0
+                                                    );
+                                                }}
+                                            >
+                                                Utilisateur
+                                            </Dropdown.Item>
                                         </Dropdown.Menu>
                                     </Dropdown>
                                 </Form.Field>
@@ -80,26 +131,38 @@ const FilterUsersAdmin = () => {
                                     <Radio
                                         label="Actif"
                                         name="statut"
-                                        value={(1)}
-                                        onChange={(e, { value }) => formikfilter.setFieldValue('statut', value)}
-                                        checked={formikfilter.values.statut === 1}
+                                        value={0}
+                                        onChange={(e, { value }) =>
+                                            formikfilter.setFieldValue(
+                                                "statut",
+                                                value
+                                            )
+                                        }
+                                        checked={
+                                            formikfilter.values.statut === 0
+                                        }
                                     />
                                 </Form.Field>
                                 <Form.Field>
                                     <Radio
                                         label="Bloquer"
                                         name="statut"
-                                        value={(0)}
-                                        onChange={(e, { value }) => formikfilter.setFieldValue('statut', value)}
-                                        checked={formikfilter.values.statut === 0}
+                                        value={1}
+                                        onChange={(e, { value }) =>
+                                            formikfilter.setFieldValue(
+                                                "statut",
+                                                value
+                                            )
+                                        }
+                                        checked={
+                                            formikfilter.values.statut === 1
+                                        }
                                     />
                                 </Form.Field>
                             </Form.Group>
                             <Form.Group widths="equal">
                                 <Form.Field>
-                                    <label
-                                        style={{ fontWeight: "normal" }}
-                                    >
+                                    <label style={{ fontWeight: "normal" }}>
                                         Pays
                                     </label>
                                     <Select
@@ -132,9 +195,7 @@ const FilterUsersAdmin = () => {
                                     />
                                 </Form.Field>
                                 <Form.Field>
-                                    <label
-                                        style={{ fontWeight: "normal" }}
-                                    >
+                                    <label style={{ fontWeight: "normal" }}>
                                         Province
                                     </label>
                                     <Select
@@ -168,9 +229,7 @@ const FilterUsersAdmin = () => {
                             </Form.Group>
                             <Form.Group widths="equal">
                                 <Form.Field>
-                                    <label
-                                        style={{ fontWeight: "normal" }}
-                                    >
+                                    <label style={{ fontWeight: "normal" }}>
                                         Ville
                                     </label>
                                     <Select
@@ -190,27 +249,46 @@ const FilterUsersAdmin = () => {
                                     />
                                 </Form.Field>
                                 <Form.Field>
-                                    <label
-                                        style={{ fontWeight: "normal" }}
-                                    >
+                                    <label style={{ fontWeight: "normal" }}>
                                         Date de connexion
                                     </label>
                                     <DatePicker
                                         id="date_connexion"
                                         name="date_connexion"
                                         onChange={(date) => {
-                                            formikfilter.setFieldValue('date_connexion', date)
+                                            formikfilter.setFieldValue(
+                                                "date_connexion",
+                                                date
+                                            );
                                         }}
-                                        selected={formikfilter.values.date_connexion}
-                                        value={formikfilter.values.date_connexion} />
+                                        selected={
+                                            formikfilter.values.date_connexion
+                                        }
+                                        value={
+                                            formikfilter.values.date_connexion
+                                        }
+                                    />
                                 </Form.Field>
                             </Form.Group>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button type="button" variant="secondary" onClick={() => dispatch(userActions.filterModal())}>
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={() =>
+                                    dispatch(userActions.filterModal())
+                                }
+                            >
                                 Annuler
                             </Button>
-                            <Button primary type="submit" style={{ backgroundColor: "#647295", color: "white" }}>
+                            <Button
+                                primary
+                                type="submit"
+                                style={{
+                                    backgroundColor: "#647295",
+                                    color: "white",
+                                }}
+                            >
                                 Filtrer
                             </Button>
                         </Modal.Footer>
@@ -219,6 +297,6 @@ const FilterUsersAdmin = () => {
             </Modal>
         </>
     );
-}
+};
 
 export default FilterUsersAdmin;

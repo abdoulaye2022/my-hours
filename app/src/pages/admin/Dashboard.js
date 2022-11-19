@@ -14,19 +14,19 @@ const Dashboard = () => {
                 <Col>
                     <Statistic>
                         <Statistic.Label>Utilisateurs</Statistic.Label>
-                        <Statistic.Value>{users.length}</Statistic.Value>
+                        <Statistic.Value>{users.length ? users.length : "-"}</Statistic.Value>
                     </Statistic>
                 </Col>
                 <Col>
                     <Statistic>
                         <Statistic.Label>Nombres d'employeurs</Statistic.Label>
-                        <Statistic.Value></Statistic.Value>
+                        <Statistic.Value>-</Statistic.Value>
                     </Statistic>
                 </Col>
                 <Col>
                     <Statistic>
                         <Statistic.Label>Nombres de shifts</Statistic.Label>
-                        <Statistic.Value>{shifts.length}</Statistic.Value>
+                        <Statistic.Value>{shifts.length ? shifts.length : "-"}</Statistic.Value>
                     </Statistic>
                 </Col>
                 <Col>

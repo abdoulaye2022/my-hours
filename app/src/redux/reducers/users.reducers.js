@@ -10,8 +10,11 @@ const initialState = {
     filterDropdown: false,
     filterUsers: false,
     filteredUsers: [],
-    token: '',
-    error: ''
+    searchUsers: false,
+    searchedUsers: [],
+    searchedValueUsers: '',
+    token: "",
+    error: "",
 };
 
 export const user = (state = initialState, action) => {
@@ -28,18 +31,18 @@ export const user = (state = initialState, action) => {
                 token: action.payload.access_token,
                 user: action.payload.user,
                 authenticathed: true,
-                error: ""
+                error: "",
             };
         case userConstants.LOGIN_USER_FAILURE:
             return {
                 ...state,
                 loading: false,
-                error: action.payload
+                error: action.payload,
             };
         case userConstants.REGISTER_USER_REQUEST:
             return {
                 ...state,
-                loading: true
+                loading: true,
             };
         case userConstants.REGISTER_USER_SUCCESS:
             return {
@@ -53,8 +56,8 @@ export const user = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                error: action.payload
-            }
+                error: action.payload,
+            };
         // case userConstants.GETALL_USER_REQUEST:
         //     return {
         //         ...state,
@@ -75,42 +78,44 @@ export const user = (state = initialState, action) => {
         case userConstants.UPDATE_USER_REQUEST:
             return {
                 ...state,
-                loading: true
-            }
+                loading: true,
+            };
         case userConstants.UPDATE_USER_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                items: [...state.items.map((p, i) => {
-                    if (p.id === action.payload.id) {
-                        p = action.payload;
-                    }
-                    return p;
-                })],
-                item: action.payload
+                items: [
+                    ...state.items.map((p, i) => {
+                        if (p.id === action.payload.id) {
+                            p = action.payload;
+                        }
+                        return p;
+                    }),
+                ],
+                item: action.payload,
             };
         case userConstants.UPDATE_USER_FAILURE:
             return {
                 ...state,
                 loading: false,
-                error: action.payload
+                error: action.payload,
             };
         case userConstants.UPDATE_AUTH_REQUEST:
             return {
                 ...state,
-                loading: true
+                loading: true,
             };
         case userConstants.UPDATE_AUTH_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                user: action.payload
+                user: action.payload,
             };
         case userConstants.UPDATE_AUTH_FAILURE:
             return {
                 ...state,
                 loading: false,
-                error: action.payload
+                error: action.payload,
             };
         case userConstants.LOGOUT_USER:
             return {
@@ -119,8 +124,8 @@ export const user = (state = initialState, action) => {
                 authenticathed: false,
                 user: {},
                 items: [],
-                token: '',
-                error: ''
+                token: "",
+                error: "",
             };
         case userConstants.ACTUALISE_LOGIN_PAGE:
             return {
@@ -129,8 +134,8 @@ export const user = (state = initialState, action) => {
                 authenticathed: false,
                 user: {},
                 items: [],
-                token: '',
-                error: ''
+                token: "",
+                error: "",
             };
         case userConstants.GETALL_USER_REQUEST:
             return {
@@ -141,95 +146,134 @@ export const user = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                items: action.payload
+                items: action.payload,
             };
         case userConstants.GETALL_USER_FAILURE:
             return {
                 ...state,
                 loading: false,
-                error: action.payload
+                error: action.payload,
             };
         case userConstants.FILTER_MODAL:
             return {
                 ...state,
-                filterModal: !state.filterModal
+                filterModal: !state.filterModal,
             };
         case userConstants.FILTER_DROPDOWN:
             return {
                 ...state,
-                filterDropdown: !state.filterDropdown
+                filterDropdown: !state.filterDropdown,
             };
         case userConstants.FILTER_USERS:
+            console.log("Is admin : " + action.is_admin);
+            console.log("Statut : " + action.statut);
             return {
                 ...state,
                 filterUsers: true,
                 filteredUsers: [
-                    ...state.items.filter((p => {
-                        if (action.is_admin !== '') {
-                            if (action.is_admin === 1)
-                                return p.is_admin === 1;
-                            else if (p.is_admin === 0)
-                                return p.is_admin === 0;
-                        } else {
-                            return p;
-                        }
-                    }))
-                    .filter(p => {
-                        if (action.statut !== '') {
-                            if (action.statut === 1)
-                                return p.statut === 1;
-                            else if (p.statut === 0)
-                                return p.statut === 0;
-                        } else {
-                            return p;
-                        }
-                    })
-                    .filter(p => {
-                        if (action.country !== '') {
-                            return p.country === action.country;
-                        } else {
-                            return p;
-                        }
-                    })
-                    .filter(p => {
-                        if (action.province !== '') {
-                            return p.province === action.province;
-                        } else {
-                            return p;
-                        }
-                    })
-                    .filter(p => {
-                        if (action.city !== '') {
-                            return p.city === action.city;
-                        } else {
-                            return p;
-                        }
-                    })
-                    .filter(p => {
-                        if (action.country !== '') {
-                            return p.country === action.country;
-                        } else {
-                            return p;
-                        }
-                    })
-                    .filter(p => {
-                        if (action.date_connexion !== '') {
-                            let p_date = moment(p.date_connexion).format("YYYY-MM-DD");
-                            let a_date = moment(action.date_connexion).format("YYYY-MM-DD");
-                            return (moment(a_date).isSame(p.a_date));
-                        } else {
-                            return p;
-                        }
-                    })
-                ]
+                    ...state.items
+                        .filter((p) => {
+                            if (
+                                action.is_admin !== "" &&
+                                action.is_admin !== null
+                            ) {
+                                if (action.is_admin === 1)
+                                    return p.is_admin === 1;
+                                else if (p.is_admin === 0)
+                                    return p.is_admin === 0;
+                            } else {
+                                return p;
+                            }
+                        })
+                        .filter((p) => {
+                            if (
+                                action.statut !== "" &&
+                                action.statut !== null
+                            ) {
+                                if (action.statut === 1) return p.statut === 1;
+                                else if (action.statut === 0)
+                                    return p.statut === 0;
+                            } else {
+                                return p;
+                            }
+                        })
+                        .filter((p) => {
+                            if (
+                                action.country !== "" &&
+                                action.country !== null
+                            ) {
+                                return p.country === action.country;
+                            } else {
+                                return p;
+                            }
+                        })
+                        .filter((p) => {
+                            if (
+                                action.province !== "" &&
+                                action.province !== null
+                            ) {
+                                return p.province === action.province;
+                            } else {
+                                return p;
+                            }
+                        })
+                        .filter((p) => {
+                            if (action.city !== "" && action.city !== null) {
+                                return p.city === action.city;
+                            } else {
+                                return p;
+                            }
+                        })
+                        .filter((p) => {
+                            if (
+                                action.date_connexion !== "" &&
+                                action.date_connexion !== null
+                            ) {
+                                let p_date = moment(p.date_connexion).format(
+                                    "YYYY-MM-DD"
+                                );
+                                let a_date = moment(
+                                    action.date_connexion
+                                ).format("YYYY-MM-DD");
+                                return moment(a_date).isSame(p_date);
+                            } else {
+                                return p;
+                            }
+                        }),
+                ],
             };
         case userConstants.CLEAR_FILTER_USERS:
             return {
                 ...state,
                 filterUsers: false,
-                filteredUsers: []
-            }
+                filteredUsers: [],
+            };
+        case userConstants.SEARCH_USERS:
+            return {
+                ...state,
+                searchUsers: true,
+                searchedUsers: [
+                    ...state.items.filter((p) => {
+                        return (
+                            p.firstname
+                                .toLowerCase()
+                                .includes(action.payload.toLowerCase())  ||
+                            p.lastname
+                                .toLowerCase()
+                                .includes(action.payload.toLowerCase())
+                        );
+                    }),
+                ],
+                searchedValueUsers: action.payload
+            };
+        case userConstants.CLEAR_SEARCH_USERS:
+            return {
+                ...state,
+                searchUsers: false,
+                searchedUsers: [],
+                searchedValueUsers: ''
+            };
         default:
             return state;
     }
-}
+};

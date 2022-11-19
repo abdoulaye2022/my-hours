@@ -42,7 +42,8 @@ class AuthController extends Controller
                 'email' => $users[$i]->email,
                 'new_user' => (int) $users[$i]->new_user,
                 'lang_app' => $users[$i]->lang_app,
-                'is_admin' => (int) $users[$i]->is_admin,
+                'statut' => (int) $users[$i]->statut,
+                'is_admin' => (int) $users[$i]->is_admin
             ];
 
             $i++;
@@ -87,6 +88,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => $request->password,
             'date_connexion' => $request->currentDate,
+            'statut' => 0,
         ]);
 
         $credentials = $request->only(['email', 'password']);

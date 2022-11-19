@@ -11,6 +11,7 @@ import NotFound from '../pages/NotFound';
 
 // Pages Admin
 import Dashboard from '../pages/admin/Dashboard';
+import Utilisateurs from '../pages/admin/Utilisateurs';
 
 // App Css code
 import './App.css';
@@ -43,6 +44,7 @@ const App = () => {
         <Route path='/configuration' element={<PrivateRoute><Layout><Configuration /></Layout></PrivateRoute>} />
         <Route path='/profil' element={<PrivateRoute><Layout><Profile /></Layout></PrivateRoute>} />
         <Route path='/dashboard' element={<AdminRoute><LayoutAdmin><Dashboard /></LayoutAdmin></AdminRoute>} />
+        <Route path='/utilisateurs' element={<AdminRoute><LayoutAdmin><Utilisateurs /></LayoutAdmin></AdminRoute>} />
         <Route path='*' element={<NotFound />} />
       </Routes>
     </>

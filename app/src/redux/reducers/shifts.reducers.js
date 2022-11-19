@@ -162,7 +162,6 @@ export const shift = (state = initialState, action) => {
                 loading: false,
                 filterShift: true,
                 filterAuthShift: [...state.authShifts.filter(p => {
-                    console.log(action.statut_shift)
                     if (action.statut_shift != '' || action.statut_shift === 0) {
                         return p.statut_shift === parseInt(action.statut_shift);
                     } else {
@@ -189,33 +188,6 @@ export const shift = (state = initialState, action) => {
                         return p;
                     }
                 })]
-                // filterAuthShift: [...state.authShifts.filter((p) => {
-                //     let res;
-                //     if (p.statut_shift === action.accomplis)
-                //         res = p;
-                //     else if (p.statut_shift === action.planifier)
-                //         res = p;
-                //     else if (p.statut_shift === action.annuler)
-                //         res = p;
-                //     console.log(action.start_date instanceof Date && !isNaN(action.start_date))
-                //     if (action.start_date !== '' && action.end_date !== '') {
-                //         if (moment(p.start_date).isBetween(action.start_date, action.end_date))
-                //             res = p;
-                //     }
-
-                //     return res;
-                // })]
-                // filterAuthShift: action.accomplis === 1 ? (
-                //     [state.filterAuthShift, ...state.authShifts.filter(p => p.statut_shift === action.accomplis)]
-                // ) : action.planifier === 0 ? (
-                //     [state.filterAuthShift, ...state.authShifts.filter(p => p.statut_shift === action.planifier)]
-                // ) : action.annuler === 2 ? (
-                //     [state.filterAuthShift, ...state.authShifts.filter(p => p.statut_shift === action.annuler)]
-                // ) : ((action.start_date !== '') && (action.end_date !== '')) ? (
-                //     [state.filterAuthShift, ...state.authShifts.filter(p => moment(p.start_date).isBetween(action.start_date, action.end_date))]
-                // ) : (
-                //     []
-                // )
             }
         case shiftConstants.CLEAR_FILTER_SHIFT:
             return {
@@ -266,7 +238,7 @@ export const shift = (state = initialState, action) => {
             return {
                 ...state,
                 searchShift: true,
-                searchShifts: [...state.items.filter(
+                searchShifts: [...state.authShifts.filter(
                     p => p.name_job.toLowerCase()
                         .includes(action.payload.toLowerCase())
                 )],

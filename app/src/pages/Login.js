@@ -6,6 +6,7 @@ import { Formik, useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../redux/actions/users.actions";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -39,18 +40,20 @@ const Login = () => {
             if (!values.password) {
                 errors.password = "Mot de passe est obligatoire";
             } else if (values.password.length < 6) {
-                errors.password = "Mot de passe doit être supérieur à 4 caractères";
+                errors.password = "Mot de passe doit être supérieur à 6 caractères";
             }
 
             return errors;
         },
         onSubmit: (values, { resetForm }) => {
+            let currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
             dispatch(
                 userActions.login(
                     values.email,
                     values.password,
                     redirectToHome,
-                    redirectToDashboard
+                    redirectToDashboard,
+                    currentDate
                 )
             );
         },
@@ -83,7 +86,8 @@ const Login = () => {
             return errors;
         },
         onSubmit: (values, { resetForm }) => {
-            dispatch(userActions.register(values.firstname, values.lastname, values.email, values.password, redirectToHome));
+            let currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
+            dispatch(userActions.register(values.firstname, values.lastname, values.email, values.password, redirectToHome, currentDate));
         },
     });
 

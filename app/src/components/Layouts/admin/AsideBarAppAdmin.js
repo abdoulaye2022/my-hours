@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button, Icon } from "semantic-ui-react";
 
 export const AsideBarAppAdmin = () => {
@@ -53,10 +54,14 @@ export const AsideBarAppAdmin = () => {
                 </div>
                 <span style={{ color: "white", marginBottom: 10 }}>Abdoulaye Mohamed Ahmed</span>
             </div>
-            <div style={{ flex: 2, display: "flex", flexDirection: "column", alignItems: "center", marginTop: 18  }}>
-                <Button style={{ width: 218, marginBottom: 10 }}><Icon name="home" /> Dashboard</Button>
-                <Button style={{ width: 218, marginBottom: 10 }}><Icon name="users" /> Gestions des utilisateurs</Button>
-                <Button style={{ width: 218, marginBottom: 10 }}><Icon name="mail" />  Messageries</Button>
+            <div style={{ flex: 2, display: "flex", flexDirection: "column", alignItems: "center", marginTop: 18 }}>
+                <Link to="/dashboard">
+                    <Button style={{ width: 218, marginBottom: 10 }}><Icon name="home" />Dashboard</Button>
+                </Link>
+                <Link to="/utilisateurs">
+                    <Button style={{ width: 218, marginBottom: 10 }}><Icon name="users" />Gestions des utilisateurs</Button>
+                </Link>
+                <Button style={{ width: 218, marginBottom: 10 }}><Icon name="mail" />Messageries</Button>
                 <Button style={{ width: 218 }}><Icon name="setting" /> Configurations</Button>
             </div>
         </div>

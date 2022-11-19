@@ -1,10 +1,15 @@
 import { userConstants } from "../constants/users.constants";
+import moment from "moment";
 
 const initialState = {
     loading: false,
     authenticathed: false,
     user: {},
     items: [],
+    filterModal: false,
+    filterDropdown: false,
+    filterUsers: false,
+    filteredUsers: [],
     token: '',
     error: ''
 };
@@ -126,6 +131,103 @@ export const user = (state = initialState, action) => {
                 items: [],
                 token: '',
                 error: ''
+            };
+        case userConstants.GETALL_USER_REQUEST:
+            return {
+                ...state,
+                loading: true,
+            };
+        case userConstants.GETALL_USER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                items: action.payload
+            };
+        case userConstants.GETALL_USER_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            };
+        case userConstants.FILTER_MODAL:
+            return {
+                ...state,
+                filterModal: !state.filterModal
+            };
+        case userConstants.FILTER_DROPDOWN:
+            return {
+                ...state,
+                filterDropdown: !state.filterDropdown
+            };
+        case userConstants.FILTER_USERS:
+            return {
+                ...state,
+                filterUsers: true,
+                filteredUsers: [
+                    ...state.items.filter((p => {
+                        if (action.is_admin !== '') {
+                            if (action.is_admin === 1)
+                                return p.is_admin === 1;
+                            else if (p.is_admin === 0)
+                                return p.is_admin === 0;
+                        } else {
+                            return p;
+                        }
+                    }))
+                    .filter(p => {
+                        if (action.statut !== '') {
+                            if (action.statut === 1)
+                                return p.statut === 1;
+                            else if (p.statut === 0)
+                                return p.statut === 0;
+                        } else {
+                            return p;
+                        }
+                    })
+                    .filter(p => {
+                        if (action.country !== '') {
+                            return p.country === action.country;
+                        } else {
+                            return p;
+                        }
+                    })
+                    .filter(p => {
+                        if (action.province !== '') {
+                            return p.province === action.province;
+                        } else {
+                            return p;
+                        }
+                    })
+                    .filter(p => {
+                        if (action.city !== '') {
+                            return p.city === action.city;
+                        } else {
+                            return p;
+                        }
+                    })
+                    .filter(p => {
+                        if (action.country !== '') {
+                            return p.country === action.country;
+                        } else {
+                            return p;
+                        }
+                    })
+                    .filter(p => {
+                        if (action.date_connexion !== '') {
+                            let p_date = moment(p.date_connexion).format("YYYY-MM-DD");
+                            let a_date = moment(action.date_connexion).format("YYYY-MM-DD");
+                            return (moment(a_date).isSame(p.a_date));
+                        } else {
+                            return p;
+                        }
+                    })
+                ]
+            };
+        case userConstants.CLEAR_FILTER_USERS:
+            return {
+                ...state,
+                filterUsers: false,
+                filteredUsers: []
             }
         default:
             return state;

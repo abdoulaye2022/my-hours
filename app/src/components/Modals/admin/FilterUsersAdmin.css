@@ -1,0 +1,8 @@
+.pays {
+    display: "flex";
+    justify-content: space-between;
+}
+
+.pays .field {
+    display: hide;
+}

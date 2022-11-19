@@ -18,6 +18,8 @@ $router->group([
     'prefix' => 'api'
 
 ], function ($router) {
+    // users
+    $router->get('/users', 'AuthController@index');
     $router->post('login', 'AuthController@login');
     $router->post('register', 'AuthController@register');
     $router->post('logout', 'AuthController@logout');

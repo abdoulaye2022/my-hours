@@ -22,12 +22,42 @@ class AuthController extends Controller
      * @param  Request  $request
      * @return Response
      */
+    public function index () 
+    {
+        $users = User::all();
+
+        $tab = [];
+        $i = 0;
+
+        while ($i < count($users)) {
+            $tab [] = [
+                'id' => $users[$i]->id,
+                'firstname' => $users[$i]->firstname,
+                'lastname' =>  $users[$i]->lastname,
+                'gender' => $users[$i]->gender,
+                'country' => $users[$i]->country,
+                'province' => $users[$i]->province,
+                'city' => $users[$i]->city,
+                'bio' => $users[$i]->bio,
+                'email' => $users[$i]->email,
+                'new_user' => (int) $users[$i]->new_user,
+                'lang_app' => $users[$i]->lang_app,
+                'is_admin' => (int) $users[$i]->is_admin,
+            ];
+
+            $i++;
+        }
+
+        return response()->json($users);
+    }
+
     public function login(Request $request)
     {
 
         $this->validate($request, [
             'email' => 'required|email|max:255',
             'password' => 'required|string|min:6',
+            'currentDate' => 'required|date_format:"Y-m-d H:i:s"'
         ]);
 
         $credentials = $request->only(['email', 'password']);
@@ -35,6 +65,8 @@ class AuthController extends Controller
         if (! $token = Auth::attempt($credentials)) {
             return response()->json(['message' => 'E-mail ou Mot de passe n\'existe pas'], 401);
         }
+
+        $user = User::where('email', $request->email)->update(['date_connexion' => $request->currentDate]);
 
         return $this->respondWithToken($token);
     }
@@ -46,9 +78,16 @@ class AuthController extends Controller
             'lastname' => 'required|string|max:50',
             'email' => 'required|email|max:255',
             'password' => 'required|string|min:6',
+            'currentDate' => 'required|date_format:"Y-m-d H:i:s"'
         ]);
 
-        $user = User::create($request->all());
+        $user = User::create([
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'email' => $request->email,
+            'password' => $request->password,
+            'date_connexion' => $request->currentDate,
+        ]);
 
         $credentials = $request->only(['email', 'password']);
 

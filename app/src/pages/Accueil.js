@@ -13,7 +13,6 @@ const jours = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "S
 
 const Accueil = () => {
     const authShifts = useSelector((state) => state.shift.authShifts);
-    const [visible, setVisible] = useState(false);
     const loadingJob = useSelector(state => state.job.loading);
     const loadingEmp = useSelector(state => state.employer.loading);
     const loadingShift = useSelector(state => state.shift.loading);
@@ -21,13 +20,6 @@ const Accueil = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        //getUserMonthsNumber(authShifts)
-        return () => {
-            setVisible(true);
-        };
-    }, [authShifts]);
 
     const getUserMonthsNumber = (shift) => {
         let months = [];

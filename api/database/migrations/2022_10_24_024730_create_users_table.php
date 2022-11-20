@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('lang_app', 2)->default('fr');
             $table->integer('is_admin')->default(0);
             $table->datetime('date_connexion')->nullable(false);
+            $table->integer('statut')->default(0)->nullable(false);
             $table->text('password')->nullable(false);
         });
     }

@@ -16,36 +16,58 @@ export const userActions = {
     filterUsers,
     clearFilterUsers,
     searchUsers,
-    clearSearchUsers
+    clearSearchUsers,
+    statutUserAccount,
 };
 
-function update(id, firstname, lastname, gender, country, province, city, bio, password) {
+function update(
+    id,
+    firstname,
+    lastname,
+    gender,
+    country,
+    province,
+    city,
+    bio,
+    password
+) {
     return function (dispatch) {
         dispatch(request());
-        userServices.update(id, firstname, lastname, gender, country, province, city, bio, password)
-            .then(res => {
-                dispatch(success(res.data))
+        userServices
+            .update(
+                id,
+                firstname,
+                lastname,
+                gender,
+                country,
+                province,
+                city,
+                bio,
+                password
+            )
+            .then((res) => {
+                dispatch(success(res.data));
             })
-            .catch(err => {
-                dispatch(failure(err.message))
-            })
-    }
+            .catch((err) => {
+                dispatch(failure(err.message));
+            });
+    };
     function request() {
         return {
-            type: userConstants.UPDATE_AUTH_REQUEST
-        }
-    };
+            type: userConstants.UPDATE_AUTH_REQUEST,
+        };
+    }
     function success(user) {
         return {
             type: userConstants.UPDATE_AUTH_SUCCESS,
-            payload: user
-        }
-    };
+            payload: user,
+        };
+    }
     function failure(error) {
         return {
             type: userConstants.UPDATE_AUTH_FAILURE,
-            payload: error
-        }
+            payload: error,
+        };
     }
 }
 
@@ -61,7 +83,9 @@ function login(email, password, cb1, cb2, currentDate) {
                     dispatch(userActions.getAll());
                     cb2();
                 } else if (parseInt(res.data.user.is_admin) === 0) {
-                    dispatch(employerActions.getAuthEmployers(res.data.user.id));
+                    dispatch(
+                        employerActions.getAuthEmployers(res.data.user.id)
+                    );
                     dispatch(jobActions.getAuthJobs(res.data.user.id));
                     dispatch(shiftActions.authShift(res.data.user.id));
                     cb1();
@@ -101,38 +125,40 @@ function logout(cb) {
 function getAll() {
     return function (dispatch) {
         dispatch(request());
-        userServices.getAll()
-            .then(res => {
+        userServices
+            .getAll()
+            .then((res) => {
                 dispatch(success(res.data));
             })
-            .catch(err => {
+            .catch((err) => {
                 dispatch(failure(err.message));
-            })
-    }
+            });
+    };
     function request() {
         return {
-            type: userConstants.GETALL_USER_REQUEST
-        }
-    };
+            type: userConstants.GETALL_USER_REQUEST,
+        };
+    }
     function success(user) {
         return {
             type: userConstants.GETALL_USER_SUCCESS,
-            payload: user
-        }
-    };
+            payload: user,
+        };
+    }
     function failure(error) {
         return {
             type: userConstants.GETALL_USER_FAILURE,
-            payload: error
-        }
+            payload: error,
+        };
     }
 }
 
 function register(firstname, lastname, email, password, cb, currentDate) {
     return function (dispatch) {
         dispatch(request());
-        userServices.register(firstname, lastname, email, password, currentDate)
-            .then(res => {
+        userServices
+            .register(firstname, lastname, email, password, currentDate)
+            .then((res) => {
                 dispatch(success(res.data));
                 dispatch(employerActions.getAuthEmployers(res.data.user.id));
                 dispatch(jobActions.getAuthJobs(res.data.user.id));
@@ -140,74 +166,110 @@ function register(firstname, lastname, email, password, cb, currentDate) {
                 dispatch(shiftActions.authShift(res.data.user.id));
                 cb();
             })
-            .catch(err => [
-                dispatch(failure(err.message))
-            ])
+            .catch((err) => [dispatch(failure(err.message))]);
     };
     function request() {
         return {
-            type: userConstants.REGISTER_USER_REQUEST
-        }
-    };
+            type: userConstants.REGISTER_USER_REQUEST,
+        };
+    }
     function success(user) {
         return {
             type: userConstants.REGISTER_USER_SUCCESS,
-            payload: user
-        }
-    };
+            payload: user,
+        };
+    }
     function failure(error) {
         return {
             type: userConstants.REGISTER_USER_FAILURE,
-            payload: error
-        }
+            payload: error,
+        };
     }
 }
 
 function actualiseLoginPage() {
     return {
-        type: userConstants.ACTUALISE_LOGIN_PAGE
-    }
+        type: userConstants.ACTUALISE_LOGIN_PAGE,
+    };
 }
 
 function filterModal() {
     return {
-        type: userConstants.FILTER_MODAL
-    }
+        type: userConstants.FILTER_MODAL,
+    };
 }
 
-function filterDropdown () {
+function filterDropdown() {
     return {
-        type: userConstants.FILTER_DROPDOWN
-    }
+        type: userConstants.FILTER_DROPDOWN,
+    };
 }
 
-function filterUsers (is_admin, statut, country, province, city, date_connexion) {
+function filterUsers(
+    is_admin,
+    statut,
+    country,
+    province,
+    city,
+    date_connexion
+) {
     return {
         type: userConstants.FILTER_USERS,
         is_admin,
         statut,
         country,
-        province, 
+        province,
         city,
-        date_connexion
-    }
+        date_connexion,
+    };
 }
 
-function clearFilterUsers () {
+function clearFilterUsers() {
     return {
-        type: userConstants.CLEAR_FILTER_USERS
-    }
+        type: userConstants.CLEAR_FILTER_USERS,
+    };
 }
 
-function searchUsers (user) {
+function searchUsers(user) {
     return {
         type: userConstants.SEARCH_USERS,
-        payload: user
-    }
+        payload: user,
+    };
 }
 
-function clearSearchUsers () {
+function clearSearchUsers() {
     return {
-        type: userConstants.CLEAR_SEARCH_USERS
+        type: userConstants.CLEAR_SEARCH_USERS,
+    };
+}
+
+function statutUserAccount(id, statut) {
+    return function (dispatch) {
+        dispatch(request());
+        userServices
+            .statutUserAccount(id, statut)
+            .then((res) => {
+                dispatch(success(res.data));
+            })
+            .catch((err) => {
+                dispatch(failure(err.message));
+            });
+    };
+    function request() {
+        return {
+            type: userConstants.STATUT_USER_ACCOUNT_REQUEST,
+        };
+    }
+    function success(user) {
+        return {
+            type: userConstants.STATUT_USER_ACCOUNT_SUCCESS,
+            payload: user,
+        };
+    }
+    function failure(error) {
+        return {
+            type: userConstants.STATUT_USER_ACCOUNT_FAILURE,
+            payload: error,
+        };
     }
 }

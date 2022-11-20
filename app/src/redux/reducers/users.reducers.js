@@ -12,7 +12,7 @@ const initialState = {
     filteredUsers: [],
     searchUsers: false,
     searchedUsers: [],
-    searchedValueUsers: '',
+    searchedValueUsers: "",
     token: "",
     error: "",
 };
@@ -257,21 +257,45 @@ export const user = (state = initialState, action) => {
                         return (
                             p.firstname
                                 .toLowerCase()
-                                .includes(action.payload.toLowerCase())  ||
+                                .includes(action.payload.toLowerCase()) ||
                             p.lastname
                                 .toLowerCase()
                                 .includes(action.payload.toLowerCase())
                         );
                     }),
                 ],
-                searchedValueUsers: action.payload
+                searchedValueUsers: action.payload,
             };
         case userConstants.CLEAR_SEARCH_USERS:
             return {
                 ...state,
                 searchUsers: false,
                 searchedUsers: [],
-                searchedValueUsers: ''
+                searchedValueUsers: "",
+            };
+        case userConstants.STATUT_USER_ACCOUNT_REQUEST:
+            return {
+                ...state,
+                loading: true,
+            };
+        case userConstants.STATUT_USER_ACCOUNT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                items: [
+                    ...state.items.map((p) => {
+                        if (p.id === parseInt(action.payload.id)) {
+                            p.statut = action.payload.statut;
+                        }
+                        return p;
+                    }),
+                ],
+            };
+        case userConstants.STATUT_USER_ACCOUNT_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload,
             };
         default:
             return state;

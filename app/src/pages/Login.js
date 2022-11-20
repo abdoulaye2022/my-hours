@@ -254,10 +254,19 @@ const Login = () => {
                         xs={0}
                         sm={0}
                         md
-                        style={{ backgroundColor: "#647295" }}
-                        className="d-none d-lg-block"
+                        //className="d-none d-lg-block"
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100vh",
+                            color: "white",
+                            backgroundColor: "#647295" 
+                        }}
                     >
-                        Logo
+                        <h1 style={{
+                            fontSize: "6em"
+                        }}>My-Hours</h1>
                     </Col>
                     <Col
                         xs={12}

@@ -64,8 +64,13 @@ class AuthController extends Controller
         $credentials = $request->only(['email', 'password']);
 
         if (! $token = Auth::attempt($credentials)) {
-            return response()->json(['message' => 'E-mail ou Mot de passe n\'existe pas'], 401);
+            return response()->json(['message' => 'E-mail ou Mot de passe n\'existe pas.'], 401);
         }
+
+        $u = User::where('email', $request->email)->first();
+
+        if($u->statut == 1)
+            return response()->json(['message' => 'Votre compte est inactif.'], 401);
 
         $user = User::where('email', $request->email)->update(['date_connexion' => $request->currentDate]);
 
@@ -126,6 +131,20 @@ class AuthController extends Controller
             $request->password = Hash::make($request->password);
         }
 
+        $user->save();
+
+        return response()->json($user);
+    }
+
+    public function statutAccount ($id, Request $request)
+    {
+        $id = intval($id);
+        $this->validate($request, [
+            'statut' => 'required|numeric',
+        ]);
+
+        $user = User::find($id);
+        $user->statut = $request->statut;
         $user->save();
 
         return response()->json($user);

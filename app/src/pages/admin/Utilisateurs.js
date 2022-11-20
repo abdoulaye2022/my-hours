@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { Icon, Button, Menu, Table, Input, Dropdown } from "semantic-ui-react";
+import {
+    Icon,
+    Button,
+    Popup,
+    Grid,
+    Table,
+    Input,
+    Dropdown,
+} from "semantic-ui-react";
 import FilterUsersAdmin from "../../components/Modals/admin/FilterUsersAdmin";
 import { Pagination } from "../../components/Pagination/Pagination";
 import { userActions } from "../../redux/actions/users.actions";
@@ -14,8 +22,10 @@ const Utilisateurs = () => {
     const searchedValueUsers = useSelector(
         (state) => state.user.searchedValueUsers
     );
+    const [conf, setConf] = useState(false);
+    const [confClick, setConfClick] = useState(0);
     const searchUsers = useSelector((state) => state.user.searchUsers);
-    const searchedUsers = useSelector(state => state.user.searchedUsers);
+    const searchedUsers = useSelector((state) => state.user.searchedUsers);
 
     // User is currently on this page
     const [currentPage, setCurrentPage] = useState(1);
@@ -26,9 +36,25 @@ const Utilisateurs = () => {
     const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
 
     // Records to be displayed on the current page
-    const currentRecords = users.slice(indexOfFirstRecord, indexOfLastRecord);
 
-    const nPages = Math.ceil(users.length / recordsPerPage);
+    var currentRecords = [];
+    var nPages;
+    if (filterUsers) {
+        currentRecords = filteredUsers.slice(
+            indexOfFirstRecord,
+            indexOfLastRecord
+        );
+        nPages = Math.ceil(filteredUsers.length / recordsPerPage);
+    } else if (searchUsers) {
+        currentRecords = searchedUsers.slice(
+            indexOfFirstRecord,
+            indexOfLastRecord
+        );
+        nPages = Math.ceil(searchedUsers.length / recordsPerPage);
+    } else {
+        currentRecords = users.slice(indexOfFirstRecord, indexOfLastRecord);
+        nPages = Math.ceil(users.length / recordsPerPage);
+    }
 
     const dispatch = useDispatch();
 
@@ -59,6 +85,8 @@ const Utilisateurs = () => {
                         onClose={() => dispatch(userActions.filterDropdown())}
                         onOpen={() => {
                             dispatch(userActions.filterDropdown());
+                            setCurrentPage(1);
+                            dispatch(userActions.clearSearchUsers());
                             if (filterUsers)
                                 dispatch(userActions.clearFilterUsers());
                         }}
@@ -162,8 +190,11 @@ const Utilisateurs = () => {
                         placeholder="Rechercher..."
                         onChange={(e) => {
                             dispatch(userActions.searchUsers(e.target.value));
+                            dispatch(userActions.clearFilterUsers());
                             if (e.target.value === "") {
                                 dispatch(userActions.clearSearchUsers());
+                            } else {
+                                setCurrentPage(1);
                             }
                         }}
                         value={searchedValueUsers}
@@ -191,7 +222,7 @@ const Utilisateurs = () => {
 
                         <Table.Body>
                             {filterUsers
-                                ? filteredUsers.map((p, i) => (
+                                ? currentRecords.map((p, i) => (
                                       <Table.Row>
                                           <Table.Cell>{i + 1}</Table.Cell>
                                           <Table.Cell
@@ -211,35 +242,163 @@ const Utilisateurs = () => {
                                           <Table.Cell>{p.city}</Table.Cell>
                                           <Table.Cell>
                                               {p.statut === 1 ? (
-                                                  <Button
-                                                      size="mini"
-                                                      style={{
-                                                          backgroundColor:
-                                                              "red",
-                                                          color: "white",
-                                                          width: "100%",
+                                                  <Popup
+                                                      open={
+                                                          confClick === p.id
+                                                              ? conf
+                                                              : false
+                                                      }
+                                                      trigger={
+                                                          <Button
+                                                              size="mini"
+                                                              style={{
+                                                                  backgroundColor:
+                                                                      "red",
+                                                                  color: "white",
+                                                                  width: "100%",
+                                                              }}
+                                                          >
+                                                              <Icon name="lock" />{" "}
+                                                              Bloquer
+                                                          </Button>
+                                                      }
+                                                      on="click"
+                                                      onOpen={() => {
+                                                          setConf(true);
+                                                          setConfClick(p.id);
                                                       }}
+                                                      style={{ width: 180 }}
                                                   >
-                                                      Bloquer
-                                                  </Button>
+                                                      <div>
+                                                          <p>
+                                                              Etes-vous sur de
+                                                              vouloir activer le
+                                                              compte utilisateur
+                                                              ?
+                                                          </p>
+                                                          <div
+                                                              style={{
+                                                                  display:
+                                                                      "flex",
+                                                                  flexDirection:
+                                                                      "row",
+                                                              }}
+                                                          >
+                                                              <Button
+                                                                  color="green"
+                                                                  content="Oui"
+                                                                  size="mini"
+                                                                  fluid
+                                                                  onClick={() => {
+                                                                      dispatch(
+                                                                          userActions.statutUserAccount(
+                                                                              p.id,
+                                                                              0
+                                                                          )
+                                                                      );
+                                                                      setConf(
+                                                                          false
+                                                                      );
+                                                                      setConfClick(
+                                                                          0
+                                                                      );
+                                                                  }}
+                                                              />
+                                                              <Button
+                                                                  content="Non"
+                                                                  size="mini"
+                                                                  fluid
+                                                                  onClick={() =>
+                                                                      setConf(
+                                                                          false
+                                                                      )
+                                                                  }
+                                                              />
+                                                          </div>
+                                                      </div>
+                                                  </Popup>
                                               ) : (
-                                                  <Button
-                                                      size="mini"
-                                                      style={{
-                                                          backgroundColor:
-                                                              "green",
-                                                          color: "white",
-                                                          width: "100%",
+                                                  <Popup
+                                                      open={
+                                                          confClick === p.id
+                                                              ? conf
+                                                              : false
+                                                      }
+                                                      trigger={
+                                                          <Button
+                                                              size="mini"
+                                                              style={{
+                                                                  backgroundColor:
+                                                                      "green",
+                                                                  color: "white",
+                                                                  width: "100%",
+                                                              }}
+                                                          >
+                                                              <Icon name="lock open" />{" "}
+                                                              Actif
+                                                          </Button>
+                                                      }
+                                                      on="click"
+                                                      onOpen={() => {
+                                                          setConf(true);
+                                                          setConfClick(p.id);
                                                       }}
+                                                      style={{ width: 180 }}
                                                   >
-                                                      Actif
-                                                  </Button>
+                                                      <div>
+                                                          <p>
+                                                              Etes-vous sur de
+                                                              vouloir bloquer le
+                                                              compte utilisateur
+                                                              ?
+                                                          </p>
+                                                          <div
+                                                              style={{
+                                                                  display:
+                                                                      "flex",
+                                                                  flexDirection:
+                                                                      "row",
+                                                              }}
+                                                          >
+                                                              <Button
+                                                                  color="green"
+                                                                  content="Oui"
+                                                                  size="mini"
+                                                                  fluid
+                                                                  onClick={() => {
+                                                                      dispatch(
+                                                                          userActions.statutUserAccount(
+                                                                              p.id,
+                                                                              1
+                                                                          )
+                                                                      );
+                                                                      setConf(
+                                                                          false
+                                                                      );
+                                                                      setConfClick(
+                                                                          0
+                                                                      );
+                                                                  }}
+                                                              />
+                                                              <Button
+                                                                  content="Non"
+                                                                  size="mini"
+                                                                  fluid
+                                                                  onClick={() =>
+                                                                      setConf(
+                                                                          false
+                                                                      )
+                                                                  }
+                                                              />
+                                                          </div>
+                                                      </div>
+                                                  </Popup>
                                               )}
                                           </Table.Cell>
                                       </Table.Row>
                                   ))
                                 : searchUsers
-                                ? searchedUsers.map((p, i) => (
+                                ? currentRecords.map((p, i) => (
                                       <Table.Row>
                                           <Table.Cell>{i + 1}</Table.Cell>
                                           <Table.Cell
@@ -259,29 +418,157 @@ const Utilisateurs = () => {
                                           <Table.Cell>{p.city}</Table.Cell>
                                           <Table.Cell>
                                               {p.statut === 1 ? (
-                                                  <Button
-                                                      size="mini"
-                                                      style={{
-                                                          backgroundColor:
-                                                              "red",
-                                                          color: "white",
-                                                          width: "100%",
+                                                  <Popup
+                                                      open={
+                                                          confClick === p.id
+                                                              ? conf
+                                                              : false
+                                                      }
+                                                      trigger={
+                                                          <Button
+                                                              size="mini"
+                                                              style={{
+                                                                  backgroundColor:
+                                                                      "red",
+                                                                  color: "white",
+                                                                  width: "100%",
+                                                              }}
+                                                          >
+                                                              <Icon name="lock" />{" "}
+                                                              Bloquer
+                                                          </Button>
+                                                      }
+                                                      on="click"
+                                                      onOpen={() => {
+                                                          setConf(true);
+                                                          setConfClick(p.id);
                                                       }}
+                                                      style={{ width: 180 }}
                                                   >
-                                                      Bloquer
-                                                  </Button>
+                                                      <div>
+                                                          <p>
+                                                              Etes-vous sur de
+                                                              vouloir activer le
+                                                              compte utilisateur
+                                                              ?
+                                                          </p>
+                                                          <div
+                                                              style={{
+                                                                  display:
+                                                                      "flex",
+                                                                  flexDirection:
+                                                                      "row",
+                                                              }}
+                                                          >
+                                                              <Button
+                                                                  color="green"
+                                                                  content="Oui"
+                                                                  size="mini"
+                                                                  fluid
+                                                                  onClick={() => {
+                                                                      dispatch(
+                                                                          userActions.statutUserAccount(
+                                                                              p.id,
+                                                                              0
+                                                                          )
+                                                                      );
+                                                                      setConf(
+                                                                          false
+                                                                      );
+                                                                      setConfClick(
+                                                                          0
+                                                                      );
+                                                                  }}
+                                                              />
+                                                              <Button
+                                                                  content="Non"
+                                                                  size="mini"
+                                                                  fluid
+                                                                  onClick={() =>
+                                                                      setConf(
+                                                                          false
+                                                                      )
+                                                                  }
+                                                              />
+                                                          </div>
+                                                      </div>
+                                                  </Popup>
                                               ) : (
-                                                  <Button
-                                                      size="mini"
-                                                      style={{
-                                                          backgroundColor:
-                                                              "green",
-                                                          color: "white",
-                                                          width: "100%",
+                                                  <Popup
+                                                      open={
+                                                          confClick === p.id
+                                                              ? conf
+                                                              : false
+                                                      }
+                                                      trigger={
+                                                          <Button
+                                                              size="mini"
+                                                              style={{
+                                                                  backgroundColor:
+                                                                      "green",
+                                                                  color: "white",
+                                                                  width: "100%",
+                                                              }}
+                                                          >
+                                                              <Icon name="lock open" />{" "}
+                                                              Actif
+                                                          </Button>
+                                                      }
+                                                      on="click"
+                                                      onOpen={() => {
+                                                          setConf(true);
+                                                          setConfClick(p.id);
                                                       }}
+                                                      style={{ width: 180 }}
                                                   >
-                                                      Actif
-                                                  </Button>
+                                                      <div>
+                                                          <p>
+                                                              Etes-vous sur de
+                                                              vouloir bloquer le
+                                                              compte utilisateur
+                                                              ?
+                                                          </p>
+                                                          <div
+                                                              style={{
+                                                                  display:
+                                                                      "flex",
+                                                                  flexDirection:
+                                                                      "row",
+                                                              }}
+                                                          >
+                                                              <Button
+                                                                  color="green"
+                                                                  content="Oui"
+                                                                  size="mini"
+                                                                  fluid
+                                                                  onClick={() => {
+                                                                      dispatch(
+                                                                          userActions.statutUserAccount(
+                                                                              p.id,
+                                                                              1
+                                                                          )
+                                                                      );
+                                                                      setConf(
+                                                                          false
+                                                                      );
+                                                                      setConfClick(
+                                                                          0
+                                                                      );
+                                                                  }}
+                                                              />
+                                                              <Button
+                                                                  content="Non"
+                                                                  size="mini"
+                                                                  fluid
+                                                                  onClick={() =>
+                                                                      setConf(
+                                                                          false
+                                                                      )
+                                                                  }
+                                                              />
+                                                          </div>
+                                                      </div>
+                                                  </Popup>
                                               )}
                                           </Table.Cell>
                                       </Table.Row>
@@ -306,29 +593,157 @@ const Utilisateurs = () => {
                                           <Table.Cell>{p.city}</Table.Cell>
                                           <Table.Cell>
                                               {p.statut === 1 ? (
-                                                  <Button
-                                                      size="mini"
-                                                      style={{
-                                                          backgroundColor:
-                                                              "red",
-                                                          color: "white",
-                                                          width: "100%",
+                                                  <Popup
+                                                      open={
+                                                          confClick === p.id
+                                                              ? conf
+                                                              : false
+                                                      }
+                                                      trigger={
+                                                          <Button
+                                                              size="mini"
+                                                              style={{
+                                                                  backgroundColor:
+                                                                      "red",
+                                                                  color: "white",
+                                                                  width: "100%",
+                                                              }}
+                                                          >
+                                                              <Icon name="lock" />{" "}
+                                                              Bloquer
+                                                          </Button>
+                                                      }
+                                                      on="click"
+                                                      onOpen={() => {
+                                                          setConf(true);
+                                                          setConfClick(p.id);
                                                       }}
+                                                      style={{ width: 180 }}
                                                   >
-                                                      Bloquer
-                                                  </Button>
+                                                      <div>
+                                                          <p>
+                                                              Etes-vous sur de
+                                                              vouloir activer le
+                                                              compte utilisateur
+                                                              ?
+                                                          </p>
+                                                          <div
+                                                              style={{
+                                                                  display:
+                                                                      "flex",
+                                                                  flexDirection:
+                                                                      "row",
+                                                              }}
+                                                          >
+                                                              <Button
+                                                                  color="green"
+                                                                  content="Oui"
+                                                                  size="mini"
+                                                                  fluid
+                                                                  onClick={() => {
+                                                                      dispatch(
+                                                                          userActions.statutUserAccount(
+                                                                              p.id,
+                                                                              0
+                                                                          )
+                                                                      );
+                                                                      setConf(
+                                                                          false
+                                                                      );
+                                                                      setConfClick(
+                                                                          0
+                                                                      );
+                                                                  }}
+                                                              />
+                                                              <Button
+                                                                  content="Non"
+                                                                  size="mini"
+                                                                  fluid
+                                                                  onClick={() =>
+                                                                      setConf(
+                                                                          false
+                                                                      )
+                                                                  }
+                                                              />
+                                                          </div>
+                                                      </div>
+                                                  </Popup>
                                               ) : (
-                                                  <Button
-                                                      size="mini"
-                                                      style={{
-                                                          backgroundColor:
-                                                              "green",
-                                                          color: "white",
-                                                          width: "100%",
+                                                  <Popup
+                                                      open={
+                                                          confClick === p.id
+                                                              ? conf
+                                                              : false
+                                                      }
+                                                      trigger={
+                                                          <Button
+                                                              size="mini"
+                                                              style={{
+                                                                  backgroundColor:
+                                                                      "green",
+                                                                  color: "white",
+                                                                  width: "100%",
+                                                              }}
+                                                          >
+                                                              <Icon name="lock open" />{" "}
+                                                              Actif
+                                                          </Button>
+                                                      }
+                                                      on="click"
+                                                      onOpen={() => {
+                                                          setConf(true);
+                                                          setConfClick(p.id);
                                                       }}
+                                                      style={{ width: 180 }}
                                                   >
-                                                      Actif
-                                                  </Button>
+                                                      <div>
+                                                          <p>
+                                                              Etes-vous sur de
+                                                              vouloir bloquer le
+                                                              compte utilisateur
+                                                              ?
+                                                          </p>
+                                                          <div
+                                                              style={{
+                                                                  display:
+                                                                      "flex",
+                                                                  flexDirection:
+                                                                      "row",
+                                                              }}
+                                                          >
+                                                              <Button
+                                                                  color="green"
+                                                                  content="Oui"
+                                                                  size="mini"
+                                                                  fluid
+                                                                  onClick={() => {
+                                                                      dispatch(
+                                                                          userActions.statutUserAccount(
+                                                                              p.id,
+                                                                              1
+                                                                          )
+                                                                      );
+                                                                      setConf(
+                                                                          false
+                                                                      );
+                                                                      setConfClick(
+                                                                          0
+                                                                      );
+                                                                  }}
+                                                              />
+                                                              <Button
+                                                                  content="Non"
+                                                                  size="mini"
+                                                                  fluid
+                                                                  onClick={() =>
+                                                                      setConf(
+                                                                          false
+                                                                      )
+                                                                  }
+                                                              />
+                                                          </div>
+                                                      </div>
+                                                  </Popup>
                                               )}
                                           </Table.Cell>
                                       </Table.Row>

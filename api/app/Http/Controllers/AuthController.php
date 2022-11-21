@@ -191,11 +191,27 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
-        //dd($token);
+        $tab = [
+            'id' => auth()->user()->id,
+            'firstname' => auth()->user()->firstname,
+            'lastname' => auth()->user()->lastname,
+            'gender' => auth()->user()->gender,
+            'country' => auth()->user()->country,
+            'province' => auth()->user()->province,
+            'city' => auth()->user()->city,
+            'bio' => auth()->user()->bio,
+            'email' => auth()->user()->email,
+            'new_user' => (int) auth()->user()->new_user,
+            'lang_app' => auth()->user()->lang_app,
+            'statut' => (int) auth()->user()->statut,
+            'is_admin' => (int) auth()->user()->is_admin
+        ];
+
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'user' => auth()->user(),
+            'user' => $tab,
+            // 'expires_in' => auth()->factory()->getTTL() * 1
             'expires_in' => auth()->factory()->getTTL() * 60 * 24
         ]);
     }

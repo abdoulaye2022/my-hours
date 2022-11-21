@@ -13,6 +13,8 @@
 |
 */
 
+$router->get('send-mail' ,'Mailcontroller@mail');
+
 $router->group([
 
     'prefix' => 'api'

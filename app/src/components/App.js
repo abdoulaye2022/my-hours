@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { userActions } from "../redux/actions/users.actions";
 // Pages importation
 import Login from '../pages/Login';
 import Accueil from '../pages/Accueil';
 import Profile from '../pages/Profile';
 import MesHoraires from "../pages/MesHoraires";
 import Configuration from '../pages/Configuration';
+import Very from '../pages/Very';
 import NotFound from '../pages/NotFound';
 
 // Pages Admin
@@ -17,6 +19,7 @@ import Utilisateurs from '../pages/admin/Utilisateurs';
 import './App.css';
 import { Layout } from '../components/Layouts/Layout';
 import { LayoutAdmin } from './Layouts/admin/LayoutAdmin';
+import NewUser from '../pages/NewUser';
 
 const App = () => {
 
@@ -24,20 +27,22 @@ const App = () => {
   const auth = useSelector(state => state.user.authenticathed);
   const is_admin = useSelector(state => state.user.user.is_admin);
   const loading = useSelector(state => state.user.loading);
+  const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   if (auth) {
-  //     return navigate("/Accueil");
-  //   }
-  // }, [auth]);
+  const redirectToLogin = () => {
+    return navigate('/');
+}
 
-  function detectMob() {
-    return ((window.innerWidth <= 800) && (window.innerHeight <= 600));
-  }
+  useEffect(() => {
+    if (is_admin === 2)
+      dispatch(userActions.logout(redirectToLogin));
+  }, [auth]);
 
   return (
     <>
       <Routes>
+        <Route path='/very/:token' element={<PrivateRoute><Very /></PrivateRoute>} />
+        <Route path='/creer-un-compte' element={<NewUserRoute><NewUser /></NewUserRoute>} />
         <Route path="/" element={((auth === true) && (is_admin === 1)) ? (<Navigate to="/dashboard" replace />) : ((auth === true) && (is_admin === 0)) ? <Navigate to="/accueil" replace /> : <Login />} />
         <Route path="/accueil" element={<PrivateRoute><Layout><Accueil /></Layout></PrivateRoute>} />
         <Route path='/mes-horaires' element={<PrivateRoute><Layout><MesHoraires /></Layout></PrivateRoute>} />
@@ -51,13 +56,18 @@ const App = () => {
   );
 }
 
+function NewUserRoute({ children }) {
+  const is_admin = useSelector(state => state.user.user.is_admin);
+  return (is_admin === 2) ? children : <Navigate to="/" replace />;
+}
+
 function PrivateRoute({ children }) {
   const auth = useSelector(state => state.user.authenticathed);
   const is_admin = useSelector(state => state.user.user.is_admin);
   return ((auth === true) && (is_admin === 0)) ? children : <Navigate to="/" replace />;
 }
 
-function AdminRoute ({ children }) {
+function AdminRoute({ children }) {
   const is_admin = useSelector(state => state.user.user.is_admin);
   const auth = useSelector(state => state.user.authenticathed);
   return ((auth === true) && (is_admin === 1)) ? children : <Navigate to="/" replace />;

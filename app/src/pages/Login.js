@@ -10,21 +10,25 @@ import moment from "moment";
 
 const Login = () => {
     const dispatch = useDispatch();
-    const navigator = useNavigate();
+    const navigate = useNavigate();
     const error = useSelector(state => state.user.error);
     const loading = useSelector((state) => state.user.loading);
     //const is_admin = useSelector(state => state.user.user.is_admin);
 
-    useEffect(() => {
-        dispatch(userActions.actualiseLoginPage());
-    }, []);
+    // useEffect(() => {
+    //     dispatch(userActions.actualiseLoginPage());
+    // }, []);
 
     const redirectToHome = () => {
-        return navigator("/");
+        return navigate("/");
     };
 
+    const redirectToCreateAccount = () => {
+        return navigate("/creer-un-compte");
+    }
+
     const redirectToDashboard = () => {
-        return navigator("/dashboard");
+        return navigate("/dashboard");
     };
 
     const formiklogin = useFormik({
@@ -87,7 +91,7 @@ const Login = () => {
         },
         onSubmit: (values, { resetForm }) => {
             let currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
-            dispatch(userActions.register(values.firstname, values.lastname, values.email, values.password, redirectToHome, currentDate));
+            dispatch(userActions.register(values.firstname, values.lastname, values.email, values.password, redirectToCreateAccount, currentDate));
         },
     });
 

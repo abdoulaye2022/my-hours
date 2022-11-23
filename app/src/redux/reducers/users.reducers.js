@@ -50,7 +50,6 @@ export const user = (state = initialState, action) => {
                 loading: false,
                 token: action.payload.access_token,
                 user: action.payload.user,
-                authenticathed: true,
             };
         case userConstants.REGISTER_USER_FAILURE:
             return {
@@ -297,6 +296,25 @@ export const user = (state = initialState, action) => {
                 loading: false,
                 error: action.payload,
             };
+        case userConstants.VERIFY_USER_EMAIL_REQUEST:
+            return {
+                ...state,
+                loading: true,
+            };
+        case userConstants.VERIFY_USER_EMAIL_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                token: action.payload.access_token,
+                user: action.payload.user,
+                authenticathed: true,
+            }
+        case userConstants.VERIFY_USER_EMAIL_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
         default:
             return state;
     }

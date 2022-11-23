@@ -7,6 +7,7 @@ export const userServices = {
     register,
     getAll,
     statutUserAccount,
+    verifyUserEmail
 };
 
 async function login(email, password, currentDate) {
@@ -82,4 +83,14 @@ async function statutUserAccount(id, statut) {
             },
         }
     );
+}
+
+async function verifyUserEmail(token) {
+    return await axios.get(`users/verifyemail`, {
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+    })
 }

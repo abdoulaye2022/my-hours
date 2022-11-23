@@ -18,6 +18,7 @@ export const userActions = {
     searchUsers,
     clearSearchUsers,
     statutUserAccount,
+    verifyUserEmail
 };
 
 function update(
@@ -160,10 +161,10 @@ function register(firstname, lastname, email, password, cb, currentDate) {
             .register(firstname, lastname, email, password, currentDate)
             .then((res) => {
                 dispatch(success(res.data));
-                dispatch(employerActions.getAuthEmployers(res.data.user.id));
-                dispatch(jobActions.getAuthJobs(res.data.user.id));
-                dispatch(shiftActions.getAll());
-                dispatch(shiftActions.authShift(res.data.user.id));
+                // dispatch(employerActions.getAuthEmployers(res.data.user.id));
+                // dispatch(jobActions.getAuthJobs(res.data.user.id));
+                // dispatch(shiftActions.getAll());
+                // dispatch(shiftActions.authShift(res.data.user.id));
                 cb();
             })
             .catch((err) => [dispatch(failure(err.message))]);
@@ -271,5 +272,41 @@ function statutUserAccount(id, statut) {
             type: userConstants.STATUT_USER_ACCOUNT_FAILURE,
             payload: error,
         };
+    }
+}
+
+function verifyUserEmail(token, cb) {
+    return function (dispatch) {
+        dispatch(request());
+        userServices.verifyUserEmail(token)
+            .then(res => {
+                dispatch(success(res.data))
+                dispatch(
+                    employerActions.getAuthEmployers(res.data.user.id)
+                );
+                dispatch(jobActions.getAuthJobs(res.data.user.id));
+                dispatch(shiftActions.authShift(res.data.user.id));
+                cb();
+            })
+            .catch(err => {
+                dispatch(failure(err.message))
+            })
+    }
+    function request() {
+        return {
+            type: userConstants.VERIFY_USER_EMAIL_REQUEST
+        }
+    };
+    function success(user) {
+        return {
+            type: userConstants.VERIFY_USER_EMAIL_SUCCESS,
+            payload: user
+        }
+    };
+    function failure(error) {
+        return {
+            type: userConstants.VERIFY_USER_EMAIL_FAILURE,
+            payload: error
+        }
     }
 }

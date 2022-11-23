@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use  App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\MyHoursMail;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -71,8 +74,18 @@ class AuthController extends Controller
 
         if($u->statut == 1)
             return response()->json(['message' => 'Votre compte est inactif.'], 401);
+        
+        if($u->is_admin == 2)
+            return response()->json(['message' => 'Votre adress courriel n\'a pas ete verifier.'], 401);
 
         $user = User::where('email', $request->email)->update(['date_connexion' => $request->currentDate]);
+
+        return $this->respondWithToken($token);
+    }
+
+    public function verify_email (Request $request)
+    {
+        $token = $request->header('Authorization');
 
         return $this->respondWithToken($token);
     }
@@ -94,6 +107,7 @@ class AuthController extends Controller
             'password' => $request->password,
             'date_connexion' => $request->currentDate,
             'statut' => 0,
+            'is_admin' => 2
         ]);
 
         $credentials = $request->only(['email', 'password']);
@@ -102,7 +116,37 @@ class AuthController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        return $this->respondWithToken($token);
+        $mailData = [
+            'lien' => 'http://localhost:3000/very/' . $token
+        ];
+
+        Mail::to($request->email)->send(new MyHoursMail($mailData));
+
+        $tab = [
+            'id' => auth()->user()->id,
+            'firstname' => auth()->user()->firstname,
+            'lastname' => auth()->user()->lastname,
+            'gender' => auth()->user()->gender,
+            'country' => auth()->user()->country,
+            'province' => auth()->user()->province,
+            'city' => auth()->user()->city,
+            'bio' => auth()->user()->bio,
+            'email' => auth()->user()->email,
+            'new_user' => (int) auth()->user()->new_user,
+            'lang_app' => auth()->user()->lang_app,
+            'statut' => (int) auth()->user()->statut,
+            'is_admin' => (int) auth()->user()->is_admin
+        ];
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $tab,
+            // 'expires_in' => auth()->factory()->getTTL() * 1
+            'expires_in' => auth()->factory()->getTTL() * 60 * 24
+        ]);
+
+        // return $this->respondWithToken($token);
     }
 
     public function update ($id, Request $request) 

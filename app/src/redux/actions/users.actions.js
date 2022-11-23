@@ -18,7 +18,9 @@ export const userActions = {
     searchUsers,
     clearSearchUsers,
     statutUserAccount,
-    verifyUserEmail
+    verifyUserEmail,
+    welcomeModal,
+    closeWelcomeModal
 };
 
 function update(
@@ -281,6 +283,7 @@ function verifyUserEmail(token, cb) {
         userServices.verifyUserEmail(token)
             .then(res => {
                 dispatch(success(res.data))
+                dispatch(userActions.welcomeModal());
                 dispatch(
                     employerActions.getAuthEmployers(res.data.user.id)
                 );
@@ -308,5 +311,17 @@ function verifyUserEmail(token, cb) {
             type: userConstants.VERIFY_USER_EMAIL_FAILURE,
             payload: error
         }
+    }
+}
+
+function welcomeModal() {
+    return {
+        type: userConstants.WELCOME_MODAL
+    }
+}
+
+function closeWelcomeModal() {
+    return {
+        type: userConstants.CLOSE_WELCOME_MODAL
     }
 }

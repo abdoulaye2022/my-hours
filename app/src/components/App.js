@@ -33,15 +33,15 @@ const App = () => {
     return navigate('/');
 }
 
-  useEffect(() => {
-    if (is_admin === 2)
-      dispatch(userActions.logout(redirectToLogin));
-  }, [auth]);
+  // useEffect(() => {
+  //   if (is_admin === 2)
+  //     dispatch(userActions.logout(redirectToLogin));
+  // }, [auth]);
 
   return (
     <>
       <Routes>
-        <Route path='/very/:token' element={<PrivateRoute><Very /></PrivateRoute>} />
+        <Route path='/very/:token' element={<Very />} />
         <Route path='/creer-un-compte' element={<NewUserRoute><NewUser /></NewUserRoute>} />
         <Route path="/" element={((auth === true) && (is_admin === 1)) ? (<Navigate to="/dashboard" replace />) : ((auth === true) && (is_admin === 0)) ? <Navigate to="/accueil" replace /> : <Login />} />
         <Route path="/accueil" element={<PrivateRoute><Layout><Accueil /></Layout></PrivateRoute>} />
@@ -57,8 +57,8 @@ const App = () => {
 }
 
 function NewUserRoute({ children }) {
-  const is_admin = useSelector(state => state.user.user.is_admin);
-  return (is_admin === 2) ? children : <Navigate to="/" replace />;
+  const new_user = useSelector(state => state.user.user.new_user);
+  return (new_user === 1) ? children : <Navigate to="/" replace />;
 }
 
 function PrivateRoute({ children }) {

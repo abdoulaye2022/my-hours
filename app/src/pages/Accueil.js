@@ -7,6 +7,7 @@ import { Card, Button, Loader, Accordion, Icon, Table, Popup } from "semantic-ui
 import { ShiftModal } from "../components/Modals/ShiftModal";
 import { shiftActions } from "../redux/actions/shifts.actions";
 import { useNavigate } from "react-router-dom";
+import { WelcomeModal } from "../components/Modals/WelcomeModal";
 
 const mois = ["", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 const jours = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
@@ -342,6 +343,7 @@ const Accueil = () => {
                     </Accordion>
                 </Col>
             </Row>
+            <WelcomeModal />
         </Container>
     );
 };

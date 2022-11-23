@@ -13,6 +13,7 @@ const initialState = {
     searchUsers: false,
     searchedUsers: [],
     searchedValueUsers: "",
+    welcomeModal: false,
     token: "",
     error: "",
 };
@@ -314,6 +315,16 @@ export const user = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 error: action.payload
+            };
+        case userConstants.WELCOME_MODAL:
+            return {
+                ...state,
+                welcomeModal: true
+            };
+        case userConstants.CLOSE_WELCOME_MODAL:
+            return {
+                ...state,
+                welcomeModal: false
             }
         default:
             return state;

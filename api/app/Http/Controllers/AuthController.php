@@ -107,7 +107,7 @@ class AuthController extends Controller
             'password' => $request->password,
             'date_connexion' => $request->currentDate,
             'statut' => 0,
-            'is_admin' => 2
+            'new_user' => 1
         ]);
 
         $credentials = $request->only(['email', 'password']);

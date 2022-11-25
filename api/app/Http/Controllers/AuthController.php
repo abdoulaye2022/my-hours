@@ -117,7 +117,8 @@ class AuthController extends Controller
         }
 
         $mailData = [
-            'lien' => 'http://localhost:3000/very/' . $token
+            'lien' => 'https://my-hours.net/#/very/' . $token
+            // 'lien' => 'http://localhost:3000/very/' . $token
         ];
 
         Mail::to($request->email)->send(new MyHoursMail($mailData));

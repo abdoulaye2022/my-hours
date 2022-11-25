@@ -14,6 +14,7 @@ const initialState = {
     searchedUsers: [],
     searchedValueUsers: "",
     welcomeModal: false,
+    resetPassword: false,
     token: "",
     error: "",
 };
@@ -325,6 +326,24 @@ export const user = (state = initialState, action) => {
             return {
                 ...state,
                 welcomeModal: false
+            };
+        case userConstants.RESET_USER_PASSWORD_REQUEST:
+            return {
+                ...state,
+                loading: true
+            };
+        case userConstants.RSEST_USER_PASSWORD_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                resetPassword: true,
+                user: action.payload
+            };
+        case userConstants.RESET_USER_PASSWORD_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
             }
         default:
             return state;

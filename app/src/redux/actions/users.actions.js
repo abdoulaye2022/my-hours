@@ -20,7 +20,8 @@ export const userActions = {
     statutUserAccount,
     verifyUserEmail,
     welcomeModal,
-    closeWelcomeModal
+    closeWelcomeModal,
+    resetUserPassword
 };
 
 function update(
@@ -323,5 +324,36 @@ function welcomeModal() {
 function closeWelcomeModal() {
     return {
         type: userConstants.CLOSE_WELCOME_MODAL
+    }
+}
+
+function resetUserPassword(email, cb) {
+    return function (dispatch) {
+        dispatch(request());
+        userServices.resetUserPassword(email)
+            .then(res => {
+                dispatch(success(res.data))
+                cb();
+            })
+            .catch(err => {
+                dispatch(failure(err.response.data.message));
+            })
+    }
+    function request() {
+        return {
+            type: userConstants.RESET_USER_PASSWORD_REQUEST
+        }
+    }
+    function success(user) {
+        return {
+            type: userConstants.RSEST_USER_PASSWORD_SUCCESS,
+            payload: user
+        }
+    };
+    function failure(error) {
+        return {
+            type: userConstants.RESET_USER_PASSWORD_FAILURE,
+            payload: error
+        }
     }
 }

@@ -8,7 +8,9 @@ use  App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MyHoursMail;
+use App\Mail\ResetPassword;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -16,7 +18,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register', 'refresh', 'logout']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'refresh', 'logout', 'resetpassword']]);
     }
 
     /**
@@ -66,7 +68,7 @@ class AuthController extends Controller
 
         $credentials = $request->only(['email', 'password']);
 
-        if (! $token = Auth::attempt($credentials)) {
+        if (!$token = Auth::attempt($credentials)) {
             return response()->json(['message' => 'E-mail ou Mot de passe n\'existe pas.'], 401);
         }
 
@@ -88,6 +90,35 @@ class AuthController extends Controller
         $token = $request->header('Authorization');
 
         return $this->respondWithToken($token);
+    }
+
+    public function resetpassword (Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'required|email|max:255'
+        ]);
+
+        $u = User::where('email', $request->email)->first();
+
+        if(!$u)
+            return response()->json(['message' => 'E-mail n\'existe pas.'], 401);
+
+        $pass = Str::random(6);
+
+        $mailData = [
+            //'lien' => 'http://localhost:3000/',
+            'lien' => 'https://my-hours.net',
+            'email' => $request->email,
+            'password' => $pass
+        ];
+
+        Mail::to($request->email)->send(new ResetPassword($mailData));
+
+        User::where('email', $request->email)->update([
+            'password' => Hash::make($pass)
+        ]);
+
+        return response()->json(["email" => $request->email]);
     }
 
     public function register (Request $request) 
@@ -117,8 +148,8 @@ class AuthController extends Controller
         }
 
         $mailData = [
-            'lien' => 'https://my-hours.net/#/very/' . $token
-            // 'lien' => 'http://localhost:3000/very/' . $token
+            // 'lien' => 'https://my-hours.net/#/very/' . $token
+            'lien' => 'http://localhost:3000/#/very/' . $token
         ];
 
         Mail::to($request->email)->send(new MyHoursMail($mailData));

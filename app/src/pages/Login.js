@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { ThemeProvider, Container, Row, Col } from "react-bootstrap";
-import { Form, Input, Tab, Button, Loader, Segment } from "semantic-ui-react";
+import { Form, Input, Tab, Button, Loader, Segment, Divider } from "semantic-ui-react";
 import "./Login.css";
 import { Formik, useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../redux/actions/users.actions";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import moment from "moment";
+import { detectMob } from "../helpers/heleprs";
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -14,10 +15,11 @@ const Login = () => {
     const error = useSelector(state => state.user.error);
     const loading = useSelector((state) => state.user.loading);
     //const is_admin = useSelector(state => state.user.user.is_admin);
+    const [passwordForgrt, setPasswordForget] = useState(false);
 
-    // useEffect(() => {
-    //     dispatch(userActions.actualiseLoginPage());
-    // }, []);
+    useEffect(() => {
+        dispatch(userActions.logout(redirectToLogin));
+    }, []);
 
     const redirectToHome = () => {
         return navigate("/");
@@ -30,6 +32,14 @@ const Login = () => {
     const redirectToDashboard = () => {
         return navigate("/dashboard");
     };
+
+    const redirectToResetPassword = () => {
+        return navigate("/reinitialiser-mot-de-passe");
+    }
+
+    const redirectToLogin = () => {
+        return navigate('/');
+    }
 
     const formiklogin = useFormik({
         initialValues: { email: "", password: "" },
@@ -95,6 +105,23 @@ const Login = () => {
         },
     });
 
+    const formikforgetPassword = useFormik({
+        initialValues: { password: "" },
+        validate: (values) => {
+            const errors = {};
+            if (!values.email) {
+                errors.email = 'E-mail est obligatoire';
+            } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+                errors.email = 'E-mail est invalid';
+            }
+
+            return errors;
+        },
+        onSubmit: (values, { resetForm }) => {
+            dispatch(userActions.resetUserPassword(values.email, redirectToResetPassword))
+        },
+    });
+
     const panes = [
         {
             menuItem: "Authentification",
@@ -149,6 +176,12 @@ const Login = () => {
                             </Form.Field>
                             <Form.Field>
                                 <Button type="submit" style={{ backgroundColor: "#647295", color: "white" }}>Se connecter</Button>
+                            </Form.Field>
+                            <Form.Field>
+                                <span style={{
+                                    color: "#D35269",
+                                    cursor: "pointer"
+                                }} onClick={() => setPasswordForget(true)}>Mot de passe oublié?</span>
                             </Form.Field>
                         </Form>
                     </Formik>
@@ -247,6 +280,49 @@ const Login = () => {
         },
     ];
 
+    const panesPassword = [
+        {
+            menuItem: "Mot de passe oublié?",
+            render: () => (
+                <div style={{ paddingTop: 10 }}>
+                    <Formik>
+                        <Form id="created" onSubmit={formikforgetPassword.handleSubmit}>
+                            <span style={{
+                                color: "#9F496E",
+                                display: "wrap"
+                            }}>{error}</span>
+                            <Form.Field required>
+                                <label style={{ fontWeight: "normal" }}>E-mail</label>
+                                <Input
+                                    id="email"
+                                    name="email"
+                                    type="text"
+                                    placeholder="Entrer votre e-mail"
+                                    onChange={formikforgetPassword.handleChange}
+                                    onBlur={formikforgetPassword.handleBlur}
+                                    value={formikforgetPassword.values.email}
+                                />
+                                <span style={{
+                                    color: "#9F496E",
+                                    display: "wrap",
+                                }}>{formikforgetPassword.errors.email &&
+                                    formikforgetPassword.touched.email &&
+                                    formikforgetPassword.errors.email}</span>
+                            </Form.Field>
+                            <Form.Field>
+                                <Button onClick={() => {
+                                    setPasswordForget(false);
+                                    dispatch(userActions.logout(redirectToLogin));
+                                }}>Annuler</Button>
+                                <Button type="submit" style={{ backgroundColor: "#647295", color: "white" }}>Envoyer</Button>
+                            </Form.Field>
+                        </Form>
+                    </Formik>
+                </div>
+            ),
+        },
+    ];
+
     return (
         <ThemeProvider
             breakpoints={["xxxl", "xxl", "xl", "lg", "md", "sm", "xs", "xxs"]}
@@ -254,24 +330,26 @@ const Login = () => {
         >
             <Container fluid>
                 <Row>
-                    <Col
-                        xs={0}
-                        sm={0}
-                        md
-                        //className="d-none d-lg-block"
-                        style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: "100vh",
-                            color: "white",
-                            backgroundColor: "#647295" 
-                        }}
-                    >
-                        <h1 style={{
-                            fontSize: "6em"
-                        }}>My-Hours</h1>
-                    </Col>
+                    {detectMob() ? (null) : (
+                        <Col
+                            xs={0}
+                            sm={0}
+                            md
+                            //className="d-none d-lg-block"
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: "100vh",
+                                color: "white",
+                                backgroundColor: "#647295"
+                            }}
+                        >
+                            <h1 style={{
+                                fontSize: "6em"
+                            }}>My-Hours</h1>
+                        </Col>
+                    )}
                     <Col
                         xs={12}
                         sm={12}
@@ -285,8 +363,10 @@ const Login = () => {
                         }}
                     >
                         <Segment style={{ border: "1px solid #d4d4d5" }}>
+                            <h1 style={{ color: "#647295", textAlign: "center" }}>My-Hours</h1>
+                            <Divider />
                             <Loader content='Loading' active={loading} />
-                            <Tab panes={panes} />
+                            <Tab panes={passwordForgrt ? panesPassword : panes} />
                         </Segment>
                     </Col>
                 </Row>

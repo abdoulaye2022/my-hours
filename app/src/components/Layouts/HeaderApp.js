@@ -16,6 +16,7 @@ export const HeaderApp = () => {
     const redirectToLogin = () => {
         return navigate('/');
     }
+    
     return (
         <>
             <Navbar expand="md">

@@ -56,7 +56,13 @@ const Accueil = () => {
             });
 
         let tempTime = moment.duration(sum);
-        time = tempTime.hours() + " h " + tempTime.minutes() + " m ";
+
+        let stringmi = tempTime.asHours().toFixed(3).toString();
+        let mi = stringmi.split('.');
+
+        let minuterest = '0.' + mi[1];
+
+        time = mi[0] + " h " + (parseFloat(minuterest) * 60) + " m ";
 
         return time;
     };
@@ -87,7 +93,13 @@ const Accueil = () => {
             });
 
         let tempTime = moment.duration(sum);
-        time = tempTime.hours() + " h " + tempTime.minutes() + " m ";
+
+        let stringmi = tempTime.asHours().toFixed(3).toString();
+        let mi = stringmi.split('.');
+
+        let minuterest = '0.' + mi[1];
+
+        time = mi[0] + " h " + (parseFloat(minuterest) * 60) + " m ";
 
         return time;
     };
@@ -112,7 +124,13 @@ const Accueil = () => {
             });
 
         let tempTime = moment.duration(sum);
-        time = tempTime.hours() + " h " + tempTime.minutes() + " m ";
+
+        let stringmi = tempTime.asHours().toFixed(3).toString();
+        let mi = stringmi.split('.');
+
+        let minuterest = '0.' + mi[1];
+
+        time = mi[0] + " h " + (parseFloat(minuterest) * 60) + " m ";
 
         return time;
     };

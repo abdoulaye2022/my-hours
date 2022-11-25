@@ -10,6 +10,7 @@ import MesHoraires from "../pages/MesHoraires";
 import Configuration from '../pages/Configuration';
 import Very from '../pages/Very';
 import NotFound from '../pages/NotFound';
+import ResetPassword from "../pages/ResetPassword";
 
 // Pages Admin
 import Dashboard from '../pages/admin/Dashboard';
@@ -20,6 +21,7 @@ import './App.css';
 import { Layout } from '../components/Layouts/Layout';
 import { LayoutAdmin } from './Layouts/admin/LayoutAdmin';
 import NewUser from '../pages/NewUser';
+import Reset from '../pages/Reset';
 
 const App = () => {
 
@@ -42,6 +44,8 @@ const App = () => {
     <>
       <Routes>
         <Route path='/very/:token' element={<Very />} />
+        <Route path='/reinitialiser-mot-de-passe/:email' element={<Reset />} />
+        <Route path='/reinitialiser-mot-de-passe' element={<ResetPasswordRoute><ResetPassword /></ResetPasswordRoute>} />
         <Route path='/creer-un-compte' element={<NewUserRoute><NewUser /></NewUserRoute>} />
         <Route path="/" element={((auth === true) && (is_admin === 1)) ? (<Navigate to="/dashboard" replace />) : ((auth === true) && (is_admin === 0)) ? <Navigate to="/accueil" replace /> : <Login />} />
         <Route path="/accueil" element={<PrivateRoute><Layout><Accueil /></Layout></PrivateRoute>} />
@@ -59,6 +63,11 @@ const App = () => {
 function NewUserRoute({ children }) {
   const new_user = useSelector(state => state.user.user.new_user);
   return (new_user === 1) ? children : <Navigate to="/" replace />;
+}
+
+function ResetPasswordRoute({ children }) {
+  const resetPassword = useSelector(state => state.user.resetPassword);
+  return resetPassword ? children : <Navigate to="/" replace />;
 }
 
 function PrivateRoute({ children }) {

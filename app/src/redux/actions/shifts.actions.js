@@ -193,10 +193,11 @@ function authShift(user_id) {
     }
 }
 
-function filterAuthShift (statut_shift, start_date, end_date) {
+function filterAuthShift (statut_shift, job_id, start_date, end_date) {
     return {
         type: shiftConstants.FILTER_AUTH_SHIFT,
         statut_shift,
+        job_id,
         start_date,
         end_date
     }

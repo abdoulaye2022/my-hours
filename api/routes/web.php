@@ -28,6 +28,7 @@ $router->group([
     $router->post('logout', 'AuthController@logout');
     $router->post('refresh', 'AuthController@refresh');
     $router->post('user-profile', 'AuthController@me');
+    $router->post('users/resetpassword', 'AuthController@resetpassword');
     $router->put('users/{id}', 'AuthController@update');
     $router->put('users/statut/{id}', 'AuthController@statutAccount');
 

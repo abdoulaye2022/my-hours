@@ -161,33 +161,41 @@ export const shift = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 filterShift: true,
-                filterAuthShift: [...state.authShifts.filter(p => {
-                    if (action.statut_shift != '' || action.statut_shift === 0) {
-                        return p.statut_shift === parseInt(action.statut_shift);
-                    } else {
-                        return p;
-                    }
-                }).filter(p => {
-                    if (action.start_date != null && action.end_date != null) {
-                        const start_date = new Date(action.start_date);
-                        const end_date = new Date(action.end_date);
-                        if (!isNaN(start_date) && !isNaN(end_date)) {
-                            return ((moment(p.start_date).isBetween(action.start_date, action.end_date)) &&
-                                moment(p.end_date).isBetween(action.start_date, action.end_date));
-                        } else if (!isNaN(start_date)) {
-                            let sd = moment(start_date).format("YYYY-MM-DD");
-                            let psd = moment(p.start_date).format("YYYY-MM-DD");
-                            return (moment(psd).isSame(sd));
-                        } else if (!isNaN(end_date)) {
-                            let ed = moment(end_date).format("YYYY-MM-DD");
-                            let ped = moment(p.end_date).format("YYYY-MM-DD");
-                            return (moment(ed).isSame(ped));
-                        } else
-                            return p;
-                    } else {
-                        return p;
-                    }
-                })]
+                filterAuthShift: [
+                    ...state.authShifts
+                        .filter(p => {
+                            if (action.statut_shift != '' || action.statut_shift === 0) {
+                                return p.statut_shift === parseInt(action.statut_shift);
+                            } else {
+                                return p;
+                            }
+                        }).filter(p => {
+                            if (action.job_id != '')
+                                return p.job_id === parseInt(action.job_id);
+                            else
+                                return p;
+                        })
+                        .filter(p => {
+                            if (action.start_date != null && action.end_date != null) {
+                                const start_date = new Date(action.start_date);
+                                const end_date = new Date(action.end_date);
+                                if (!isNaN(start_date) && !isNaN(end_date)) {
+                                    return ((moment(p.start_date).isBetween(action.start_date, action.end_date)) &&
+                                        moment(p.end_date).isBetween(action.start_date, action.end_date));
+                                } else if (!isNaN(start_date)) {
+                                    let sd = moment(start_date).format("YYYY-MM-DD");
+                                    let psd = moment(p.start_date).format("YYYY-MM-DD");
+                                    return (moment(psd).isSame(sd));
+                                } else if (!isNaN(end_date)) {
+                                    let ed = moment(end_date).format("YYYY-MM-DD");
+                                    let ped = moment(p.end_date).format("YYYY-MM-DD");
+                                    return (moment(ed).isSame(ped));
+                                } else
+                                    return p;
+                            } else {
+                                return p;
+                            }
+                        })]
             }
         case shiftConstants.CLEAR_FILTER_SHIFT:
             return {

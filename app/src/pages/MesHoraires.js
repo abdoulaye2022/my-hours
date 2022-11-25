@@ -19,6 +19,7 @@ import { shiftConstants } from "../redux/constants/shifts.constants";
 import FilterModal from "../components/Modals/FilterModal";
 import { Pagination } from "../components/Pagination/Pagination";
 import "moment/locale/fr";
+import { detectMob } from "../../src/helpers/heleprs";
 
 moment.locale("fr");
 
@@ -83,28 +84,26 @@ const MesHoraires = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        
-        console.log(totalHours(shifts))
         return () => {
             setVisible(true);
         };
     }, []);
 
-    const detectMob = () => {
-        const toMatch = [
-            /Android/i,
-            /webOS/i,
-            /iPhone/i,
-            /iPad/i,
-            /iPod/i,
-            /BlackBerry/i,
-            /Windows Phone/i,
-        ];
+    // const detectMob = () => {
+    //     const toMatch = [
+    //         /Android/i,
+    //         /webOS/i,
+    //         /iPhone/i,
+    //         /iPad/i,
+    //         /iPod/i,
+    //         /BlackBerry/i,
+    //         /Windows Phone/i,
+    //     ];
 
-        return toMatch.some((toMatchItem) => {
-            return navigator.userAgent.match(toMatchItem);
-        });
-    };
+    //     return toMatch.some((toMatchItem) => {
+    //         return navigator.userAgent.match(toMatchItem);
+    //     });
+    // };
 
     const totalHours = (shi) => {
         let time;
@@ -118,7 +117,13 @@ const MesHoraires = () => {
         });
         
         let tempTime = moment.duration(sum);
-        time = tempTime.hours() + " h " + tempTime.minutes() + " m ";
+
+        let stringmi = tempTime.asHours().toFixed(3).toString();
+        let mi = stringmi.split('.');
+
+        let minuterest = '0.' + mi[1];
+
+        time = mi[0] + " h " + (parseFloat(minuterest) * 60) + " m ";
 
         return time;
     };
@@ -128,9 +133,14 @@ const MesHoraires = () => {
         let end_date = moment(end);
         let time;
 
-        var duration = moment.duration(end_date.diff(start_date));
+        let tempTime = moment.duration(end_date.diff(start_date));
 
-        time = duration.hours() + " h " + duration.minutes() + " m ";
+        let stringmi = tempTime.asHours().toFixed(3).toString();
+        let mi = stringmi.split('.');
+
+        let minuterest = '0.' + mi[1];
+
+        time = mi[0] + " h " + (parseFloat(minuterest) * 60) + " m ";
 
         return time;
     };
@@ -1710,7 +1720,7 @@ const MesHoraires = () => {
                                 (filterAuthShift.length === 0 ||
                                     shifts.length === 0) ? (
                                     <Table.Row>
-                                        <Table.Cell colSpan={5}>
+                                        <Table.Cell colSpan={6}>
                                             <p
                                                 style={{
                                                     textAlign: "center",

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from "react-redux";
 import { shiftActions } from "../../redux/actions/shifts.actions";
-import { Button, Input, Form, Radio } from 'semantic-ui-react';
+import { Button, Input, Form, Radio, Select } from 'semantic-ui-react';
 import { useFormik, Formik } from "formik";
 import DatePicker from "react-datepicker";
 import moment from "moment";
@@ -12,10 +12,15 @@ const FilterModal = () => {
     const [endDate, setEndDate] = useState('');
     const filterShift = useSelector(state => state.shift.filterShift);
     const filterModal = useSelector(state => state.shift.filterModal);
+    const jobs = useSelector((state) => state.job.items);
+    const jobsOptions = [
+        ...jobs.filter(p => p.statut === 1).map((p, i) => ({ key: i, text: p.name_job, value: p.id })),
+    ];
+
     const dispatch = useDispatch();
 
     const formikfilter = useFormik({
-        initialValues: { statut_shift: '', start_date: '', end_date: '' },
+        initialValues: { statut_shift: '', job_id: '', start_date: '', end_date: '' },
         validate: values => {
             const errors = {};
 
@@ -24,7 +29,7 @@ const FilterModal = () => {
         onSubmit: (values, { resetForm }) => {
             let start_date = moment(values.start_date).format("YYYY-MM-DD HH:mm");
             let end_date = moment(values.end_date).format("YYYY-MM-DD HH:mm");
-            dispatch(shiftActions.filterAuthShift(values.statut_shift, start_date, end_date))
+            dispatch(shiftActions.filterAuthShift(values.statut_shift, values.job_id, start_date, end_date))
             dispatch(shiftActions.filterModal());
         }
     });
@@ -88,7 +93,25 @@ const FilterModal = () => {
                             </Form.Group>
                             <Form.Group widths='equal'>
                                 <Form.Field>
-                                    <span>Date de debut</span>
+                                    <label style={{ fontWeight: "normal" }}>Travail</label>
+                                    <Select
+                                        id="job_id"
+                                        name="job_id"
+                                        onChange={(e, selected) => {
+                                            formikfilter.setFieldValue(
+                                                "job_id",
+                                                selected.value
+                                            );
+                                        }}
+                                        onBlur={formikfilter.handleBlur}
+                                        options={jobsOptions}
+                                        placeholder="Selectionner le travail..."
+                                        value={formikfilter.values.job_id}
+                                        search
+                                    />
+                                </Form.Field>
+                                <Form.Field>
+                                <label style={{ fontWeight: "normal" }}>Date de debut</label>
                                     <DatePicker
                                         name="start_date"
                                         startDate={startDate}
@@ -101,7 +124,7 @@ const FilterModal = () => {
                                         value={formikfilter.values.start_date} />
                                 </Form.Field>
                                 <Form.Field>
-                                    <span>Date de fin</span>
+                                <label style={{ fontWeight: "normal" }}>Date de fin</label>
                                     <DatePicker
                                         name="end_date"
                                         endDate={endDate}

@@ -9,11 +9,11 @@ const Reset = () => {
     const navigate = useNavigate();
 
     const redirectToCreateAccount = () => {
-        return navigate("/accueil");
+        return navigate("/");
     }
 
     useEffect(() => {
-        dispatch(userActions.verifyUserEmail(params.token, redirectToCreateAccount))
+        dispatch(userActions.verifyResetUserPassword(params.token, redirectToCreateAccount))
     }, [dispatch, params.token])
 
     return (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ThemeProvider, Container, Row, Col } from "react-bootstrap";
-import { Form, Input, Tab, Button, Loader, Segment, Divider } from "semantic-ui-react";
+import { Form, Input, Tab, Button, Loader, Segment, Divider, Dropdown, Message } from "semantic-ui-react";
 import "./Login.css";
 import { Formik, useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,14 +8,19 @@ import { userActions } from "../redux/actions/users.actions";
 import { Link, useNavigate } from "react-router-dom";
 import moment from "moment";
 import { detectMob } from "../helpers/heleprs";
+import { FormattedMessage } from 'react-intl'
 
 const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const error = useSelector(state => state.user.error);
     const loading = useSelector((state) => state.user.loading);
+    const createdAccount = useSelector(state => state.user.createdAccount);
     //const is_admin = useSelector(state => state.user.user.is_admin);
     const [passwordForgrt, setPasswordForget] = useState(false);
+    const resetPassword = useSelector(state => state.user.resetPassword);
+
+    let lang = navigator.language.split(/[-_]/)[0];
 
     useEffect(() => {
         dispatch(userActions.logout(redirectToLogin));
@@ -131,6 +136,12 @@ const Login = () => {
                         color: "#9F496E",
                         display: "wrap"
                     }}>{error}</span>
+                    {createdAccount ? (
+                        <Message
+                            success
+                            content={createdAccount}
+                        />
+                    ) : null}
                     <Formik>
                         <Form id="login" onSubmit={formiklogin.handleSubmit}>
                             <Form.Field required>
@@ -180,8 +191,9 @@ const Login = () => {
                             <Form.Field>
                                 <span style={{
                                     color: "#D35269",
-                                    cursor: "pointer"
-                                }} onClick={() => setPasswordForget(true)}>Mot de passe oublié?</span>
+                                    cursor: "pointer",
+                                    float: "right"
+                                }} onClick={() => setPasswordForget(true)}><FormattedMessage id="forget-pass" defaultMessage="Mot de passe oublié?" /></span>
                             </Form.Field>
                         </Form>
                     </Formik>
@@ -323,6 +335,63 @@ const Login = () => {
         },
     ];
 
+    const panesNewPassword = [
+        {
+            menuItem: " Réinitialisation de mot de passe",
+            render: () => (
+                <div style={{ paddingTop: 10 }}>
+                    <Formik>
+                        <Form id="created" onSubmit={formikforgetPassword.handleSubmit}>
+                            <span style={{
+                                color: "#9F496E",
+                                display: "wrap"
+                            }}>{error}</span>
+                            <Form.Field required>
+                                <label style={{ fontWeight: "normal" }}>Nouveau mot de passe</label>
+                                <Input
+                                    id="email"
+                                    name="email"
+                                    type="text"
+                                    placeholder="Entrer votre e-mail"
+                                    onChange={formikforgetPassword.handleChange}
+                                    onBlur={formikforgetPassword.handleBlur}
+                                    value={formikforgetPassword.values.email}
+                                />
+                                <span style={{
+                                    color: "#9F496E",
+                                    display: "wrap",
+                                }}>{formikforgetPassword.errors.email &&
+                                    formikforgetPassword.touched.email &&
+                                    formikforgetPassword.errors.email}</span>
+                            </Form.Field>
+                            <Form.Field required>
+                                <label style={{ fontWeight: "normal" }}>Confime Nouveau mot de passe</label>
+                                <Input
+                                    id="email"
+                                    name="email"
+                                    type="text"
+                                    placeholder="Entrer votre e-mail"
+                                    onChange={formikforgetPassword.handleChange}
+                                    onBlur={formikforgetPassword.handleBlur}
+                                    value={formikforgetPassword.values.email}
+                                />
+                                <span style={{
+                                    color: "#9F496E",
+                                    display: "wrap",
+                                }}>{formikforgetPassword.errors.email &&
+                                    formikforgetPassword.touched.email &&
+                                    formikforgetPassword.errors.email}</span>
+                            </Form.Field>
+                            <Form.Field>
+                                <Button type="submit" style={{ backgroundColor: "#647295", color: "white" }}>Enregistrer</Button>
+                            </Form.Field>
+                        </Form>
+                    </Formik>
+                </div>
+            ),
+        },
+    ];
+
     return (
         <ThemeProvider
             breakpoints={["xxxl", "xxl", "xl", "lg", "md", "sm", "xs", "xxs"]}
@@ -362,11 +431,17 @@ const Login = () => {
                             flexDirection: "column",
                         }}
                     >
+                        <Dropdown text={lang.toUpperCase()} style={{ position: "absolute", top: 40, right: 40 }}>
+                            <Dropdown.Menu>
+                                <Dropdown.Item text='FR' />
+                                <Dropdown.Item text='EN' />
+                            </Dropdown.Menu>
+                        </Dropdown>
                         <Segment style={{ border: "1px solid #d4d4d5" }}>
                             <h1 style={{ color: "#647295", textAlign: "center" }}>My-Hours</h1>
                             <Divider />
                             <Loader content='Loading' active={loading} />
-                            <Tab panes={passwordForgrt ? panesPassword : panes} />
+                            <Tab panes={panesNewPassword ? panesNewPassword : passwordForgrt ? panesPassword : panes} />
                         </Segment>
                     </Col>
                 </Row>

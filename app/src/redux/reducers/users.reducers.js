@@ -15,6 +15,7 @@ const initialState = {
     searchedValueUsers: "",
     welcomeModal: false,
     resetPassword: false,
+    createdAccount: '',
     token: "",
     error: "",
 };
@@ -50,8 +51,7 @@ export const user = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                token: action.payload.access_token,
-                user: action.payload.user,
+                user: action.payload,
             };
         case userConstants.REGISTER_USER_FAILURE:
             return {
@@ -307,9 +307,7 @@ export const user = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                token: action.payload.access_token,
-                user: action.payload.user,
-                authenticathed: true,
+                createdAccount: action.payload,
             }
         case userConstants.VERIFY_USER_EMAIL_FAILURE:
             return {
@@ -336,8 +334,7 @@ export const user = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                resetPassword: true,
-                user: action.payload
+                resetPassword: true
             };
         case userConstants.RESET_USER_PASSWORD_FAILURE:
             return {

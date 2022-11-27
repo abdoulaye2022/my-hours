@@ -29,7 +29,7 @@ class ResetPassword extends Mailable
      */
     public function build()
     {
-        return $this->subject('Nouveau mot de passe')
+        return $this->subject('Demande de réinitialisation de mot de passe')
                     ->view('resetpassword');
     }
 }

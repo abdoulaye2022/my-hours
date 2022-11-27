@@ -8,7 +8,8 @@ export const userServices = {
     getAll,
     statutUserAccount,
     verifyUserEmail,
-    resetUserPassword
+    resetUserPassword,
+    verifyResetUserPassword
 };
 
 async function login(email, password, currentDate) {
@@ -98,4 +99,14 @@ async function verifyUserEmail(token) {
 
 async function resetUserPassword(email) {
     return await axios.post(`users/resetpassword`, { email: email });
+}
+
+async function verifyResetUserPassword(token) {
+    return await axios.get(`users/verifyresetpassword`, {
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+    })
 }

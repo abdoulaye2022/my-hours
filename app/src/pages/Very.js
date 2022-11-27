@@ -9,7 +9,7 @@ const Very = () => {
     const navigate = useNavigate();
 
     const redirectToCreateAccount = () => {
-        return navigate("/accueil");
+        return navigate("/");
     }
 
     useEffect(() => {

@@ -35,7 +35,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "extract": "formatjs extract src/**/*.{ts,tsx,jsx,js} --ignore='**/*.d.ts' --out-file ./extracted/en.json"
   },
   "eslintConfig": {
     "extends": [
@@ -54,5 +55,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@formatjs/cli": "^5.1.3"
   }
 }

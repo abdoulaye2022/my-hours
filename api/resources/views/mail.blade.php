@@ -6,7 +6,6 @@
 <body> 
     <p>Merci d'avoir commencé à utiliser My-hours. Pour poursuivre la configuration de votre compte, cliquez sur le lien ci-dessous ou copiez-le dans votre navigateur.
     <br />
-    <br />
     {{ $mailData['lien'] }}
     <br />
     <br />

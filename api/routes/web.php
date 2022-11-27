@@ -23,6 +23,7 @@ $router->group([
     // users
     $router->get('/users', 'AuthController@index');
     $router->get('/users/verifyemail', 'AuthController@verify_email');
+    $router->get('/users/verifyresetpassword', 'AuthController@verify_reset_password');
     $router->post('login', 'AuthController@login');
     $router->post('register', 'AuthController@register');
     $router->post('logout', 'AuthController@logout');

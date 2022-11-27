@@ -23,6 +23,23 @@ import { LayoutAdmin } from './Layouts/admin/LayoutAdmin';
 import NewUser from '../pages/NewUser';
 import Reset from '../pages/Reset';
 
+import '@formatjs/intl-pluralrules/polyfill';
+import '@formatjs/intl-pluralrules/locale-data/de'; // Add locale data for your supported languages
+import '@formatjs/intl-relativetimeformat/polyfill';
+import '@formatjs/intl-relativetimeformat/locale-data/de'; // Add locale data for your supported languages
+import { IntlProvider } from 'react-intl';
+
+import messages_en from "../translations/en.json";
+import messages_fr from "../translations/fr.json";
+
+const messages = {
+  'en': messages_en,
+  'fr': messages_fr
+};
+
+// get browser language without the region code
+const language = navigator.language.split(/[-_]/)[0];
+
 const App = () => {
 
   let navigate = useNavigate();
@@ -33,7 +50,7 @@ const App = () => {
 
   const redirectToLogin = () => {
     return navigate('/');
-}
+  }
 
   // useEffect(() => {
   //   if (is_admin === 2)
@@ -42,20 +59,22 @@ const App = () => {
 
   return (
     <>
-      <Routes>
-        <Route path='/very/:token' element={<Very />} />
-        <Route path='/reinitialiser-mot-de-passe/:email' element={<Reset />} />
-        <Route path='/reinitialiser-mot-de-passe' element={<ResetPasswordRoute><ResetPassword /></ResetPasswordRoute>} />
-        <Route path='/creer-un-compte' element={<NewUserRoute><NewUser /></NewUserRoute>} />
-        <Route path="/" element={((auth === true) && (is_admin === 1)) ? (<Navigate to="/dashboard" replace />) : ((auth === true) && (is_admin === 0)) ? <Navigate to="/accueil" replace /> : <Login />} />
-        <Route path="/accueil" element={<PrivateRoute><Layout><Accueil /></Layout></PrivateRoute>} />
-        <Route path='/mes-horaires' element={<PrivateRoute><Layout><MesHoraires /></Layout></PrivateRoute>} />
-        <Route path='/configuration' element={<PrivateRoute><Layout><Configuration /></Layout></PrivateRoute>} />
-        <Route path='/profil' element={<PrivateRoute><Layout><Profile /></Layout></PrivateRoute>} />
-        <Route path='/dashboard' element={<AdminRoute><LayoutAdmin><Dashboard /></LayoutAdmin></AdminRoute>} />
-        <Route path='/utilisateurs' element={<AdminRoute><LayoutAdmin><Utilisateurs /></LayoutAdmin></AdminRoute>} />
-        <Route path='*' element={<NotFound />} />
-      </Routes>
+      <IntlProvider locale={navigator.language} messages={messages[language]}>
+        <Routes>
+          <Route path='/very/:token' element={<Very />} />
+          <Route path='/reinitialiser-mot-de-passe/:token' element={<Reset />} />
+          <Route path='/reinitialiser-mot-de-passe' element={<ResetPasswordRoute><ResetPassword /></ResetPasswordRoute>} />
+          <Route path='/creer-un-compte' element={<NewUserRoute><NewUser /></NewUserRoute>} />
+          <Route path="/" element={((auth === true) && (is_admin === 1)) ? (<Navigate to="/dashboard" replace />) : ((auth === true) && (is_admin === 0)) ? <Navigate to="/accueil" replace /> : <Login />} />
+          <Route path="/accueil" element={<PrivateRoute><Layout><Accueil /></Layout></PrivateRoute>} />
+          <Route path='/mes-horaires' element={<PrivateRoute><Layout><MesHoraires /></Layout></PrivateRoute>} />
+          <Route path='/configuration' element={<PrivateRoute><Layout><Configuration /></Layout></PrivateRoute>} />
+          <Route path='/profil' element={<PrivateRoute><Layout><Profile /></Layout></PrivateRoute>} />
+          <Route path='/dashboard' element={<AdminRoute><LayoutAdmin><Dashboard /></LayoutAdmin></AdminRoute>} />
+          <Route path='/utilisateurs' element={<AdminRoute><LayoutAdmin><Utilisateurs /></LayoutAdmin></AdminRoute>} />
+          <Route path='*' element={<NotFound />} />
+        </Routes>
+      </IntlProvider>
     </>
   );
 }

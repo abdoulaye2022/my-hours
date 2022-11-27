@@ -18,7 +18,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register', 'refresh', 'logout', 'resetpassword']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'refresh', 'logout', 'resetpassword', 'verify_reset_password']]);
     }
 
     /**
@@ -89,7 +89,11 @@ class AuthController extends Controller
     {
         $token = $request->header('Authorization');
 
-        return $this->respondWithToken($token);
+        User::where('email', $this->me()->email)->update([
+            'new_user' => 0
+        ]);
+        
+        return response()->json("Votre inscription d'utilisateur a réussi");
     }
 
     public function resetpassword (Request $request)
@@ -103,22 +107,24 @@ class AuthController extends Controller
         if(!$u)
             return response()->json(['message' => 'E-mail n\'existe pas.'], 401);
 
-        $pass = Str::random(6);
+        if (!$token = JWTAuth::fromUser($u)) { 
+            return response()->json(['message' => 'Identifiant invalid'], 401);
+        } 
 
         $mailData = [
-            //'lien' => 'http://localhost:3000/',
-            'lien' => 'https://my-hours.net',
-            'email' => $request->email,
-            'password' => $pass
+            'lien' => 'http://localhost:3000/reinitialiser-mot-de-passe/' . $token
         ];
 
         Mail::to($request->email)->send(new ResetPassword($mailData));
 
-        User::where('email', $request->email)->update([
-            'password' => Hash::make($pass)
-        ]);
-
         return response()->json(["email" => $request->email]);
+    }
+
+    public function verify_reset_password (Request $request)
+    {
+        $token = $request->header('Authorization');
+
+        return $this->respondWithToken($token);
     }
 
     public function register (Request $request) 
@@ -131,54 +137,47 @@ class AuthController extends Controller
             'currentDate' => 'required|date_format:"Y-m-d H:i:s"'
         ]);
 
-        $user = User::create([
-            'firstname' => $request->firstname,
-            'lastname' => $request->lastname,
-            'email' => $request->email,
-            'password' => $request->password,
-            'date_connexion' => $request->currentDate,
-            'statut' => 0,
-            'new_user' => 1
-        ]);
+        $user_check = User::where('email', $request->email)->first();
 
-        $credentials = $request->only(['email', 'password']);
+        if($user_check && $user_check->new_user === 1) {
+            $credentials = $request->only(['email', 'password']);
+    
+            if (! $token = Auth::attempt($credentials)) {
+                return response()->json(['message' => 'Unauthorized'], 401);
+            }
 
-        if (! $token = Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            $mailData = [
+                // 'lien' => 'https://my-hours.net/very/' . $token
+                'lien' => 'http://localhost:3000/very/' . $token
+            ];
+
+            Mail::to($request->email)->send(new MyHoursMail($mailData));
+        } else {
+            $user = User::create([
+                'firstname' => $request->firstname,
+                'lastname' => $request->lastname,
+                'email' => $request->email,
+                'password' => $request->password,
+                'date_connexion' => $request->currentDate,
+                'statut' => 0,
+                'new_user' => 1
+            ]);
+    
+            $credentials = $request->only(['email', 'password']);
+    
+            if (! $token = Auth::attempt($credentials)) {
+                return response()->json(['message' => 'Unauthorized'], 401);
+            }
+
+            $mailData = [
+                // 'lien' => 'https://my-hours.net/very/' . $token
+                'lien' => 'http://localhost:3000/very/' . $token
+            ];
+    
+            Mail::to($request->email)->send(new MyHoursMail($mailData));
         }
 
-        $mailData = [
-            // 'lien' => 'https://my-hours.net/#/very/' . $token
-            'lien' => 'http://localhost:3000/#/very/' . $token
-        ];
-
-        Mail::to($request->email)->send(new MyHoursMail($mailData));
-
-        $tab = [
-            'id' => auth()->user()->id,
-            'firstname' => auth()->user()->firstname,
-            'lastname' => auth()->user()->lastname,
-            'gender' => auth()->user()->gender,
-            'country' => auth()->user()->country,
-            'province' => auth()->user()->province,
-            'city' => auth()->user()->city,
-            'bio' => auth()->user()->bio,
-            'email' => auth()->user()->email,
-            'new_user' => (int) auth()->user()->new_user,
-            'lang_app' => auth()->user()->lang_app,
-            'statut' => (int) auth()->user()->statut,
-            'is_admin' => (int) auth()->user()->is_admin
-        ];
-
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'user' => $tab,
-            // 'expires_in' => auth()->factory()->getTTL() * 1
-            'expires_in' => auth()->factory()->getTTL() * 60 * 24
-        ]);
-
-        // return $this->respondWithToken($token);
+        return response()->json(["email" => $request->email, "new_user" => 1]);
     }
 
     public function update ($id, Request $request) 
@@ -233,7 +232,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        return auth()->user();
     }
 
     /**

@@ -21,7 +21,8 @@ export const userActions = {
     verifyUserEmail,
     welcomeModal,
     closeWelcomeModal,
-    resetUserPassword
+    resetUserPassword,
+    verifyResetUserPassword
 };
 
 function update(
@@ -284,12 +285,6 @@ function verifyUserEmail(token, cb) {
         userServices.verifyUserEmail(token)
             .then(res => {
                 dispatch(success(res.data))
-                dispatch(userActions.welcomeModal());
-                dispatch(
-                    employerActions.getAuthEmployers(res.data.user.id)
-                );
-                dispatch(jobActions.getAuthJobs(res.data.user.id));
-                dispatch(shiftActions.authShift(res.data.user.id));
                 cb();
             })
             .catch(err => {
@@ -353,6 +348,37 @@ function resetUserPassword(email, cb) {
     function failure(error) {
         return {
             type: userConstants.RESET_USER_PASSWORD_FAILURE,
+            payload: error
+        }
+    }
+}
+
+function verifyResetUserPassword (token, cb) {
+    return function (dispatch) {
+        dispatch(request());
+        userServices.verifyResetUserPassword(token)
+        .then(res => {
+            dispatch(success(res.data));
+            cb();
+        })
+        .catch(err => {
+            dispatch(failure(err.message));
+        })
+    }
+    function request () {
+        return {
+            type: userConstants.VERIFY_RESET_USER_PASSWORD_REQUEST
+        }
+    };
+    function success (user) {
+        return {
+            type: userConstants.VERIFY_RESET_USER_PASSWORD_SUCCESS,
+            payload: user
+        }
+    };
+    function failure (error) {
+        return {
+            type: userConstants.VERIFY_RESET_USER_PASSWORD_FAILURE,
             payload: error
         }
     }

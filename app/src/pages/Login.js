@@ -13,12 +13,13 @@ import { FormattedMessage } from 'react-intl'
 const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const error = useSelector(state => state.user.error);
+    const error = useSelector(state => state.error.error);
     const loading = useSelector((state) => state.user.loading);
     const createdAccount = useSelector(state => state.user.createdAccount);
     //const is_admin = useSelector(state => state.user.user.is_admin);
     const [passwordForgrt, setPasswordForget] = useState(false);
     const resetPassword = useSelector(state => state.user.resetPassword);
+    const token = useSelector(state => state.user.user.access_token);
 
     let lang = navigator.language.split(/[-_]/)[0];
 
@@ -123,7 +124,32 @@ const Login = () => {
             return errors;
         },
         onSubmit: (values, { resetForm }) => {
-            dispatch(userActions.resetUserPassword(values.email, redirectToResetPassword))
+            dispatch(userActions.resetUserPassword(values.email, redirectToResetPassword, redirectToHome))
+        },
+    });
+
+    const formikresetpassword = useFormik({
+        initialValues: { password: "", password2: "" },
+        validate: (values) => {
+            const errors = {};
+            if (!values.password) {
+                errors.password = 'Mot de passe est obligatoire';
+            } else if (values.password.length < 6) {
+                errors.password = "Mot de passe doit être supérieur à 6 caractères";
+            }
+
+            if (!values.password2) {
+                errors.password2 = 'Mot de passe de confirmation est obligatoire';
+            }
+
+            if (values.password != values.password2) {
+                errors.password2 = 'Mot de passe de confirmation doit etre le meme que votre mot de passe';
+            }
+
+            return errors;
+        },
+        onSubmit: (values, { resetForm }) => {
+            dispatch(userActions.newPasswordUser(token, values.password, redirectToHome));
         },
     });
 
@@ -132,10 +158,11 @@ const Login = () => {
             menuItem: "Authentification",
             render: () => (
                 <div style={{ paddingTop: 10 }}>
-                    <span style={{
-                        color: "#9F496E",
-                        display: "wrap"
-                    }}>{error}</span>
+                    {error ? (
+                        <Message
+                            error
+                            content={error} />
+                    ) : (null)}
                     {createdAccount ? (
                         <Message
                             success
@@ -341,7 +368,7 @@ const Login = () => {
             render: () => (
                 <div style={{ paddingTop: 10 }}>
                     <Formik>
-                        <Form id="created" onSubmit={formikforgetPassword.handleSubmit}>
+                        <Form id="created" onSubmit={formikresetpassword.handleSubmit}>
                             <span style={{
                                 color: "#9F496E",
                                 display: "wrap"
@@ -349,38 +376,38 @@ const Login = () => {
                             <Form.Field required>
                                 <label style={{ fontWeight: "normal" }}>Nouveau mot de passe</label>
                                 <Input
-                                    id="email"
-                                    name="email"
-                                    type="text"
-                                    placeholder="Entrer votre e-mail"
-                                    onChange={formikforgetPassword.handleChange}
-                                    onBlur={formikforgetPassword.handleBlur}
-                                    value={formikforgetPassword.values.email}
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    placeholder="Entrer votre mot de passe"
+                                    onChange={formikresetpassword.handleChange}
+                                    onBlur={formikresetpassword.handleBlur}
+                                    value={formikresetpassword.values.password}
                                 />
                                 <span style={{
                                     color: "#9F496E",
                                     display: "wrap",
-                                }}>{formikforgetPassword.errors.email &&
-                                    formikforgetPassword.touched.email &&
-                                    formikforgetPassword.errors.email}</span>
+                                }}>{formikresetpassword.errors.password &&
+                                    formikresetpassword.touched.password &&
+                                    formikresetpassword.errors.password}</span>
                             </Form.Field>
                             <Form.Field required>
                                 <label style={{ fontWeight: "normal" }}>Confime Nouveau mot de passe</label>
                                 <Input
-                                    id="email"
-                                    name="email"
-                                    type="text"
-                                    placeholder="Entrer votre e-mail"
-                                    onChange={formikforgetPassword.handleChange}
-                                    onBlur={formikforgetPassword.handleBlur}
-                                    value={formikforgetPassword.values.email}
+                                    id="password2"
+                                    name="password2"
+                                    type="password"
+                                    placeholder="Entrer votre mot de passe à nouveau"
+                                    onChange={formikresetpassword.handleChange}
+                                    onBlur={formikresetpassword.handleBlur}
+                                    value={formikresetpassword.values.password2}
                                 />
                                 <span style={{
                                     color: "#9F496E",
                                     display: "wrap",
-                                }}>{formikforgetPassword.errors.email &&
-                                    formikforgetPassword.touched.email &&
-                                    formikforgetPassword.errors.email}</span>
+                                }}>{formikresetpassword.errors.password2 &&
+                                    formikresetpassword.touched.password2 &&
+                                    formikresetpassword.errors.password2}</span>
                             </Form.Field>
                             <Form.Field>
                                 <Button type="submit" style={{ backgroundColor: "#647295", color: "white" }}>Enregistrer</Button>
@@ -441,7 +468,7 @@ const Login = () => {
                             <h1 style={{ color: "#647295", textAlign: "center" }}>My-Hours</h1>
                             <Divider />
                             <Loader content='Loading' active={loading} />
-                            <Tab panes={panesNewPassword ? panesNewPassword : passwordForgrt ? panesPassword : panes} />
+                            <Tab panes={resetPassword ? panesNewPassword : (passwordForgrt ? panesPassword : panes)} />
                         </Segment>
                     </Col>
                 </Row>

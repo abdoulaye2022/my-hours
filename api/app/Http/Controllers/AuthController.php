@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\MyHoursMail;
 use App\Mail\ResetPassword;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller
@@ -68,8 +71,15 @@ class AuthController extends Controller
 
         $credentials = $request->only(['email', 'password']);
 
-        if (!$token = Auth::attempt($credentials)) {
-            return response()->json(['message' => 'E-mail ou Mot de passe n\'existe pas.'], 401);
+        JWTAuth::factory()->setTTL(1);
+        try {
+            if (!$token =  JWTAuth::attempt($credentials)) {
+                return response()->json(['message' => 'E-mail ou Mot de passe n\'existe pas.'], 401);
+            }
+        } catch (JWTException $e) {
+            return response()->json([
+                'error' => 'Could not create token'
+            ], 5);
         }
 
         $u = User::where('email', $request->email)->first();
@@ -107,9 +117,16 @@ class AuthController extends Controller
         if(!$u)
             return response()->json(['message' => 'E-mail n\'existe pas.'], 401);
 
-        if (!$token = JWTAuth::fromUser($u)) { 
-            return response()->json(['message' => 'Identifiant invalid'], 401);
-        } 
+        JWTAuth::factory()->setTTL(1);
+        try {
+            if (!$token = JWTAuth::fromUser($u)) {
+                return response()->json(['message' => 'Identifiant invalid'], 401);
+            }
+        } catch (JWTException $e) {
+            return response()->json([
+                'error' => 'Could not create token'
+            ], 500);
+        }
 
         $mailData = [
             'lien' => 'http://localhost:3000/reinitialiser-mot-de-passe/' . $token
@@ -117,14 +134,39 @@ class AuthController extends Controller
 
         Mail::to($request->email)->send(new ResetPassword($mailData));
 
-        return response()->json(["email" => $request->email]);
+        return response()->json($token);
+    }
+
+    public function newpassword (Request $request) 
+    {
+        $this->validate($request, [
+            'password' => 'required|string|min:6'
+        ]);
+
+        $user_check = User::where('email', $this->me()->email)->update(['password' => Hash::make($request->password)]);
+
+        return response()->json("Mot de passe réinitialisation");
     }
 
     public function verify_reset_password (Request $request)
     {
-        $token = $request->header('Authorization');
+        try {
+            // attempt to verify the credentials and create a token for the user
+            $token = JWTAuth::getToken();
+            $apy = JWTAuth::getPayload($token)->toArray();
+        } catch (TokenExpiredException $e) {
+    
+            return response()->json('Le jeton a expire', 500);
+    
+        } catch (TokenInvalidException $e) {
+    
+            return response()->json('Jeton invalide', 500);
+    
+        } catch (JWTException $e) {
+            return response()->json('Jeton absent', 500);
+        }
 
-        return $this->respondWithToken($token);
+        return response()->json("Verification avec success.");
     }
 
     public function register (Request $request) 
@@ -142,9 +184,17 @@ class AuthController extends Controller
         if($user_check && $user_check->new_user === 1) {
             $credentials = $request->only(['email', 'password']);
     
-            if (! $token = Auth::attempt($credentials)) {
-                return response()->json(['message' => 'Unauthorized'], 401);
+            JWTAuth::factory()->setTTL(15);
+            try {
+                if (!$token = JWTAuth::attempt($credentials)) {
+                    return response()->json(['message' => 'Identifiant invalid'], 401);
+                }
+            } catch (JWTException $e) {
+                return response()->json([
+                    'error' => 'Could not create token'
+                ], 500);
             }
+
 
             $mailData = [
                 // 'lien' => 'https://my-hours.net/very/' . $token
@@ -164,9 +214,16 @@ class AuthController extends Controller
             ]);
     
             $credentials = $request->only(['email', 'password']);
-    
-            if (! $token = Auth::attempt($credentials)) {
-                return response()->json(['message' => 'Unauthorized'], 401);
+
+            JWTAuth::factory()->setTTL(15);
+            try {
+                if (!$token = JWTAuth::attempt($credentials)) {
+                    return response()->json(['message' => 'Identifiant invalid'], 401);
+                }
+            } catch (JWTException $e) {
+                return response()->json([
+                    'error' => 'Could not create token'
+                ], 500);
             }
 
             $mailData = [
@@ -277,6 +334,7 @@ class AuthController extends Controller
             'bio' => auth()->user()->bio,
             'email' => auth()->user()->email,
             'new_user' => (int) auth()->user()->new_user,
+            'get_started' => (int) auth()->user()->get_started,
             'lang_app' => auth()->user()->lang_app,
             'statut' => (int) auth()->user()->statut,
             'is_admin' => (int) auth()->user()->is_admin
@@ -286,8 +344,8 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'bearer',
             'user' => $tab,
-            // 'expires_in' => auth()->factory()->getTTL() * 1
-            'expires_in' => auth()->factory()->getTTL() * 60 * 24
+            'expires_in' => auth()->factory()->getTTL() * 1
+            // 'expires_in' => auth()->factory()->getTTL() * 60 * 24
         ]);
     }
 }

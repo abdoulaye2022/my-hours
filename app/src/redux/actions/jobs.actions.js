@@ -1,5 +1,7 @@
 import { jobConstants } from "../constants/jobs.constants";
 import { jobServices } from "../services/jobs.services";
+import { userActions } from "../actions/users.actions";
+import { errorActions } from "./errors.actions";
 
 export const jobActions = {
     getAuthJobs,
@@ -41,7 +43,7 @@ function getAuthJobs(id) {
     }
 }
 
-function add(name_job, color_job, employer_id, user_id) {
+function add(name_job, color_job, employer_id, user_id, cb) {
     return function (dispatch) {
         dispatch(request());
         jobServices.add(name_job, color_job, employer_id, user_id)
@@ -50,7 +52,11 @@ function add(name_job, color_job, employer_id, user_id) {
                 dispatch(jobActions.modalJob());
             })
             .catch(err => {
-                dispatch(failure(err.message))
+                dispatch(failure(err.response.data));
+                setTimeout(() => {
+                    dispatch(errorActions.getError(err.response.data));
+                }, 20)
+                dispatch(userActions.logout(cb));
             })
     };
     function request() {
@@ -72,7 +78,7 @@ function add(name_job, color_job, employer_id, user_id) {
     };
 }
 
-function update(id, name_job, color_job, employer_id) {
+function update(id, name_job, color_job, employer_id, cb) {
     return function (dispatch) {
         dispatch(request());
         jobServices.update(id, name_job, color_job, employer_id)
@@ -81,7 +87,11 @@ function update(id, name_job, color_job, employer_id) {
                 dispatch(jobActions.modalJob());
             })
             .catch(err => {
-                dispatch(failure(err.message));
+                dispatch(failure(err.response.data));
+                setTimeout(() => {
+                    dispatch(errorActions.getError(err.response.data));
+                }, 20)
+                dispatch(userActions.logout(cb));
             })
     };
     function request() {

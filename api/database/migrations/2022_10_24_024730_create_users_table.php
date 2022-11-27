@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('bio', 255)->nullable(true);
             $table->string('email', 50)->nullable(false)->unique();
             $table->integer('new_user')->default(0);
+            $table->integer('get_started')->default(1);
             $table->string('lang_app', 2)->default('fr');
             $table->integer('is_admin')->default(0);
             $table->datetime('date_connexion')->nullable(false);

@@ -9,6 +9,7 @@ import moment from "moment/moment";
 import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale } from "react-datepicker";
 import ca from "date-fns/locale/fr-CA";
+import { useNavigate } from "react-router-dom";
 registerLocale("ca", ca);
 
 let statutOptions = [
@@ -31,6 +32,7 @@ export const ShiftModal = () => {
     ];
     const auth = useSelector((state) => state.user.user);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const filterPassedTime = (start) => {
         const currentDate = new Date(startDate);
@@ -38,6 +40,10 @@ export const ShiftModal = () => {
 
         return currentDate.getTime() < selectedDate.getTime();
     };
+
+    const redirectToLogin = () => {
+        return navigate('/');
+    }
 
     const formikshift = useFormik({
         initialValues: {
@@ -111,7 +117,8 @@ export const ShiftModal = () => {
                         values.statut_shift,
                         values.location,
                         auth.id,
-                        added_at
+                        added_at,
+                        redirectToLogin
                     )
                 );
                 dispatch(shiftActions.shiftModal());
@@ -130,7 +137,8 @@ export const ShiftModal = () => {
                         end_date,
                         values.statut_shift,
                         values.location,
-                        auth.id
+                        auth.id,
+                        redirectToLogin
                     )
                 );
                 dispatch(shiftActions.shiftModal());

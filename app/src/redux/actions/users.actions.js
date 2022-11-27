@@ -3,6 +3,7 @@ import { userServices } from "../services/users.services";
 import { employerActions } from "./employers.actions";
 import { jobActions } from "./jobs.actions";
 import { shiftActions } from "./shifts.actions";
+import { errorActions } from './errors.actions';
 
 export const userActions = {
     login,
@@ -22,7 +23,8 @@ export const userActions = {
     welcomeModal,
     closeWelcomeModal,
     resetUserPassword,
-    verifyResetUserPassword
+    verifyResetUserPassword,
+    newPasswordUser
 };
 
 function update(
@@ -93,6 +95,8 @@ function login(email, password, cb1, cb2, currentDate) {
                     );
                     dispatch(jobActions.getAuthJobs(res.data.user.id));
                     dispatch(shiftActions.authShift(res.data.user.id));
+                    if (res.data.user.get_started === 1)
+                        dispatch(userActions.welcomeModal());
                     cb1();
                 }
             })
@@ -248,7 +252,7 @@ function clearSearchUsers() {
     };
 }
 
-function statutUserAccount(id, statut) {
+function statutUserAccount(id, statut, cb) {
     return function (dispatch) {
         dispatch(request());
         userServices
@@ -257,7 +261,11 @@ function statutUserAccount(id, statut) {
                 dispatch(success(res.data));
             })
             .catch((err) => {
-                dispatch(failure(err.message));
+                dispatch(failure(err.response.data));
+                setTimeout(() => {
+                    dispatch(errorActions.getError(err.response.data));
+                }, 20)
+                dispatch(userActions.logout(cb));
             });
     };
     function request() {
@@ -279,7 +287,7 @@ function statutUserAccount(id, statut) {
     }
 }
 
-function verifyUserEmail(token, cb) {
+function verifyUserEmail(token, cb, cb2) {
     return function (dispatch) {
         dispatch(request());
         userServices.verifyUserEmail(token)
@@ -288,7 +296,11 @@ function verifyUserEmail(token, cb) {
                 cb();
             })
             .catch(err => {
-                dispatch(failure(err.message))
+                dispatch(failure(err.response.data));
+                setTimeout(() => {
+                    dispatch(errorActions.getError(err.response.data));
+                }, 20)
+                dispatch(userActions.logout(cb2));
             })
     }
     function request() {
@@ -322,7 +334,7 @@ function closeWelcomeModal() {
     }
 }
 
-function resetUserPassword(email, cb) {
+function resetUserPassword(email, cb, cb2) {
     return function (dispatch) {
         dispatch(request());
         userServices.resetUserPassword(email)
@@ -331,7 +343,12 @@ function resetUserPassword(email, cb) {
                 cb();
             })
             .catch(err => {
-                dispatch(failure(err.response.data.message));
+                dispatch(failure(err.response.data));
+                setTimeout(() => {
+                    dispatch(errorActions.getError(err.response.data));
+                }, 20)
+                dispatch(userActions.logout(cb2));
+
             })
     }
     function request() {
@@ -353,32 +370,71 @@ function resetUserPassword(email, cb) {
     }
 }
 
-function verifyResetUserPassword (token, cb) {
+function verifyResetUserPassword(token, cb) {
     return function (dispatch) {
         dispatch(request());
         userServices.verifyResetUserPassword(token)
-        .then(res => {
-            dispatch(success(res.data));
-            cb();
-        })
-        .catch(err => {
-            dispatch(failure(err.message));
-        })
+            .then(res => {
+                dispatch(success(res.data));
+                cb();
+            })
+            .catch(err => {
+                dispatch(failure(err.response.data));
+                setTimeout(() => {
+                    dispatch(errorActions.getError(err.response.data));
+                }, 20)
+                dispatch(userActions.logout(cb));
+            })
     }
-    function request () {
+    function request() {
         return {
             type: userConstants.VERIFY_RESET_USER_PASSWORD_REQUEST
         }
     };
-    function success (user) {
+    function success(user) {
         return {
             type: userConstants.VERIFY_RESET_USER_PASSWORD_SUCCESS,
             payload: user
         }
     };
-    function failure (error) {
+    function failure(error) {
         return {
             type: userConstants.VERIFY_RESET_USER_PASSWORD_FAILURE,
+            payload: error
+        }
+    }
+}
+
+function newPasswordUser(token, password, cb) {
+    return function (dispatch) {
+        dispatch(request());
+        userServices.newPasswordUser(token, password)
+            .then(res => {
+                dispatch(success(res.data))
+                cb();
+            })
+            .catch(err => {
+                dispatch(failure(err.response.data));
+                setTimeout(() => {
+                    dispatch(errorActions.getError(err.response.data));
+                }, 20)
+                dispatch(userActions.logout(cb));
+            })
+    };
+    function request() {
+        return {
+            type: userConstants.NEW_PASSWORD_USER_REQUEST
+        }
+    };
+    function success(user) {
+        return {
+            type: userConstants.NEW_PASSWORD_USER_SUCCESS,
+            payload: user
+        }
+    };
+    function failure(error) {
+        return {
+            type: userConstants.NEW_PASSWORD_USER_FAILURE,
             payload: error
         }
     }

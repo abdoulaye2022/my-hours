@@ -4,6 +4,7 @@ import { Formik, useFormik } from 'formik';
 import { Button, Input, Form, Select } from 'semantic-ui-react';
 import { jobActions } from "../../redux/actions/jobs.actions";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export const JobModal = ({ job, setJob }) => {
     const auth = useSelector(state => state.user.user);
@@ -13,6 +14,11 @@ export const JobModal = ({ job, setJob }) => {
         { key: i, text: p.name_emp, value: p.id }
     ))]
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const redirectToLogin = () => {
+        return navigate('/');
+    }
 
     const formikjob = useFormik({
         initialValues: { name_job: '', color_job: '', employer_id: '' },
@@ -20,10 +26,6 @@ export const JobModal = ({ job, setJob }) => {
             const errors = {};
             if (!values.name_job) {
                 errors.name_job = 'Nom est obligatoire';
-            }
-
-            if (!values.color_job) {
-                errors.color_job = 'Couleur est obligatoire';
             }
 
             if (!values.employer_id) {
@@ -34,10 +36,10 @@ export const JobModal = ({ job, setJob }) => {
         },
         onSubmit: (values, { resetForm }) => {
             if (Object.keys(job).length === 0) {
-                dispatch(jobActions.add(values.name_job, values.color_job, values.employer_id, auth.id));
+                dispatch(jobActions.add(values.name_job, values.color_job, values.employer_id, auth.id, redirectToLogin));
             }
             else {
-                dispatch(jobActions.update(job.id, values.name_job, values.color_job, values.employer_id));
+                dispatch(jobActions.update(job.id, values.name_job, values.color_job, values.employer_id, redirectToLogin));
             }
         }
     });

@@ -5,6 +5,7 @@ import { Modal } from 'react-bootstrap';
 import { Button, Input, Form, Select } from 'semantic-ui-react';
 import { employerActions } from "../../redux/actions/employers.actions";
 import { shiftActions } from "../../redux/actions/shifts.actions";
+import { useNavigate } from "react-router-dom";
 
 const statutOptions = [
     { key: '0', text: 'Actif', value: 1 },
@@ -16,6 +17,12 @@ export const EmployerModal = ({ employer, setEmployer }) => {
     const modal = useSelector(state => state.employer.modal);
     const jobs = useSelector(state => state.job.items);
     const dispatch = useDispatch();
+
+    const navigate = useNavigate();
+
+    const redirectToLogin = () => {
+        return navigate("/");
+    }
 
     const formikemployer = useFormik({
         initialValues: { name_emp: '', statut: 1 },
@@ -33,10 +40,10 @@ export const EmployerModal = ({ employer, setEmployer }) => {
         },
         onSubmit: (values, { resetForm }) => {
             if (Object.keys(employer).length === 0) {
-                dispatch(employerActions.add(values.name_emp, values.statut, auth.id));
+                dispatch(employerActions.add(values.name_emp, values.statut, auth.id, redirectToLogin));
             }
             else {
-                dispatch(employerActions.update(employer.id, values.name_emp, values.statut, updateEmployer));
+                dispatch(employerActions.update(employer.id, values.name_emp, values.statut, updateEmployer, redirectToLogin));
             }
         }
     });

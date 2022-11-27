@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
     Icon,
     Button,
@@ -31,6 +32,12 @@ const Utilisateurs = () => {
     const [currentPage, setCurrentPage] = useState(1);
     // No of Records to be displayed on each page
     const [recordsPerPage] = useState(10);
+
+    const navigate = useNavigate();
+
+    const redirectToLogin = () => {
+        return navigate('/');
+    }
 
     const indexOfLastRecord = currentPage * recordsPerPage;
     const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
@@ -293,7 +300,8 @@ const Utilisateurs = () => {
                                                                       dispatch(
                                                                           userActions.statutUserAccount(
                                                                               p.id,
-                                                                              0
+                                                                              0,
+                                                                              redirectToLogin
                                                                           )
                                                                       );
                                                                       setConf(
@@ -369,7 +377,8 @@ const Utilisateurs = () => {
                                                                       dispatch(
                                                                           userActions.statutUserAccount(
                                                                               p.id,
-                                                                              1
+                                                                              1,
+                                                                              redirectToLogin
                                                                           )
                                                                       );
                                                                       setConf(
@@ -469,7 +478,8 @@ const Utilisateurs = () => {
                                                                       dispatch(
                                                                           userActions.statutUserAccount(
                                                                               p.id,
-                                                                              0
+                                                                              0,
+                                                                              redirectToLogin
                                                                           )
                                                                       );
                                                                       setConf(
@@ -545,7 +555,8 @@ const Utilisateurs = () => {
                                                                       dispatch(
                                                                           userActions.statutUserAccount(
                                                                               p.id,
-                                                                              1
+                                                                              1,
+                                                                              redirectToLogin
                                                                           )
                                                                       );
                                                                       setConf(
@@ -644,7 +655,8 @@ const Utilisateurs = () => {
                                                                       dispatch(
                                                                           userActions.statutUserAccount(
                                                                               p.id,
-                                                                              0
+                                                                              0,
+                                                                              redirectToLogin
                                                                           )
                                                                       );
                                                                       setConf(
@@ -720,7 +732,8 @@ const Utilisateurs = () => {
                                                                       dispatch(
                                                                           userActions.statutUserAccount(
                                                                               p.id,
-                                                                              1
+                                                                              1,
+                                                                              redirectToLogin
                                                                           )
                                                                       );
                                                                       setConf(

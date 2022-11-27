@@ -41,6 +41,7 @@ export const user = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 error: action.payload,
+                createdAccount: ''
             };
         case userConstants.REGISTER_USER_REQUEST:
             return {
@@ -334,9 +335,45 @@ export const user = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                resetPassword: true
+                resetPassword: true,
+                access_token: action.payload
             };
         case userConstants.RESET_USER_PASSWORD_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            };
+        case userConstants.VERIFY_RESET_USER_PASSWORD_REQUEST:
+            return {
+                ...state,
+                loading: true
+            };
+        case userConstants.VERIFY_RESET_USER_PASSWORD_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                resetPassword: true
+            };
+        case userConstants.VERIFY_RESET_USER_PASSWORD_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            };
+        case userConstants.NEW_PASSWORD_USER_REQUEST:
+            return {
+                ...state,
+                loading: true
+            };
+        case userConstants.NEW_PASSWORD_USER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                resetPassword: false,
+                createdAccount: action.payload
+            };
+        case userConstants.NEW_PASSWORD_USER_FAILURE:
             return {
                 ...state,
                 loading: false,

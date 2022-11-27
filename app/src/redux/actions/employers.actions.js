@@ -1,6 +1,8 @@
 import { employerConstants } from "../constants/employers.constants";
 import { employerServices } from "../services/employers.services";
+import { errorActions } from "./errors.actions";
 import { jobActions } from "./jobs.actions";
+import { userActions } from "./users.actions";
 
 export const employerActions = {
     getAuthEmployers,
@@ -19,7 +21,7 @@ function getAuthEmployers(id) {
                 dispatch(success(res.data));
             })
             .catch(err => {
-                dispatch(failure(err.message))
+                dispatch(failure(err.message));
             })
     };
     function request() {
@@ -47,7 +49,7 @@ function modalEmployer() {
     }
 }
 
-function add(name_emp, statut, user_id) {
+function add(name_emp, statut, user_id, cb) {
     return function (dispatch) {
         dispatch(request());
         employerServices.add(name_emp, statut, user_id)
@@ -56,7 +58,11 @@ function add(name_emp, statut, user_id) {
                 dispatch(modalEmployer());
             })
             .catch(err => {
-                dispatch(failure(err.message));
+                dispatch(failure(err.response.data));
+                setTimeout(() => {
+                    dispatch(errorActions.getError(err.response.data));
+                }, 20)
+                dispatch(userActions.logout(cb));
             })
     };
     function request() {
@@ -78,19 +84,23 @@ function add(name_emp, statut, user_id) {
     };
 }
 
-function update(id, name_emp, statut, cb) {
+function update(id, name_emp, statut, updated, cb) {
     return function (dispatch) {
         dispatch(request());
         employerServices.update(id, name_emp, statut)
             .then(res => {
                 dispatch(success(res.data));
                 dispatch(jobActions.updateEmployer(res.data));
-                cb();
+                updated();
                 dispatch(modalEmployer());
             })
             .catch(err => {
-                dispatch(failure(err.message));
-            })
+                dispatch(failure(err.response.data));
+                setTimeout(() => {
+                    dispatch(errorActions.getError(err.response.data));
+                }, 20)
+                dispatch(userActions.logout(cb));
+            });
     };
     function request() {
         return {

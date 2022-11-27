@@ -13,7 +13,7 @@ const Very = () => {
     }
 
     useEffect(() => {
-        dispatch(userActions.verifyUserEmail(params.token, redirectToCreateAccount))
+        dispatch(userActions.verifyUserEmail(params.token, redirectToCreateAccount, redirectToCreateAccount))
     }, [dispatch, params.token])
 
     return (

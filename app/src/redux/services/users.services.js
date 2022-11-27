@@ -9,7 +9,8 @@ export const userServices = {
     statutUserAccount,
     verifyUserEmail,
     resetUserPassword,
-    verifyResetUserPassword
+    verifyResetUserPassword,
+    newPasswordUser
 };
 
 async function login(email, password, currentDate) {
@@ -103,6 +104,17 @@ async function resetUserPassword(email) {
 
 async function verifyResetUserPassword(token) {
     return await axios.get(`users/verifyresetpassword`, {
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+    })
+}
+
+
+async function newPasswordUser(token, password) {
+    return await axios.post(`users/newpassword`, { password: password }, {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",

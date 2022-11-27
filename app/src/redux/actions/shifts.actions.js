@@ -1,5 +1,7 @@
 import { shiftConstants } from "../constants/shifts.constants";
 import { shiftServices } from "../services/shifts.services";
+import { errorActions } from "../actions/errors.actions";
+import { userActions } from "./users.actions";
 
 export const shiftActions = {
     shiftModal,
@@ -54,7 +56,7 @@ function getAll() {
     }
 }
 
-function add(job_id, start_date, end_date, statut_shift, location, user_id, added_at) {
+function add(job_id, start_date, end_date, statut_shift, location, user_id, added_at, cb) {
     return function (dispatch) {
         dispatch(request());
         shiftServices
@@ -63,7 +65,11 @@ function add(job_id, start_date, end_date, statut_shift, location, user_id, adde
                 dispatch(success(res.data));
             })
             .catch((err) => {
-                dispatch(failure(err.message));
+                dispatch(failure(err.response.data));
+                setTimeout(() => {
+                    dispatch(errorActions.getError(err.response.data));
+                }, 20)
+                dispatch(userActions.logout(cb));
             });
     };
     function request() {
@@ -92,7 +98,8 @@ function update(
     end_date,
     statut_shift,
     location,
-    user_id
+    user_id,
+    cb
 ) {
     return function (dispatch) {
         dispatch(request());
@@ -110,7 +117,11 @@ function update(
                 dispatch(success(res.data));
             })
             .catch((err) => {
-                dispatch(failure(err.message));
+                dispatch(failure(err.response.data));
+                setTimeout(() => {
+                    dispatch(errorActions.getError(err.response.data));
+                }, 20)
+                dispatch(userActions.logout(cb));
             });
     };
     function request() {
@@ -193,7 +204,7 @@ function authShift(user_id) {
     }
 }
 
-function filterAuthShift (statut_shift, job_id, start_date, end_date) {
+function filterAuthShift(statut_shift, job_id, start_date, end_date) {
     return {
         type: shiftConstants.FILTER_AUTH_SHIFT,
         statut_shift,
@@ -225,7 +236,7 @@ function checkEndDateShift(user_id, end_date) {
     }
 }
 
-function checkDateShift (user_id, start_date, end_date) {
+function checkDateShift(user_id, start_date, end_date) {
     return {
         type: shiftConstants.CHECK_DATE_EXIST,
         user_id,
@@ -234,58 +245,58 @@ function checkDateShift (user_id, start_date, end_date) {
     }
 }
 
-function clearFilter () {
+function clearFilter() {
     return {
         type: shiftConstants.CLEAR_FILTER_SHIFT
     }
 }
 
-function filterModal () {
+function filterModal() {
     return {
         type: shiftConstants.FILTER_MODAL
     }
 }
 
-function filterDropdown () {
+function filterDropdown() {
     return {
         type: shiftConstants.FILTER_DROPDOWN
     }
 }
 
-function shiftPopupAcc () {
+function shiftPopupAcc() {
     return {
         type: shiftConstants.SHIFT_POPUP_ACC
     }
 }
 
-function shiftPopupPla () {
+function shiftPopupPla() {
     return {
         type: shiftConstants.SHIFT_POPUP_PLA
     }
 }
 
-function shiftItem (shift) {
+function shiftItem(shift) {
     return {
         type: shiftConstants.SHIFT_ITEM,
         payload: shift
     }
 }
 
-function updateEmployerStatut (employer) {
+function updateEmployerStatut(employer) {
     return {
         type: shiftConstants.UPDATE_EMPLOYER_SHIFT,
         payload: employer
     }
 }
 
-function searchShifts (shift) {
+function searchShifts(shift) {
     return {
         type: shiftConstants.SEARCH_SHIFT,
         payload: shift
     }
 }
 
-function clearSearchShift () {
+function clearSearchShift() {
     return {
         type: shiftConstants.CLEAR_SEARCH_SHIFT,
     }

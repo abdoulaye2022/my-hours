@@ -22,7 +22,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         "country", "province", "city", 
         "bio", "email", "new_user", 
         "lang_app", "is_admin", "password",
-        "date_connexion", "statut"
+        "date_connexion", "statut", "get_started"
     ];
 
     protected $hidden = [

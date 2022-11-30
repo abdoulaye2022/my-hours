@@ -61,7 +61,7 @@ const App = () => {
     <>
       <IntlProvider locale={navigator.language} messages={messages[language]}>
         <Routes>
-          <Route path='/very/:token' element={<Very />} />
+          <Route path='/creation-compte/:token' element={<Very />} />
           <Route path='/reinitialiser-mot-de-passe/:token' element={<Reset />} />
           <Route path='/reinitialiser-mot-de-passe' element={<ResetPasswordRoute><ResetPassword /></ResetPasswordRoute>} />
           <Route path='/creer-un-compte' element={<NewUserRoute><NewUser /></NewUserRoute>} />

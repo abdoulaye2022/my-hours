@@ -71,9 +71,11 @@ class AuthController extends Controller
 
         $credentials = $request->only(['email', 'password']);
 
+        $u = User::where('email', $request->email)->first();
+
         JWTAuth::factory()->setTTL(1);
         try {
-            if (!$token =  JWTAuth::attempt($credentials)) {
+            if ((!$token =  JWTAuth::attempt($credentials)) || ($u->new_user == 1)) {
                 return response()->json(['message' => 'E-mail ou Mot de passe n\'existe pas.'], 401);
             }
         } catch (JWTException $e) {
@@ -82,13 +84,11 @@ class AuthController extends Controller
             ], 5);
         }
 
-        $u = User::where('email', $request->email)->first();
-
         if($u->statut == 1)
             return response()->json(['message' => 'Votre compte est inactif.'], 401);
         
-        if($u->is_admin == 2)
-            return response()->json(['message' => 'Votre adress courriel n\'a pas ete verifier.'], 401);
+        // if($u->is_admin == 2)
+        //     return response()->json(['message' => 'Votre adress courriel n\'a pas ete verifier.'], 401);
 
         $user = User::where('email', $request->email)->update(['date_connexion' => $request->currentDate]);
 
@@ -117,7 +117,7 @@ class AuthController extends Controller
         if(!$u)
             return response()->json(['message' => 'E-mail n\'existe pas.'], 401);
 
-        JWTAuth::factory()->setTTL(1);
+        JWTAuth::factory()->setTTL(15);
         try {
             if (!$token = JWTAuth::fromUser($u)) {
                 return response()->json(['message' => 'Identifiant invalid'], 401);
@@ -129,6 +129,7 @@ class AuthController extends Controller
         }
 
         $mailData = [
+            // 'lien' => 'https://my-hours.net/reinitialiser-mot-de-passe/' . $token
             'lien' => 'http://localhost:3000/reinitialiser-mot-de-passe/' . $token
         ];
 
@@ -166,7 +167,9 @@ class AuthController extends Controller
             return response()->json('Jeton absent', 500);
         }
 
-        return response()->json("Verification avec success.");
+        $token = $request->header('Authorization');
+
+        return response()->json($token);
     }
 
     public function register (Request $request) 
@@ -197,8 +200,8 @@ class AuthController extends Controller
 
 
             $mailData = [
-                // 'lien' => 'https://my-hours.net/very/' . $token
-                'lien' => 'http://localhost:3000/very/' . $token
+                // 'lien' => 'https://my-hours.net/creation-compte/' . $token
+                'lien' => 'http://localhost:3000/creation-compte/' . $token
             ];
 
             Mail::to($request->email)->send(new MyHoursMail($mailData));
@@ -227,8 +230,8 @@ class AuthController extends Controller
             }
 
             $mailData = [
-                // 'lien' => 'https://my-hours.net/very/' . $token
-                'lien' => 'http://localhost:3000/very/' . $token
+                // 'lien' => 'https://my-hours.net/creation-compte/' . $token
+                'lien' => 'http://localhost:3000/creation-compte/' . $token
             ];
     
             Mail::to($request->email)->send(new MyHoursMail($mailData));

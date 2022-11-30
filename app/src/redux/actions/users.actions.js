@@ -101,7 +101,8 @@ function login(email, password, cb1, cb2, currentDate) {
                 }
             })
             .catch((err) => {
-                dispatch(failure(err.response.data.message));
+                dispatch(failure(err.response.data.message))
+                dispatch(errorActions.getError(err.response.data.message));
             });
     };
     function request() {
@@ -287,20 +288,19 @@ function statutUserAccount(id, statut, cb) {
     }
 }
 
-function verifyUserEmail(token, cb, cb2) {
+function verifyUserEmail(token, cb) {
     return function (dispatch) {
         dispatch(request());
         userServices.verifyUserEmail(token)
             .then(res => {
                 dispatch(success(res.data))
-                cb();
             })
             .catch(err => {
                 dispatch(failure(err.response.data));
                 setTimeout(() => {
                     dispatch(errorActions.getError(err.response.data));
                 }, 20)
-                dispatch(userActions.logout(cb2));
+                dispatch(userActions.logout(cb));
             })
     }
     function request() {

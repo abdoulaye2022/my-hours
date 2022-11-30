@@ -129,8 +129,8 @@ class AuthController extends Controller
         }
 
         $mailData = [
-            // 'lien' => 'https://my-hours.net/reinitialiser-mot-de-passe/' . $token
-            'lien' => 'http://localhost:3000/reinitialiser-mot-de-passe/' . $token
+            // 'lien' => 'https://my-hours.net/#/reinitialiser-mot-de-passe/' . $token
+            'lien' => 'http://localhost:3000/#/reinitialiser-mot-de-passe/' . $token
         ];
 
         Mail::to($request->email)->send(new ResetPassword($mailData));
@@ -152,7 +152,6 @@ class AuthController extends Controller
     public function verify_reset_password (Request $request)
     {
         try {
-            // attempt to verify the credentials and create a token for the user
             $token = JWTAuth::getToken();
             $apy = JWTAuth::getPayload($token)->toArray();
         } catch (TokenExpiredException $e) {
@@ -200,8 +199,8 @@ class AuthController extends Controller
 
 
             $mailData = [
-                // 'lien' => 'https://my-hours.net/creation-compte/' . $token
-                'lien' => 'http://localhost:3000/creation-compte/' . $token
+                // 'lien' => 'https://my-hours.net/#/creation-compte/' . $token
+                'lien' => 'http://localhost:3000/#/creation-compte/' . $token
             ];
 
             Mail::to($request->email)->send(new MyHoursMail($mailData));
@@ -230,8 +229,8 @@ class AuthController extends Controller
             }
 
             $mailData = [
-                // 'lien' => 'https://my-hours.net/creation-compte/' . $token
-                'lien' => 'http://localhost:3000/creation-compte/' . $token
+                // 'lien' => 'https://my-hours.net/#/creation-compte/' . $token
+                'lien' => 'http://localhost:3000/#/creation-compte/' . $token
             ];
     
             Mail::to($request->email)->send(new MyHoursMail($mailData));

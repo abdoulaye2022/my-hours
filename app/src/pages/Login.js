@@ -8,7 +8,8 @@ import { userActions } from "../redux/actions/users.actions";
 import { Link, useNavigate } from "react-router-dom";
 import moment from "moment";
 import { detectMob } from "../helpers/heleprs";
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage } from 'react-intl';
+import { langueActions } from "../redux/actions/langues.actions";
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -20,8 +21,9 @@ const Login = () => {
     const [passwordForgrt, setPasswordForget] = useState(false);
     const resetPassword = useSelector(state => state.user.resetPassword);
     const token = useSelector(state => state.user.user.access_token);
+    const lang = useSelector(state => state.langue.lang);
 
-    let lang = navigator.language.split(/[-_]/)[0];
+    // let lang = navigator.language.split(/[-_]/)[0];
 
     useEffect(() => {
         dispatch(userActions.logout(redirectToLogin));
@@ -192,7 +194,7 @@ const Login = () => {
                             </Form.Field>
                             <Form.Field required>
                                 <label style={{ fontWeight: "normal" }}>
-                                    Mot de passe
+                                    <FormattedMessage id="mdp-auth" defaultMessage="Mot de passe" />
                                 </label>
                                 <Input
                                     type="password"
@@ -458,10 +460,10 @@ const Login = () => {
                             flexDirection: "column",
                         }}
                     >
-                        <Dropdown text={lang.toUpperCase()} style={{ position: "absolute", top: 40, right: 40 }}>
+                        <Dropdown text={lang ? lang.toUpperCase() : (navigator.language.split(/[-_]/)[0]).toLocaleUpperCase()} style={{ position: "absolute", top: 40, right: 40 }}>
                             <Dropdown.Menu>
-                                <Dropdown.Item text='FR' />
-                                <Dropdown.Item text='EN' />
+                                <Dropdown.Item text='FR' onClick={() => dispatch(langueActions.changeLangue('fr'))} />
+                                <Dropdown.Item text='EN' onClick={() => dispatch(langueActions.changeLangue('en'))} />
                             </Dropdown.Menu>
                         </Dropdown>
                         <Segment style={{ border: "1px solid #d4d4d5" }}>

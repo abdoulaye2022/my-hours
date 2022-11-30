@@ -115,15 +115,15 @@ const MesHoraires = () => {
 
             sum += end_shift.diff(start_shift);
         });
-        
+
         let tempTime = moment.duration(sum);
 
         let stringmi = tempTime.asHours().toFixed(3).toString();
-        let mi = stringmi.split('.');
+        let mi = stringmi.split(".");
 
-        let minuterest = '0.' + mi[1];
+        let minuterest = "0." + mi[1];
 
-        time = mi[0] + " h " + (parseFloat(minuterest) * 60) + " m ";
+        time = mi[0] + " h " + parseFloat(minuterest) * 60 + " m ";
 
         return time;
     };
@@ -136,11 +136,11 @@ const MesHoraires = () => {
         let tempTime = moment.duration(end_date.diff(start_date));
 
         let stringmi = tempTime.asHours().toFixed(3).toString();
-        let mi = stringmi.split('.');
+        let mi = stringmi.split(".");
 
-        let minuterest = '0.' + mi[1];
+        let minuterest = "0." + mi[1];
 
-        time = mi[0] + " h " + (parseFloat(minuterest) * 60) + " m ";
+        time = mi[0] + " h " + parseFloat(minuterest) * 60 + " m ";
 
         return time;
     };
@@ -280,14 +280,14 @@ const MesHoraires = () => {
                                 <Table.Row>
                                     <Table.HeaderCell>Travail</Table.HeaderCell>
                                     <Table.HeaderCell>
-                                        Date debut
+                                        Date début
                                     </Table.HeaderCell>
                                     <Table.HeaderCell>
                                         Date fin
                                     </Table.HeaderCell>
                                     <Table.HeaderCell>Durée</Table.HeaderCell>
                                     <Table.HeaderCell>Lieu</Table.HeaderCell>
-                                    <Table.HeaderCell>Status</Table.HeaderCell>
+                                    <Table.HeaderCell>statuts</Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
 
@@ -1726,7 +1726,7 @@ const MesHoraires = () => {
                                                     textAlign: "center",
                                                 }}
                                             >
-                                                Aucun element trouver
+                                                Aucun resulat trouvé 
                                             </p>
                                         </Table.Cell>
                                     </Table.Row>
@@ -1744,13 +1744,13 @@ const MesHoraires = () => {
                                     </Table.HeaderCell>
                                     <Table.HeaderCell>
                                         <span style={{ fontWeight: "bold" }}>
-                                            Total des heures:{" "}
+                                            Total d’heures:{" "}
                                             {filterShift
                                                 ? totalHours(filterAuthShift)
                                                 : searchShift
                                                 ? totalHours(searchShifts)
-                                                : ((filterShift === false) &&
-                                                  (searchShift === false))
+                                                : filterShift === false &&
+                                                  searchShift === false
                                                 ? totalHours(shifts)
                                                 : totalHours([])}
                                         </span>

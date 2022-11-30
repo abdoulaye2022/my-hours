@@ -5,13 +5,15 @@ import { employer } from './employers.reducers';
 import { job } from './jobs.reducers';
 import { shift } from './shifts.reducers';
 import { error } from './errors.reducers';
+import { langue } from './langues.reducers';
 
 const appReducers = combineReducers({
     user,
     employer, 
     job,
     shift,
-    error
+    error,
+    langue
 })
 
 const rootReducers = (state, action) => {

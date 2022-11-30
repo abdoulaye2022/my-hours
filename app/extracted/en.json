@@ -1,5 +1,8 @@
 {
   "forget-pass": {
     "defaultMessage": "Mot de passe oublié?"
+  },
+  "mdp-auth": {
+    "defaultMessage": "Mot de passe"
   }
 }

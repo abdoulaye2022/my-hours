@@ -47,13 +47,13 @@ export const HeaderApp = () => {
                         </Nav>
                         <Nav>
                             <Nav.Link><Link to="/accueil" class={pathname === '/accueil' ? ("react-sel") : ("react")}>Accueil</Link></Nav.Link>
-                            <Nav.Link><Link to="/mes-horaires" class={pathname === '/mes-horaires' ? ("react-sel") : ("react")}>Mes horraires</Link></Nav.Link>
+                            <Nav.Link><Link to="/mes-horaires" class={pathname === '/mes-horaires' ? ("react-sel") : ("react")}>Mes horaires</Link></Nav.Link>
                             <Nav.Link><Link to="/configuration" class={pathname === '/configuration' ? ("react-sel") : ("react")}>Configuration</Link></Nav.Link>
                             <Nav.Link>
                                 <Link to="/profil" class={pathname === '/profil' ? ("react-sel") : ("react")}>Profil</Link>
                             </Nav.Link>
                             <Button color='red' onClick={() => dispatch(userActions.logout(redirectToLogin))} style={{ fontWeight: "bold" }}>
-                                <Icon name='sign out' /> Deconexion
+                                <Icon name='sign out' /> Déconnexion
                             </Button>
                         </Nav>
                     </Navbar.Collapse>

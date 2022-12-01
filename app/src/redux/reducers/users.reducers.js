@@ -353,6 +353,7 @@ export const user = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
+                token: action.payload,
                 resetPassword: true
             };
         case userConstants.VERIFY_RESET_USER_PASSWORD_FAILURE:

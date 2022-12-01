@@ -73,7 +73,7 @@ class AuthController extends Controller
 
         $u = User::where('email', $request->email)->first();
 
-        JWTAuth::factory()->setTTL(1);
+        JWTAuth::factory()->setTTL(120);
         try {
             if ((!$token =  JWTAuth::attempt($credentials)) || ($u->new_user == 1)) {
                 return response()->json(['message' => 'E-mail ou Mot de passe n\'existe pas.'], 401);

@@ -20,13 +20,14 @@ const Login = () => {
     //const is_admin = useSelector(state => state.user.user.is_admin);
     const [passwordForgrt, setPasswordForget] = useState(false);
     const resetPassword = useSelector(state => state.user.resetPassword);
-    const token = useSelector(state => state.user.user.access_token);
+    const token = useSelector(state => state.user.token);
     const lang = useSelector(state => state.langue.lang);
 
     // let lang = navigator.language.split(/[-_]/)[0];
 
     useEffect(() => {
-        dispatch(userActions.logout(redirectToLogin));
+        if(!error)
+            dispatch(userActions.logout(redirectToLogin));
     }, []);
 
     const redirectToHome = () => {
